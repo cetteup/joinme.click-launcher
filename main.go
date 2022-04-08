@@ -60,12 +60,12 @@ func main() {
 				continue
 			}
 
-			if installed && !registered {
+			if !registered {
 				fmt.Printf("Detected %s install, registering launcher for %s protocol\n", gameLauncher.Config.GameLabel, gameLauncher.Config.ProtocolScheme)
 				if err := gameLauncher.RegisterHandler(); err != nil {
 					fmt.Println(fmt.Errorf("failed to register as URL protocol handler for %s: %e", gameLauncher.Config.GameLabel, err))
 				}
-			} else if installed {
+			} else {
 				fmt.Printf("Detected %s install, launcher already registered for %s protocol\n", gameLauncher.Config.GameLabel, gameLauncher.Config.ProtocolScheme)
 			}
 		}
