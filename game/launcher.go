@@ -10,12 +10,13 @@ import (
 )
 
 const (
-	RegPathSoftware = "SOFTWARE"
-	RegPathClasses  = "Classes"
-	RegPathOpen     = "open"
-	RegPathShell    = "shell"
-	RegPathCommand  = "command"
-	RegKeyDefault   = ""
+	RegPathSoftware   = "SOFTWARE"
+	RegPathClasses    = "Classes"
+	RegPathOpen       = "open"
+	RegPathShell      = "shell"
+	RegPathCommand    = "command"
+	RegKeyDefault     = ""
+	RegKeyURLProtocol = "URL Protocol"
 )
 
 type RegistryRepository interface {
@@ -86,6 +87,10 @@ func (l Launcher) RegisterHandler() error {
 	}
 
 	err = l.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyDefault, fmt.Sprintf("URL:%s protocol", l.Config.GameLabel))
+	if err != nil {
+		return err
+	}
+	err = l.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyURLProtocol, "")
 	if err != nil {
 		return err
 	}
