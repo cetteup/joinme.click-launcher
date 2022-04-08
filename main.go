@@ -18,6 +18,7 @@ func init() {
 	bfVietnam := game.NewLauncher(repository, titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
 	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
 	codWaw := game.NewLauncher(repository, titles.CodWawConfig, titles.CodWawCmdBuilder)
+	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
@@ -25,6 +26,7 @@ func init() {
 		"bfvietnam": bfVietnam,
 		"bf2":       bf2,
 		"codwaw":    codWaw,
+		"fearsec2":  fearSec2,
 		"paraworld": paraworld,
 	}
 }
