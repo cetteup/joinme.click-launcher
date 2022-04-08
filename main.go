@@ -13,11 +13,13 @@ import (
 func init() {
 	repository := internal.NewRegistryRepository()
 	bf1942 := game.NewLauncher(repository, titles.Bf1942Config, titles.Bf1942CmdBuilder)
+	bfVietnam := game.NewLauncher(repository, titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
 	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
 		"bf1942":    bf1942,
+		"bfvietnam": bfVietnam,
 		"bf2":       bf2,
 		"paraworld": paraworld,
 	}
