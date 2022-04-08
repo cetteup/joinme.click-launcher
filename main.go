@@ -23,13 +23,13 @@ func init() {
 	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
-		"bf1942":    bf1942,
-		"bfvietnam": bfVietnam,
-		"bf2":       bf2,
-		"codwaw":    codWaw,
-		"fearsec2":  fearSec2,
-		"paraworld": paraworld,
-		"vietcong":  vietcong,
+		bf1942.Config.ProtocolScheme:    bf1942,
+		bfVietnam.Config.ProtocolScheme: bfVietnam,
+		bf2.Config.ProtocolScheme:       bf2,
+		codWaw.Config.ProtocolScheme:    codWaw,
+		fearSec2.Config.ProtocolScheme:  fearSec2,
+		paraworld.Config.ProtocolScheme: paraworld,
+		vietcong.Config.ProtocolScheme:  vietcong,
 	}
 }
 
