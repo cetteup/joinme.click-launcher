@@ -17,8 +17,9 @@ func init() {
 	bf1942 := game.NewLauncher(repository, titles.Bf1942Config, titles.Bf1942CmdBuilder)
 	bfVietnam := game.NewLauncher(repository, titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
 	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
-	cod4 := game.NewLauncher(repository, titles.Cod4Config, titles.Cod4CmdBuilder)
-	codWaw := game.NewLauncher(repository, titles.CodWawConfig, titles.CodWawCmdBuilder)
+	cod := game.NewLauncher(repository, titles.CodConfig, game.PlusConnectCmdBuilder)
+	cod4 := game.NewLauncher(repository, titles.Cod4Config, game.PlusConnectCmdBuilder)
+	codWaw := game.NewLauncher(repository, titles.CodWawConfig, game.PlusConnectCmdBuilder)
 	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
 	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
@@ -27,6 +28,7 @@ func init() {
 		bf1942.Config.ProtocolScheme:    bf1942,
 		bfVietnam.Config.ProtocolScheme: bfVietnam,
 		bf2.Config.ProtocolScheme:       bf2,
+		cod.Config.ProtocolScheme:       cod,
 		cod4.Config.ProtocolScheme:      cod4,
 		codWaw.Config.ProtocolScheme:    codWaw,
 		fearSec2.Config.ProtocolScheme:  fearSec2,
