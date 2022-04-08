@@ -19,6 +19,7 @@ func init() {
 	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
 	cod := game.NewLauncher(repository, titles.CodConfig, game.PlusConnectCmdBuilder)
 	codUO := game.NewLauncher(repository, titles.CodUOConfig, game.PlusConnectCmdBuilder)
+	cod2 := game.NewLauncher(repository, titles.Cod2Config, game.PlusConnectCmdBuilder)
 	cod4 := game.NewLauncher(repository, titles.Cod4Config, game.PlusConnectCmdBuilder)
 	codWaw := game.NewLauncher(repository, titles.CodWawConfig, game.PlusConnectCmdBuilder)
 	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
@@ -31,6 +32,7 @@ func init() {
 		bf2.Config.ProtocolScheme:       bf2,
 		cod.Config.ProtocolScheme:       cod,
 		codUO.Config.ProtocolScheme:     codUO,
+		cod2.Config.ProtocolScheme:      cod2,
 		cod4.Config.ProtocolScheme:      cod4,
 		codWaw.Config.ProtocolScheme:    codWaw,
 		fearSec2.Config.ProtocolScheme:  fearSec2,
