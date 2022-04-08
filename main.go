@@ -20,6 +20,7 @@ func init() {
 	codWaw := game.NewLauncher(repository, titles.CodWawConfig, titles.CodWawCmdBuilder)
 	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
+	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
 		"bf1942":    bf1942,
@@ -28,6 +29,7 @@ func init() {
 		"codwaw":    codWaw,
 		"fearsec2":  fearSec2,
 		"paraworld": paraworld,
+		"vietcong":  vietcong,
 	}
 }
 
