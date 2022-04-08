@@ -15,7 +15,7 @@ const (
 	RegPathOpen     = "open"
 	RegPathShell    = "shell"
 	RegPathCommand  = "command"
-	RegKeyDefault   = "(Default)"
+	RegKeyDefault   = ""
 )
 
 type RegistryRepository interface {
