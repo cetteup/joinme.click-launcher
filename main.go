@@ -85,7 +85,7 @@ func main() {
 		}
 
 		// TODO Remove later
-		fmt.Printf("Launching %s to join %s:%s\n", gameLauncher.Config.GameLabel, u.Host, port)
+		fmt.Printf("Launching %s to join %s:%s\n", gameLauncher.Config.GameLabel, u.Hostname(), port)
 	}
 	fmt.Println("Window will close in 15 seconds")
 	time.Sleep(15 * time.Second)
