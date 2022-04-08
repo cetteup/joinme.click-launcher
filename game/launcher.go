@@ -119,7 +119,7 @@ func (l *Launcher) StartGame(ip string, port string) error {
 		return err
 	}
 
-	dir, err := l.repository.GetStringValue(0, l.Config.RegistryPath, l.Config.RegistryValueName)
+	dir, err := l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
 	if err != nil {
 		return err
 	}
