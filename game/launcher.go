@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 )
 
+type LaunchDir int
+
 const (
 	RegPathSoftware   = "SOFTWARE"
 	RegPathClasses    = "Classes"
@@ -17,6 +19,11 @@ const (
 	RegPathCommand    = "command"
 	RegKeyDefault     = ""
 	RegKeyURLProtocol = "URL Protocol"
+)
+
+const (
+	InstallDir LaunchDir = iota
+	BinaryDir
 )
 
 type RegistryRepository interface {
@@ -29,6 +36,7 @@ type LauncherConfig struct {
 	ProtocolScheme    string
 	GameLabel         string
 	ExecutablePath    string
+	StartIn           LaunchDir
 	RegistryPath      string
 	RegistryValueName string
 }
@@ -125,6 +133,12 @@ func (l *Launcher) StartGame(ip string, port string) error {
 	}
 
 	path := filepath.Join(dir, l.Config.ExecutablePath)
+
+	// Launch in binary directory instead of install path if requested
+	if l.Config.StartIn == BinaryDir {
+		dir = filepath.Dir(path)
+	}
+
 	cmd := &exec.Cmd{
 		Dir:  dir,
 		Path: path,

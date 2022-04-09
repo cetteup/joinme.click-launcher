@@ -24,6 +24,7 @@ func init() {
 	codWaw := game.NewLauncher(repository, titles.CodWawConfig, game.PlusConnectCmdBuilder)
 	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
+	swat4 := game.NewLauncher(repository, titles.Swat4Config, titles.Swat4CmdBuilder)
 	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
@@ -37,6 +38,7 @@ func init() {
 		codWaw.Config.ProtocolScheme:    codWaw,
 		fearSec2.Config.ProtocolScheme:  fearSec2,
 		paraworld.Config.ProtocolScheme: paraworld,
+		swat4.Config.ProtocolScheme:     swat4,
 		vietcong.Config.ProtocolScheme:  vietcong,
 	}
 }
