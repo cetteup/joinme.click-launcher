@@ -31,7 +31,6 @@ var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip stri
 	}
 	args := []string{
 		"+menu", "1",
-		"+fullscreen", "1",
 		"+restart", "1",
 		"+joinServer", ip,
 		"+port", port,
