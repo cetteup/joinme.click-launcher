@@ -13,8 +13,14 @@ import (
 )
 
 func init() {
-	repository := internal.NewRegistryRepository()
-	router = game.NewRouter(repository)
+	registryRepository := internal.NewRegistryRepository()
+	err := internal.LoadConfig()
+	if err != nil {
+		fmt.Printf("Failed to load configuration: %s\n", err)
+		fmt.Println("Continuing with defaults")
+	}
+
+	router = game.NewRouter(registryRepository)
 	router.AddLauncher(titles.Bf1942Config, titles.Bf1942CmdBuilder)
 	router.AddLauncher(titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
 	router.AddLauncher(titles.Bf2Config, titles.Bf2CmdBuilder)

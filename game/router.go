@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"net/url"
 )
 
@@ -27,6 +28,7 @@ func NewRouter(repository RegistryRepository) *Router {
 }
 
 func (r Router) AddLauncher(config LauncherConfig, cmdBuilder CommandBuilder) {
+	config.Custom = internal.RunningConfig.GetCustomLauncherConfig(config.ProtocolScheme)
 	launcher := NewLauncher(r.repository, config, cmdBuilder)
 	r.Launchers[launcher.Config.ProtocolScheme] = launcher
 }

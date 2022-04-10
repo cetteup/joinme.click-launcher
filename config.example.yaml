@@ -1,0 +1,5 @@
+games:
+    bf2:
+        install_path: C:\Games\Battlefield 2
+        executable_path: BF2.playbf2.exe
+        args: ["+fullscreen", "0", "+szx", "1600", "+szy", "900"]

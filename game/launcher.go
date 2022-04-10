@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"fmt"
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"golang.org/x/sys/windows/registry"
 	"os"
 	"os/exec"
@@ -39,6 +40,19 @@ type LauncherConfig struct {
 	StartIn           LaunchDir
 	RegistryPath      string
 	RegistryValueName string
+	Custom            *internal.CustomLauncherConfig
+}
+
+func (c LauncherConfig) HasCustomInstallPath() bool {
+	return c.Custom != nil && c.Custom.InstallPath != ""
+}
+
+func (c LauncherConfig) HasCustomExecutablePath() bool {
+	return c.Custom != nil && c.Custom.ExecutablePath != ""
+}
+
+func (c LauncherConfig) HasCustomArgs() bool {
+	return c.Custom != nil && len(c.Custom.Args) > 0
 }
 
 type CommandBuilder func(config LauncherConfig, ip string, port string) ([]string, error)
@@ -58,9 +72,15 @@ func NewLauncher(repository RegistryRepository, config LauncherConfig, cmdBuilde
 }
 
 func (l *Launcher) IsGameInstalled() (bool, error) {
-	_, err := l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
+	var err error
+	if l.Config.HasCustomInstallPath() {
+		_, err = os.Stat(l.Config.Custom.InstallPath)
+	} else {
+		_, err = l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
+	}
+
 	if err != nil {
-		if errors.Is(err, registry.ErrNotExist) {
+		if errors.Is(err, os.ErrNotExist) || errors.Is(err, registry.ErrNotExist) {
 			return false, nil
 		}
 		return false, err
@@ -127,12 +147,28 @@ func (l *Launcher) StartGame(ip string, port string) error {
 		return err
 	}
 
-	dir, err := l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
-	if err != nil {
-		return err
+	if l.Config.HasCustomArgs() {
+		args = append(args, l.Config.Custom.Args...)
 	}
 
-	path := filepath.Join(dir, l.Config.ExecutablePath)
+	var dir string
+	if l.Config.HasCustomInstallPath() {
+		dir = l.Config.Custom.InstallPath
+	} else {
+		dir, err = l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
+		if err != nil {
+			return err
+		}
+	}
+
+	var executablePath string
+	if l.Config.HasCustomExecutablePath() {
+		executablePath = l.Config.Custom.ExecutablePath
+	} else {
+		executablePath = l.Config.ExecutablePath
+	}
+
+	path := filepath.Join(dir, executablePath)
 
 	// Launch in binary directory instead of install path if requested
 	if l.Config.StartIn == BinaryDir {
