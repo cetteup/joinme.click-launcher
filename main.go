@@ -53,7 +53,7 @@ func main() {
 			if result.Error != nil {
 				message = fmt.Sprintf("handler registration failed (%s)\n", result.Error)
 			} else if !result.Installed {
-				message = "not installed (according to the registry)"
+				message = "not installed"
 			} else if result.PreviouslyRegistered {
 				message = "launcher already registered"
 			} else {
