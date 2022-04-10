@@ -25,6 +25,7 @@ func init() {
 	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
 	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
 	swat4 := game.NewLauncher(repository, titles.Swat4Config, titles.Swat4CmdBuilder)
+	swat4x := game.NewLauncher(repository, titles.Swat4XConfig, titles.Swat4CmdBuilder)
 	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
 
 	launchers = map[string]*game.Launcher{
@@ -39,6 +40,7 @@ func init() {
 		fearSec2.Config.ProtocolScheme:  fearSec2,
 		paraworld.Config.ProtocolScheme: paraworld,
 		swat4.Config.ProtocolScheme:     swat4,
+		swat4x.Config.ProtocolScheme:    swat4x,
 		vietcong.Config.ProtocolScheme:  vietcong,
 	}
 }
