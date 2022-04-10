@@ -7,7 +7,6 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game"
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
-	"net/url"
 	"os"
 	"time"
 )
@@ -66,28 +65,13 @@ func main() {
 			}
 		}
 	} else if len(args) == 1 {
-		u, err := url.Parse(args[0])
+		err := router.StartGame(args[0])
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			return
 		}
-
-		gameLauncher, ok := router.Launchers[u.Scheme]
-		if !ok {
-			panic("Game not supported")
-		}
-
-		port := u.Port()
-		if port == "" {
-			panic("No port given in URL")
-		}
-
-		err = gameLauncher.StartGame(u.Hostname(), port)
-		if err != nil {
-			panic(err)
-		}
-
 		// TODO Remove later
-		fmt.Printf("Launching %s to join %s:%s\n", gameLauncher.Config.GameLabel, u.Hostname(), port)
+		fmt.Printf("Launched game based on URL: %s\n", args[0])
 	}
 	fmt.Println("Window will close in 15 seconds")
 	time.Sleep(15 * time.Second)
