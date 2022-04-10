@@ -58,11 +58,10 @@ func main() {
 	} else if len(args) == 1 {
 		err := router.StartGame(args[0])
 		if err != nil {
-			fmt.Println(err)
-			return
+			fmt.Printf("Failed to launch based on URL: %s (%s)\n", args[0], err)
+		} else {
+			fmt.Printf("Launched game based on URL: %s\n", args[0])
 		}
-		// TODO Remove later
-		fmt.Printf("Launched game based on URL: %s\n", args[0])
 	}
 	fmt.Println("Window will close in 15 seconds")
 	time.Sleep(15 * time.Second)
