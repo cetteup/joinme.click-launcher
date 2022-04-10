@@ -20,4 +20,4 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.17
-          pre_command: go generate
+          pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && go generate
