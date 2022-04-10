@@ -4,6 +4,10 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game"
 )
 
+const (
+	ProfileFolder = "Battlefield 2"
+)
+
 var Bf2Config = game.LauncherConfig{
 	ProtocolScheme:    "bf2",
 	GameLabel:         "Battlefield 2",
@@ -13,7 +17,7 @@ var Bf2Config = game.LauncherConfig{
 }
 
 var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip string, port string) ([]string, error) {
-	profileCon, err := game.GetDefaultUserProfileCon(config.GameLabel)
+	profileCon, err := game.GetDefaultUserProfileCon(ProfileFolder)
 	if err != nil {
 		return nil, err
 	}
@@ -26,6 +30,8 @@ var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip stri
 		return nil, err
 	}
 	args := []string{
+		"+menu", "1",
+		"+fullscreen", "1",
 		"+restart", "1",
 		"+joinServer", ip,
 		"+port", port,
@@ -33,5 +39,17 @@ var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip stri
 		"+playerPassword", password,
 	}
 
+	if config.ProtocolScheme == Bf2SFConfig.ProtocolScheme {
+		args = append(args, "+modPath", "mods/xpack", "+ignoreAsserts", "1")
+	}
+
 	return args, nil
+}
+
+var Bf2SFConfig = game.LauncherConfig{
+	ProtocolScheme:    "bf2sf",
+	GameLabel:         "Battlefield 2: Special Forces",
+	ExecutablePath:    "BF2.exe",
+	RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
+	RegistryValueName: "InstallDir",
 }

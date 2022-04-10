@@ -17,6 +17,7 @@ func init() {
 	bf1942 := game.NewLauncher(repository, titles.Bf1942Config, titles.Bf1942CmdBuilder)
 	bfVietnam := game.NewLauncher(repository, titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
 	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
+	bf2SF := game.NewLauncher(repository, titles.Bf2SFConfig, titles.Bf2CmdBuilder)
 	cod := game.NewLauncher(repository, titles.CodConfig, game.PlusConnectCmdBuilder)
 	codUO := game.NewLauncher(repository, titles.CodUOConfig, game.PlusConnectCmdBuilder)
 	cod2 := game.NewLauncher(repository, titles.Cod2Config, game.PlusConnectCmdBuilder)
@@ -32,6 +33,7 @@ func init() {
 		bf1942.Config.ProtocolScheme:    bf1942,
 		bfVietnam.Config.ProtocolScheme: bfVietnam,
 		bf2.Config.ProtocolScheme:       bf2,
+		bf2SF.Config.ProtocolScheme:     bf2SF,
 		cod.Config.ProtocolScheme:       cod,
 		codUO.Config.ProtocolScheme:     codUO,
 		cod2.Config.ProtocolScheme:      cod2,
