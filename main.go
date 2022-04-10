@@ -14,47 +14,31 @@ import (
 
 func init() {
 	repository := internal.NewRegistryRepository()
-	bf1942 := game.NewLauncher(repository, titles.Bf1942Config, titles.Bf1942CmdBuilder)
-	bfVietnam := game.NewLauncher(repository, titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
-	bf2 := game.NewLauncher(repository, titles.Bf2Config, titles.Bf2CmdBuilder)
-	bf2SF := game.NewLauncher(repository, titles.Bf2SFConfig, titles.Bf2CmdBuilder)
-	cod := game.NewLauncher(repository, titles.CodConfig, game.PlusConnectCmdBuilder)
-	codUO := game.NewLauncher(repository, titles.CodUOConfig, game.PlusConnectCmdBuilder)
-	cod2 := game.NewLauncher(repository, titles.Cod2Config, game.PlusConnectCmdBuilder)
-	cod4 := game.NewLauncher(repository, titles.Cod4Config, game.PlusConnectCmdBuilder)
-	codWaw := game.NewLauncher(repository, titles.CodWawConfig, game.PlusConnectCmdBuilder)
-	fearSec2 := game.NewLauncher(repository, titles.FearSec2Config, titles.FearSec2CmdBuilder)
-	paraworld := game.NewLauncher(repository, titles.ParaworldConfig, titles.ParaworldCmdBuilder)
-	swat4 := game.NewLauncher(repository, titles.Swat4Config, titles.Swat4CmdBuilder)
-	swat4x := game.NewLauncher(repository, titles.Swat4XConfig, titles.Swat4CmdBuilder)
-	vietcong := game.NewLauncher(repository, titles.VietcongConfig, titles.VietcongCmdBuilder)
-
-	launchers = map[string]*game.Launcher{
-		bf1942.Config.ProtocolScheme:    bf1942,
-		bfVietnam.Config.ProtocolScheme: bfVietnam,
-		bf2.Config.ProtocolScheme:       bf2,
-		bf2SF.Config.ProtocolScheme:     bf2SF,
-		cod.Config.ProtocolScheme:       cod,
-		codUO.Config.ProtocolScheme:     codUO,
-		cod2.Config.ProtocolScheme:      cod2,
-		cod4.Config.ProtocolScheme:      cod4,
-		codWaw.Config.ProtocolScheme:    codWaw,
-		fearSec2.Config.ProtocolScheme:  fearSec2,
-		paraworld.Config.ProtocolScheme: paraworld,
-		swat4.Config.ProtocolScheme:     swat4,
-		swat4x.Config.ProtocolScheme:    swat4x,
-		vietcong.Config.ProtocolScheme:  vietcong,
-	}
+	router = game.NewRouter(repository)
+	router.AddLauncher(titles.Bf1942Config, titles.Bf1942CmdBuilder)
+	router.AddLauncher(titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
+	router.AddLauncher(titles.Bf2Config, titles.Bf2CmdBuilder)
+	router.AddLauncher(titles.Bf2SFConfig, titles.Bf2CmdBuilder)
+	router.AddLauncher(titles.CodConfig, game.PlusConnectCmdBuilder)
+	router.AddLauncher(titles.CodUOConfig, game.PlusConnectCmdBuilder)
+	router.AddLauncher(titles.Cod2Config, game.PlusConnectCmdBuilder)
+	router.AddLauncher(titles.Cod4Config, game.PlusConnectCmdBuilder)
+	router.AddLauncher(titles.CodWawConfig, game.PlusConnectCmdBuilder)
+	router.AddLauncher(titles.FearSec2Config, titles.FearSec2CmdBuilder)
+	router.AddLauncher(titles.ParaworldConfig, titles.ParaworldCmdBuilder)
+	router.AddLauncher(titles.Swat4Config, titles.Swat4CmdBuilder)
+	router.AddLauncher(titles.Swat4XConfig, titles.Swat4CmdBuilder)
+	router.AddLauncher(titles.VietcongConfig, titles.VietcongCmdBuilder)
 }
 
 var (
-	launchers map[string]*game.Launcher
+	router *game.Router
 )
 
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		for _, gameLauncher := range launchers {
+		for _, gameLauncher := range router.Launchers {
 			installed, err := gameLauncher.IsGameInstalled()
 			if err != nil {
 				fmt.Println(fmt.Errorf("failed to determine whether %s is installed: %e", gameLauncher.Config.GameLabel, err))
@@ -87,7 +71,7 @@ func main() {
 			panic(err)
 		}
 
-		gameLauncher, ok := launchers[u.Scheme]
+		gameLauncher, ok := router.Launchers[u.Scheme]
 		if !ok {
 			panic("Game not supported")
 		}
