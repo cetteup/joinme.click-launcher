@@ -10,6 +10,15 @@ type Router struct {
 	Launchers  map[string]*Launcher
 }
 
+type HandlerRegistrationResult struct {
+	ProtocolScheme       string
+	GameLabel            string
+	Installed            bool
+	PreviouslyRegistered bool
+	Registered           bool
+	Error                error
+}
+
 func NewRouter(repository RegistryRepository) *Router {
 	return &Router{
 		repository: repository,
@@ -20,6 +29,49 @@ func NewRouter(repository RegistryRepository) *Router {
 func (r Router) AddLauncher(config LauncherConfig, cmdBuilder CommandBuilder) {
 	launcher := NewLauncher(r.repository, config, cmdBuilder)
 	r.Launchers[launcher.Config.ProtocolScheme] = launcher
+}
+
+func (r Router) RegisterHandlers() []HandlerRegistrationResult {
+	results := make([]HandlerRegistrationResult, 0, len(r.Launchers))
+	for _, launcher := range r.Launchers {
+		result := HandlerRegistrationResult{
+			ProtocolScheme: launcher.Config.ProtocolScheme,
+			GameLabel:      launcher.Config.GameLabel,
+		}
+
+		installed, err := launcher.IsGameInstalled()
+		if err != nil {
+			result.Error = fmt.Errorf("failed to determine whether game is installed: %e", err)
+			results = append(results, result)
+			continue
+		}
+		result.Installed = installed
+
+		if !installed {
+			results = append(results, result)
+			continue
+		}
+
+		registered, err := launcher.IsHandlerRegistered()
+		if err != nil {
+			result.Error = fmt.Errorf("failed to determine whether handler is registered: %e", err)
+			results = append(results, result)
+			continue
+		}
+		result.PreviouslyRegistered = registered
+
+		if !registered {
+			if err = launcher.RegisterHandler(); err != nil {
+				result.Error = fmt.Errorf("failed to register as URL protocol handler: %e", err)
+			} else {
+				result.Registered = true
+			}
+		}
+
+		results = append(results, result)
+	}
+
+	return results
 }
 
 func (r Router) StartGame(commandLineUrl string) error {

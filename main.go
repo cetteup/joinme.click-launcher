@@ -8,6 +8,7 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"os"
+	"sort"
 	"time"
 )
 
@@ -37,32 +38,22 @@ var (
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		for _, gameLauncher := range router.Launchers {
-			installed, err := gameLauncher.IsGameInstalled()
-			if err != nil {
-				fmt.Println(fmt.Errorf("failed to determine whether %s is installed: %e", gameLauncher.Config.GameLabel, err))
-				continue
-			}
-
-			if !installed {
-				fmt.Printf("%s is not installed according to the registry\n", gameLauncher.Config.GameLabel)
-				continue
-			}
-
-			registered, err := gameLauncher.IsHandlerRegistered()
-			if err != nil {
-				fmt.Println(fmt.Errorf("failed to determine whether %s handler is registered: %e", gameLauncher.Config.GameLabel, err))
-				continue
-			}
-
-			if !registered {
-				fmt.Printf("Detected %s install, registering launcher for %s protocol\n", gameLauncher.Config.GameLabel, gameLauncher.Config.ProtocolScheme)
-				if err := gameLauncher.RegisterHandler(); err != nil {
-					fmt.Println(fmt.Errorf("failed to register as URL protocol handler for %s: %e", gameLauncher.Config.GameLabel, err))
-				}
+		results := router.RegisterHandlers()
+		sort.Slice(results, func(i, j int) bool {
+			return results[i].ProtocolScheme < results[j].ProtocolScheme
+		})
+		for _, result := range results {
+			var message string
+			if result.Error != nil {
+				message = fmt.Sprintf("handler registration failed (%s)\n", result.Error)
+			} else if !result.Installed {
+				message = "not installed (according to the registry)"
+			} else if result.PreviouslyRegistered {
+				message = "launcher already registered"
 			} else {
-				fmt.Printf("Detected %s install, launcher already registered for %s protocol\n", gameLauncher.Config.GameLabel, gameLauncher.Config.ProtocolScheme)
+				message = "launcher registered successfully"
 			}
+			fmt.Printf("%s: %s\n", result.GameLabel, message)
 		}
 	} else if len(args) == 1 {
 		err := router.StartGame(args[0])
