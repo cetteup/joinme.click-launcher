@@ -2,10 +2,10 @@ package titles
 
 import (
 	"fmt"
-	"github.com/cetteup/joinme.click-launcher/game"
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
 )
 
-var FearSec2Config = game.LauncherConfig{
+var FearSec2Config = launcher.Config{
 	ProtocolScheme:    "fearsec2",
 	GameLabel:         "F.E.A.R. Combat (SEC2)",
 	ExecutablePath:    "FEARMP.exe",
@@ -13,6 +13,6 @@ var FearSec2Config = game.LauncherConfig{
 	RegistryValueName: "Path",
 }
 
-var FearSec2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip string, port string) ([]string, error) {
+var FearSec2CmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
 	return []string{"+join", fmt.Sprintf("%s:%s", ip, port)}, nil
 }

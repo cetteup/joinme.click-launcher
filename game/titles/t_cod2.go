@@ -1,8 +1,10 @@
 package titles
 
-import "github.com/cetteup/joinme.click-launcher/game"
+import (
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
+)
 
-var Cod2Config = game.LauncherConfig{
+var Cod2Config = launcher.Config{
 	ProtocolScheme:    "cod2",
 	GameLabel:         "Call of Duty 2",
 	ExecutablePath:    "CoD2MP_s.exe",

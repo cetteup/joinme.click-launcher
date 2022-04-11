@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/cetteup/joinme.click-launcher/game"
+	"github.com/cetteup/joinme.click-launcher/game/router"
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"os"
@@ -20,31 +20,31 @@ func init() {
 		fmt.Println("Continuing with defaults")
 	}
 
-	router = game.NewRouter(registryRepository)
-	router.AddLauncher(titles.Bf1942Config, titles.Bf1942CmdBuilder)
-	router.AddLauncher(titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
-	router.AddLauncher(titles.Bf2Config, titles.Bf2CmdBuilder)
-	router.AddLauncher(titles.Bf2SFConfig, titles.Bf2CmdBuilder)
-	router.AddLauncher(titles.CodConfig, game.PlusConnectCmdBuilder)
-	router.AddLauncher(titles.CodUOConfig, game.PlusConnectCmdBuilder)
-	router.AddLauncher(titles.Cod2Config, game.PlusConnectCmdBuilder)
-	router.AddLauncher(titles.Cod4Config, game.PlusConnectCmdBuilder)
-	router.AddLauncher(titles.CodWawConfig, game.PlusConnectCmdBuilder)
-	router.AddLauncher(titles.FearSec2Config, titles.FearSec2CmdBuilder)
-	router.AddLauncher(titles.ParaworldConfig, titles.ParaworldCmdBuilder)
-	router.AddLauncher(titles.Swat4Config, titles.Swat4CmdBuilder)
-	router.AddLauncher(titles.Swat4XConfig, titles.Swat4CmdBuilder)
-	router.AddLauncher(titles.VietcongConfig, titles.VietcongCmdBuilder)
+	gameRouter = router.NewGameRouter(registryRepository)
+	gameRouter.AddLauncher(titles.Bf1942Config, titles.Bf1942CmdBuilder)
+	gameRouter.AddLauncher(titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
+	gameRouter.AddLauncher(titles.Bf2Config, titles.Bf2CmdBuilder)
+	gameRouter.AddLauncher(titles.Bf2SFConfig, titles.Bf2CmdBuilder)
+	gameRouter.AddLauncher(titles.CodConfig, titles.PlusConnectCmdBuilder)
+	gameRouter.AddLauncher(titles.CodUOConfig, titles.PlusConnectCmdBuilder)
+	gameRouter.AddLauncher(titles.Cod2Config, titles.PlusConnectCmdBuilder)
+	gameRouter.AddLauncher(titles.Cod4Config, titles.PlusConnectCmdBuilder)
+	gameRouter.AddLauncher(titles.CodWawConfig, titles.PlusConnectCmdBuilder)
+	gameRouter.AddLauncher(titles.FearSec2Config, titles.FearSec2CmdBuilder)
+	gameRouter.AddLauncher(titles.ParaworldConfig, titles.ParaworldCmdBuilder)
+	gameRouter.AddLauncher(titles.Swat4Config, titles.Swat4CmdBuilder)
+	gameRouter.AddLauncher(titles.Swat4XConfig, titles.Swat4CmdBuilder)
+	gameRouter.AddLauncher(titles.VietcongConfig, titles.VietcongCmdBuilder)
 }
 
 var (
-	router *game.Router
+	gameRouter *router.GameRouter
 )
 
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		results := router.RegisterHandlers()
+		results := gameRouter.RegisterHandlers()
 		sort.Slice(results, func(i, j int) bool {
 			return results[i].ProtocolScheme < results[j].ProtocolScheme
 		})
@@ -62,7 +62,7 @@ func main() {
 			fmt.Printf("%s: %s\n", result.GameLabel, message)
 		}
 	} else if len(args) == 1 {
-		err := router.StartGame(args[0])
+		err := gameRouter.StartGame(args[0])
 		if err != nil {
 			fmt.Printf("Failed to launch based on URL: %s (%s)\n", args[0], err)
 		} else {

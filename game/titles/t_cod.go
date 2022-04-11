@@ -1,8 +1,10 @@
 package titles
 
-import "github.com/cetteup/joinme.click-launcher/game"
+import (
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
+)
 
-var CodConfig = game.LauncherConfig{
+var CodConfig = launcher.Config{
 	ProtocolScheme:    "cod",
 	GameLabel:         "Call of Duty",
 	ExecutablePath:    "CoDMP.exe",
@@ -10,7 +12,7 @@ var CodConfig = game.LauncherConfig{
 	RegistryValueName: "InstallPath",
 }
 
-var CodUOConfig = game.LauncherConfig{
+var CodUOConfig = launcher.Config{
 	ProtocolScheme:    "coduo",
 	GameLabel:         "Call of Duty: United Offensive",
 	ExecutablePath:    "CoDUOMP.exe",

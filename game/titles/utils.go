@@ -1,4 +1,4 @@
-package game
+package titles
 
 import (
 	"encoding/hex"

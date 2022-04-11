@@ -1,14 +1,14 @@
 package titles
 
 import (
-	"github.com/cetteup/joinme.click-launcher/game"
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
 )
 
 const (
 	ProfileFolder = "Battlefield 2"
 )
 
-var Bf2Config = game.LauncherConfig{
+var Bf2Config = launcher.Config{
 	ProtocolScheme:    "bf2",
 	GameLabel:         "Battlefield 2",
 	ExecutablePath:    "BF2.exe",
@@ -16,16 +16,16 @@ var Bf2Config = game.LauncherConfig{
 	RegistryValueName: "InstallDir",
 }
 
-var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip string, port string) ([]string, error) {
-	profileCon, err := game.GetDefaultUserProfileCon(ProfileFolder)
+var Bf2CmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
+	profileCon, err := GetDefaultUserProfileCon(ProfileFolder)
 	if err != nil {
 		return nil, err
 	}
-	playerName, encryptedPassword, err := game.GetEncryptedProfileConLogin(profileCon)
+	playerName, encryptedPassword, err := GetEncryptedProfileConLogin(profileCon)
 	if err != nil {
 		return nil, err
 	}
-	password, err := game.DecryptProfileConPassword(encryptedPassword)
+	password, err := DecryptProfileConPassword(encryptedPassword)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ var Bf2CmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip stri
 	return args, nil
 }
 
-var Bf2SFConfig = game.LauncherConfig{
+var Bf2SFConfig = launcher.Config{
 	ProtocolScheme:    "bf2sf",
 	GameLabel:         "Battlefield 2: Special Forces",
 	ExecutablePath:    "BF2.exe",

@@ -2,10 +2,10 @@ package titles
 
 import (
 	"fmt"
-	"github.com/cetteup/joinme.click-launcher/game"
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
 )
 
-var ParaworldConfig = game.LauncherConfig{
+var ParaworldConfig = launcher.Config{
 	ProtocolScheme:    "paraworld",
 	GameLabel:         "ParaWorld",
 	ExecutablePath:    "bin\\Paraworld.exe",
@@ -13,6 +13,6 @@ var ParaworldConfig = game.LauncherConfig{
 	RegistryValueName: "InstallDir",
 }
 
-var ParaworldCmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip string, port string) ([]string, error) {
+var ParaworldCmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
 	return []string{"-autoconnect", fmt.Sprintf("%s:%s", ip, port)}, nil
 }

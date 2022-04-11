@@ -1,10 +1,10 @@
 package titles
 
 import (
-	"github.com/cetteup/joinme.click-launcher/game"
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
 )
 
-var CodWawConfig = game.LauncherConfig{
+var CodWawConfig = launcher.Config{
 	ProtocolScheme:    "codwaw",
 	GameLabel:         "Call of Duty: World at War",
 	ExecutablePath:    "CoDWaWmp.exe",

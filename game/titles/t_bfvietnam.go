@@ -1,8 +1,10 @@
 package titles
 
-import "github.com/cetteup/joinme.click-launcher/game"
+import (
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
+)
 
-var BfVietnamConfig = game.LauncherConfig{
+var BfVietnamConfig = launcher.Config{
 	ProtocolScheme:    "bfvietnam",
 	GameLabel:         "Battlefield Vietnam",
 	ExecutablePath:    "BfVietnam.exe",
@@ -10,7 +12,7 @@ var BfVietnamConfig = game.LauncherConfig{
 	RegistryValueName: "GAMEDIR",
 }
 
-var BfVietnamCmdBuilder game.CommandBuilder = func(config game.LauncherConfig, ip string, port string) ([]string, error) {
+var BfVietnamCmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
 	args := []string{
 		"+restart", "1",
 		"+joinServer", ip,
