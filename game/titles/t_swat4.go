@@ -16,6 +16,11 @@ var Swat4 = title.GameTitle{
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4",
 			RegistryValueName: "InstallPath",
 		},
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
+			RegistryValueName: "PATH",
+		},
 	},
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "Content\\System\\Swat4.exe",
@@ -36,6 +41,11 @@ var Swat4X = title.GameTitle{
 			ForType:           finder.RegistryFinder,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4 - THE STETCHKOV SYNDICATE",
 			RegistryValueName: "InstallPath",
+		},
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
+			RegistryValueName: "PATH",
 		},
 	},
 	LauncherConfig: launcher.Config{
