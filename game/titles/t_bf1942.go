@@ -1,23 +1,31 @@
 package titles
 
 import (
+	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
+	"github.com/cetteup/joinme.click-launcher/game/title"
 )
 
-var Bf1942Config = launcher.Config{
-	ProtocolScheme:    "bf1942",
-	GameLabel:         "Battlefield 1942",
-	ExecutablePath:    "BF1942.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942",
-	RegistryValueName: "GAMEDIR",
-}
+var Bf1942 = title.GameTitle{
+	ProtocolScheme: "bf1942",
+	GameLabel:      "Battlefield 1942",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942",
+			RegistryValueName: "GAMEDIR",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		DefaultArgs:    []string{"+restart", "1"},
+		ExecutablePath: "BF1942.exe",
+	},
+	CmdBuilder: func(scheme string, ip string, port string) ([]string, error) {
+		args := []string{
+			"+joinServer", ip,
+			"+port", port,
+		}
 
-var Bf1942CmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
-	args := []string{
-		"+restart", "1",
-		"+joinServer", ip,
-		"+port", port,
-	}
-
-	return args, nil
+		return args, nil
+	},
 }

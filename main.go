@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/router"
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
@@ -13,28 +14,30 @@ import (
 )
 
 func init() {
-	registryRepository := internal.NewRegistryRepository()
 	err := internal.LoadConfig()
 	if err != nil {
 		fmt.Printf("Failed to load configuration: %s\n", err)
 		fmt.Println("Continuing with defaults")
 	}
 
-	gameRouter = router.NewGameRouter(registryRepository)
-	gameRouter.AddLauncher(titles.Bf1942Config, titles.Bf1942CmdBuilder)
-	gameRouter.AddLauncher(titles.BfVietnamConfig, titles.BfVietnamCmdBuilder)
-	gameRouter.AddLauncher(titles.Bf2Config, titles.Bf2CmdBuilder)
-	gameRouter.AddLauncher(titles.Bf2SFConfig, titles.Bf2CmdBuilder)
-	gameRouter.AddLauncher(titles.CodConfig, titles.PlusConnectCmdBuilder)
-	gameRouter.AddLauncher(titles.CodUOConfig, titles.PlusConnectCmdBuilder)
-	gameRouter.AddLauncher(titles.Cod2Config, titles.PlusConnectCmdBuilder)
-	gameRouter.AddLauncher(titles.Cod4Config, titles.PlusConnectCmdBuilder)
-	gameRouter.AddLauncher(titles.CodWawConfig, titles.PlusConnectCmdBuilder)
-	gameRouter.AddLauncher(titles.FearSec2Config, titles.FearSec2CmdBuilder)
-	gameRouter.AddLauncher(titles.ParaworldConfig, titles.ParaworldCmdBuilder)
-	gameRouter.AddLauncher(titles.Swat4Config, titles.Swat4CmdBuilder)
-	gameRouter.AddLauncher(titles.Swat4XConfig, titles.Swat4CmdBuilder)
-	gameRouter.AddLauncher(titles.VietcongConfig, titles.VietcongCmdBuilder)
+	registryRepository := internal.NewRegistryRepository()
+
+	gameFinder := finder.NewGameFinder(registryRepository)
+	gameRouter = router.NewGameRouter(registryRepository, gameFinder)
+	gameRouter.AddTitle(titles.Bf1942)
+	gameRouter.AddTitle(titles.BfVietnam)
+	gameRouter.AddTitle(titles.Bf2)
+	gameRouter.AddTitle(titles.Bf2SF)
+	gameRouter.AddTitle(titles.Cod)
+	gameRouter.AddTitle(titles.CodUO)
+	gameRouter.AddTitle(titles.Cod2)
+	gameRouter.AddTitle(titles.Cod4)
+	gameRouter.AddTitle(titles.CodWaw)
+	gameRouter.AddTitle(titles.FearSec2)
+	gameRouter.AddTitle(titles.Paraworld)
+	gameRouter.AddTitle(titles.Swat4)
+	gameRouter.AddTitle(titles.Swat4X)
+	gameRouter.AddTitle(titles.Vietcong)
 }
 
 var (

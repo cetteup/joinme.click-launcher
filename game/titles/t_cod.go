@@ -1,21 +1,39 @@
 package titles
 
 import (
+	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
+	"github.com/cetteup/joinme.click-launcher/game/title"
 )
 
-var CodConfig = launcher.Config{
-	ProtocolScheme:    "cod",
-	GameLabel:         "Call of Duty",
-	ExecutablePath:    "CoDMP.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\Activision\\Call of Duty",
-	RegistryValueName: "InstallPath",
+var Cod = title.GameTitle{
+	ProtocolScheme: "cod",
+	GameLabel:      "Call of Duty",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Activision\\Call of Duty",
+			RegistryValueName: "InstallPath",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		ExecutablePath: "CoDMP.exe",
+	},
+	CmdBuilder: PlusConnectCmdBuilder,
 }
 
-var CodUOConfig = launcher.Config{
-	ProtocolScheme:    "coduo",
-	GameLabel:         "Call of Duty: United Offensive",
-	ExecutablePath:    "CoDUOMP.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\Activision\\Call of Duty United Offensive",
-	RegistryValueName: "InstallPath",
+var CodUO = title.GameTitle{
+	ProtocolScheme: "coduo",
+	GameLabel:      "Call of Duty: United Offensive",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Activision\\Call of Duty United Offensive",
+			RegistryValueName: "InstallPath",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		ExecutablePath: "CoDUOMP.exe",
+	},
+	CmdBuilder: PlusConnectCmdBuilder,
 }

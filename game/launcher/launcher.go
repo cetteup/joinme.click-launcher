@@ -1,11 +1,6 @@
 package launcher
 
 import (
-	"errors"
-	"fmt"
-	"github.com/cetteup/joinme.click-launcher/internal"
-	"golang.org/x/sys/windows/registry"
-	"os"
 	"os/exec"
 	"path/filepath"
 )
@@ -13,165 +8,44 @@ import (
 type LaunchDir int
 
 const (
-	RegPathSoftware   = "SOFTWARE"
-	RegPathClasses    = "Classes"
-	RegPathOpen       = "open"
-	RegPathShell      = "shell"
-	RegPathCommand    = "command"
-	RegKeyDefault     = ""
-	RegKeyURLProtocol = "URL Protocol"
-)
-
-const (
 	InstallDir LaunchDir = iota
 	BinaryDir
 )
 
-type RegistryRepository interface {
-	GetStringValue(k registry.Key, path string, valueName string) (string, error)
-	SetStringValue(k registry.Key, path string, valueName string, value string) error
-	CreateKey(k registry.Key, path string) error
-}
-
 type Config struct {
-	ProtocolScheme    string
-	GameLabel         string
-	ExecutablePath    string
-	StartIn           LaunchDir
-	RegistryPath      string
-	RegistryValueName string
-	Custom            *internal.CustomLauncherConfig
+	DefaultArgs    []string
+	StartIn        LaunchDir
+	ExecutablePath string
+	InstallPath    string
 }
 
-func (c Config) HasCustomInstallPath() bool {
-	return c.Custom != nil && c.Custom.InstallPath != ""
-}
-
-func (c Config) HasCustomExecutablePath() bool {
-	return c.Custom != nil && c.Custom.ExecutablePath != ""
-}
-
-func (c Config) HasCustomArgs() bool {
-	return c.Custom != nil && len(c.Custom.Args) > 0
-}
-
-type CommandBuilder func(config Config, ip string, port string) ([]string, error)
+type CommandBuilder func(scheme string, ip string, port string) ([]string, error)
 
 type GameLauncher struct {
-	repository RegistryRepository
 	Config     Config
 	CmdBuilder CommandBuilder
 }
 
-func NewGameLauncher(repository RegistryRepository, config Config, cmdBuilder CommandBuilder) *GameLauncher {
+func NewGameLauncher(config Config, cmdBuilder CommandBuilder) *GameLauncher {
 	return &GameLauncher{
-		repository: repository,
 		Config:     config,
 		CmdBuilder: cmdBuilder,
 	}
 }
 
-func (l *GameLauncher) IsGameInstalled() (bool, error) {
-	var err error
-	if l.Config.HasCustomInstallPath() {
-		_, err = os.Stat(l.Config.Custom.InstallPath)
-	} else {
-		_, err = l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
-	}
-
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) || errors.Is(err, registry.ErrNotExist) {
-			return false, nil
-		}
-		return false, err
-	}
-
-	return true, nil
-}
-
-func (l GameLauncher) IsHandlerRegistered() (bool, error) {
-	path := l.getUrlHandlerRegistryPath([]string{RegPathShell, RegPathOpen, RegPathCommand})
-	value, err := l.repository.GetStringValue(registry.CURRENT_USER, path, RegKeyDefault)
-	if err != nil {
-		if errors.Is(err, registry.ErrNotExist) {
-			return false, nil
-		}
-		return false, err
-	}
-
-	expected, err := l.getHandlerCommand()
-	if err != nil {
-		return false, err
-	}
-
-	return value == expected, nil
-}
-
-func (l GameLauncher) RegisterHandler() error {
-	basePath := l.getUrlHandlerRegistryPath(nil)
-	err := l.repository.CreateKey(registry.CURRENT_USER, basePath)
+func (l *GameLauncher) StartGame(scheme string, ip string, port string) error {
+	args, err := l.CmdBuilder(scheme, ip, port)
 	if err != nil {
 		return err
 	}
 
-	err = l.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyDefault, fmt.Sprintf("URL:%s protocol", l.Config.GameLabel))
-	if err != nil {
-		return err
-	}
-	err = l.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyURLProtocol, "")
-	if err != nil {
-		return err
-	}
+	args = append(args, l.Config.DefaultArgs...)
 
-	subKeys := []string{RegPathShell, RegPathOpen, RegPathCommand}
-	for i := range subKeys {
-		subPath := l.getUrlHandlerRegistryPath(subKeys[:i+1])
-		err = l.repository.CreateKey(registry.CURRENT_USER, subPath)
-		if err != nil {
-			return err
-		}
-	}
+	path := filepath.Join(l.Config.InstallPath, l.Config.ExecutablePath)
 
-	cmdPath := l.getUrlHandlerRegistryPath(subKeys)
-	cmd, err := l.getHandlerCommand()
-	if err != nil {
-		return err
-	}
-
-	return l.repository.SetStringValue(registry.CURRENT_USER, cmdPath, RegKeyDefault, cmd)
-}
-
-func (l *GameLauncher) StartGame(ip string, port string) error {
-	args, err := l.CmdBuilder(l.Config, ip, port)
-	if err != nil {
-		return err
-	}
-
-	if l.Config.HasCustomArgs() {
-		args = append(args, l.Config.Custom.Args...)
-	}
-
-	var dir string
-	if l.Config.HasCustomInstallPath() {
-		dir = l.Config.Custom.InstallPath
-	} else {
-		dir, err = l.repository.GetStringValue(registry.LOCAL_MACHINE, l.Config.RegistryPath, l.Config.RegistryValueName)
-		if err != nil {
-			return err
-		}
-	}
-
-	var executablePath string
-	if l.Config.HasCustomExecutablePath() {
-		executablePath = l.Config.Custom.ExecutablePath
-	} else {
-		executablePath = l.Config.ExecutablePath
-	}
-
-	path := filepath.Join(dir, executablePath)
-
-	// Launch in binary directory instead of install path if requested
+	dir := l.Config.InstallPath
 	if l.Config.StartIn == BinaryDir {
+		// Launch in binary directory instead of install path if requested
 		dir = filepath.Dir(path)
 	}
 
@@ -182,21 +56,4 @@ func (l *GameLauncher) StartGame(ip string, port string) error {
 	}
 
 	return cmd.Start()
-}
-
-func (l GameLauncher) getUrlHandlerRegistryPath(children []string) string {
-	path := filepath.Join(RegPathSoftware, RegPathClasses, l.Config.ProtocolScheme)
-	for _, child := range children {
-		path = filepath.Join(path, child)
-	}
-
-	return path
-}
-
-func (l GameLauncher) getHandlerCommand() (string, error) {
-	launcherPath, err := os.Executable()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("\"%s\" \"%%1\"", launcherPath), nil
 }

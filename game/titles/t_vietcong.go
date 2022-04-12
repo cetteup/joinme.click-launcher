@@ -1,17 +1,25 @@
 package titles
 
 import (
+	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
+	"github.com/cetteup/joinme.click-launcher/game/title"
 )
 
-var VietcongConfig = launcher.Config{
-	ProtocolScheme:    "vietcong",
-	GameLabel:         "Vietcong",
-	ExecutablePath:    "vietcong.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\Pterodon\\Vietcong",
-	RegistryValueName: "InstallDir",
-}
-
-var VietcongCmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
-	return []string{"-ip", ip, "-port", port}, nil
+var Vietcong = title.GameTitle{
+	ProtocolScheme: "vietcong",
+	GameLabel:      "Vietcong",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Pterodon\\Vietcong",
+			RegistryValueName: "InstallDir",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		ExecutablePath: "vietcong.exe",
+	},
+	CmdBuilder: func(scheme string, ip string, port string) ([]string, error) {
+		return []string{"-ip", ip, "-port", port}, nil
+	},
 }

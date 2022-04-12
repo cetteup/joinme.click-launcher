@@ -15,18 +15,34 @@ type Config struct {
 	Games map[string]CustomLauncherConfig `yaml:"games"`
 }
 
-type CustomLauncherConfig struct {
-	InstallPath    string   `yaml:"install_path"`
-	ExecutablePath string   `yaml:"executable_path"`
-	Args           []string `yaml:"args"`
-}
-
 func (c *Config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {
 	gameConfig, exists := c.Games[game]
 	if !exists {
 		return nil
 	}
 	return &gameConfig
+}
+
+type CustomLauncherConfig struct {
+	InstallPath    string   `yaml:"install_path"`
+	ExecutablePath string   `yaml:"executable_path"`
+	Args           []string `yaml:"args"`
+}
+
+func (c *CustomLauncherConfig) HasValues() bool {
+	return c != nil && (c.HasInstallPath() || c.HasExecutablePath() || c.HasArgs())
+}
+
+func (c *CustomLauncherConfig) HasInstallPath() bool {
+	return c != nil && c.InstallPath != ""
+}
+
+func (c *CustomLauncherConfig) HasExecutablePath() bool {
+	return c != nil && c.ExecutablePath != ""
+}
+
+func (c *CustomLauncherConfig) HasArgs() bool {
+	return c != nil && len(c.Args) > 0
 }
 
 func LoadConfig() error {

@@ -1,22 +1,36 @@
 package titles
 
 import (
+	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
+	"github.com/cetteup/joinme.click-launcher/game/title"
 )
 
 const (
 	ProfileFolder = "Battlefield 2"
 )
 
-var Bf2Config = launcher.Config{
-	ProtocolScheme:    "bf2",
-	GameLabel:         "Battlefield 2",
-	ExecutablePath:    "BF2.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2",
-	RegistryValueName: "InstallDir",
+var Bf2 = title.GameTitle{
+	ProtocolScheme: "bf2",
+	GameLabel:      "Battlefield 2",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2",
+			RegistryValueName: "InstallDir",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		DefaultArgs: []string{
+			"+menu", "1",
+			"+restart", "1",
+		},
+		ExecutablePath: "BF2.exe",
+	},
+	CmdBuilder: bf2CmdBuilder,
 }
 
-var Bf2CmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip string, port string) ([]string, error) {
+var bf2CmdBuilder launcher.CommandBuilder = func(scheme string, ip string, port string) ([]string, error) {
 	profileCon, err := GetDefaultUserProfileCon(ProfileFolder)
 	if err != nil {
 		return nil, err
@@ -30,25 +44,33 @@ var Bf2CmdBuilder launcher.CommandBuilder = func(config launcher.Config, ip stri
 		return nil, err
 	}
 	args := []string{
-		"+menu", "1",
-		"+restart", "1",
 		"+joinServer", ip,
 		"+port", port,
 		"+playerName", playerName,
 		"+playerPassword", password,
 	}
 
-	if config.ProtocolScheme == Bf2SFConfig.ProtocolScheme {
-		args = append(args, "+modPath", "mods/xpack", "+ignoreAsserts", "1")
-	}
-
 	return args, nil
 }
 
-var Bf2SFConfig = launcher.Config{
-	ProtocolScheme:    "bf2sf",
-	GameLabel:         "Battlefield 2: Special Forces",
-	ExecutablePath:    "BF2.exe",
-	RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
-	RegistryValueName: "InstallDir",
+var Bf2SF = title.GameTitle{
+	ProtocolScheme: "bf2sf",
+	GameLabel:      "Battlefield 2: Special Forces",
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
+			RegistryValueName: "InstallDir",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		DefaultArgs: []string{
+			"+menu", "1",
+			"+restart", "1",
+			"+modPath", "mods/xpack",
+			"+ignoreAsserts", "1",
+		},
+		ExecutablePath: "BF2.exe",
+	},
+	CmdBuilder: bf2CmdBuilder,
 }
