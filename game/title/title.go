@@ -17,7 +17,7 @@ type GameTitle struct {
 	CmdBuilder     launcher.CommandBuilder
 }
 
-func (t GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
+func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
 	if config.HasInstallPath() {
 		// Prepend custom path based finder in order search any custom paths first
 		t.FinderConfigs = append([]finder.Config{
