@@ -29,6 +29,7 @@ func init() {
 	gameRouter.AddTitle(titles.Bf2)
 	gameRouter.AddTitle(titles.Bf2SF)
 	gameRouter.AddTitle(titles.Bf4)
+	gameRouter.AddTitle(titles.Bf1)
 	gameRouter.AddTitle(titles.Cod)
 	gameRouter.AddTitle(titles.CodUO)
 	gameRouter.AddTitle(titles.Cod2)
