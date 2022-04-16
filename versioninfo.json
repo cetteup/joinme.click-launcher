@@ -3,13 +3,13 @@
     "FileVersion": {
       "Major": 0,
       "Minor": 1,
-      "Patch": 4,
+      "Patch": 5,
       "Build": 0
     },
     "ProductVersion": {
       "Major": 0,
       "Minor": 1,
-      "Patch": 4,
+      "Patch": 5,
       "Build": 0
     },
     "FileFlagsMask": "3f",
@@ -22,14 +22,14 @@
     "Comments": "",
     "CompanyName": "joinme.click",
     "FileDescription": "Join game server with a single click",
-    "FileVersion": "v0.1.4.0",
+    "FileVersion": "v0.1.5.0",
     "InternalName": "",
     "LegalCopyright": "",
     "LegalTrademarks": "",
     "OriginalFilename": "",
     "PrivateBuild": "",
     "ProductName": "joinme.click launcher",
-    "ProductVersion": "v0.1.4.0",
+    "ProductVersion": "v0.1.5.0",
     "SpecialBuild": ""
   },
   "VarFileInfo": {
