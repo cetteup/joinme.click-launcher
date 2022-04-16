@@ -46,12 +46,12 @@ func (c *CustomLauncherConfig) HasArgs() bool {
 }
 
 func LoadConfig() error {
-	wd, err := os.Getwd()
+	wd, err := os.Executable()
 	if err != nil {
 		return err
 	}
 
-	path := filepath.Join(wd, ConfigFilename)
+	path := filepath.Join(filepath.Dir(wd), ConfigFilename)
 	content, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
