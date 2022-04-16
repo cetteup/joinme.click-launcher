@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"net/url"
 	"os/exec"
 	"path/filepath"
 )
@@ -19,7 +20,7 @@ type Config struct {
 	InstallPath    string
 }
 
-type CommandBuilder func(scheme string, ip string, port string) ([]string, error)
+type CommandBuilder func(scheme string, host string, port string, u *url.URL) ([]string, error)
 
 type GameLauncher struct {
 	Config     Config
@@ -33,8 +34,8 @@ func NewGameLauncher(config Config, cmdBuilder CommandBuilder) *GameLauncher {
 	}
 }
 
-func (l *GameLauncher) StartGame(scheme string, ip string, port string) error {
-	args, err := l.CmdBuilder(scheme, ip, port)
+func (l *GameLauncher) StartGame(scheme string, host string, port string, u *url.URL) error {
+	args, err := l.CmdBuilder(scheme, host, port, u)
 	if err != nil {
 		return err
 	}

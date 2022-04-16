@@ -9,6 +9,7 @@ import (
 var CodWaw = title.GameTitle{
 	ProtocolScheme: "codwaw",
 	GameLabel:      "Call of Duty: World at War",
+	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,

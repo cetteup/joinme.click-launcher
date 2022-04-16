@@ -189,8 +189,8 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	}
 
 	port := u.Port()
-	if port == "" {
-		return fmt.Errorf("no port given in URL: %s", port)
+	if gameTitle.RequiresPort && port == "" {
+		return fmt.Errorf("port is required but was not given in URL: %s", port)
 	}
 
 	gameTitle.LauncherConfig.InstallPath, err = r.finder.GetGameInstallDirFromSomewhere(gameTitle.FinderConfigs)
@@ -199,7 +199,7 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	}
 
 	gameLauncher := launcher.NewGameLauncher(gameTitle.LauncherConfig, gameTitle.CmdBuilder)
-	err = gameLauncher.StartGame(u.Scheme, u.Hostname(), port)
+	err = gameLauncher.StartGame(u.Scheme, u.Hostname(), port, u)
 	if err != nil {
 		return err
 	}

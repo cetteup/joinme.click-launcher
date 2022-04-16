@@ -9,6 +9,7 @@ import (
 type GameTitle struct {
 	ProtocolScheme string
 	GameLabel      string
+	RequiresPort   bool
 	FinderConfigs  []finder.Config
 	LauncherConfig launcher.Config
 	CmdBuilder     launcher.CommandBuilder

@@ -4,11 +4,13 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
+	"net/url"
 )
 
 var Bf1942 = title.GameTitle{
 	ProtocolScheme: "bf1942",
 	GameLabel:      "Battlefield 1942",
+	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -20,9 +22,9 @@ var Bf1942 = title.GameTitle{
 		DefaultArgs:    []string{"+restart", "1"},
 		ExecutablePath: "BF1942.exe",
 	},
-	CmdBuilder: func(scheme string, ip string, port string) ([]string, error) {
+	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{
-			"+joinServer", ip,
+			"+joinServer", host,
 			"+port", port,
 		}
 

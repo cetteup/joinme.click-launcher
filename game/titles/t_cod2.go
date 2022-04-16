@@ -9,6 +9,7 @@ import (
 var Cod2 = title.GameTitle{
 	ProtocolScheme: "cod2",
 	GameLabel:      "Call of Duty 2",
+	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,

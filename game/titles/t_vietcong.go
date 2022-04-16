@@ -4,11 +4,13 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
+	"net/url"
 )
 
 var Vietcong = title.GameTitle{
 	ProtocolScheme: "vietcong",
 	GameLabel:      "Vietcong",
+	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -19,7 +21,7 @@ var Vietcong = title.GameTitle{
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "vietcong.exe",
 	},
-	CmdBuilder: func(scheme string, ip string, port string) ([]string, error) {
-		return []string{"-ip", ip, "-port", port}, nil
+	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+		return []string{"-ip", host, "-port", port}, nil
 	},
 }

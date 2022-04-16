@@ -4,6 +4,7 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
+	"net/url"
 )
 
 const (
@@ -13,6 +14,7 @@ const (
 var Bf2 = title.GameTitle{
 	ProtocolScheme: "bf2",
 	GameLabel:      "Battlefield 2",
+	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -30,7 +32,7 @@ var Bf2 = title.GameTitle{
 	CmdBuilder: bf2CmdBuilder,
 }
 
-var bf2CmdBuilder launcher.CommandBuilder = func(scheme string, ip string, port string) ([]string, error) {
+var bf2CmdBuilder launcher.CommandBuilder = func(scheme string, host string, port string, u *url.URL) ([]string, error) {
 	profileCon, err := GetDefaultUserProfileCon(ProfileFolder)
 	if err != nil {
 		return nil, err
@@ -44,7 +46,7 @@ var bf2CmdBuilder launcher.CommandBuilder = func(scheme string, ip string, port 
 		return nil, err
 	}
 	args := []string{
-		"+joinServer", ip,
+		"+joinServer", host,
 		"+port", port,
 		"+playerName", playerName,
 		"+playerPassword", password,
