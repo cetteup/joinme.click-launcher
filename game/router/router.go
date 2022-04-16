@@ -30,8 +30,10 @@ type RegistryRepository interface {
 }
 
 type GameFinder interface {
-	IsGameInstalledAnywhere(configs []finder.Config) (bool, error)
-	GetGameInstallDirFromSomewhere(configs []finder.Config) (string, error)
+	IsInstalledAnywhere(configs []finder.Config) (bool, error)
+	IsInstalled(config finder.Config) (bool, error)
+	GetInstallDirFromSomewhere(configs []finder.Config) (string, error)
+	GetInstallDir(config finder.Config) (string, error)
 }
 
 type GameRouter struct {
@@ -41,12 +43,12 @@ type GameRouter struct {
 }
 
 type HandlerRegistrationResult struct {
-	ProtocolScheme       string
-	GameLabel            string
-	Installed            bool
-	PreviouslyRegistered bool
-	Registered           bool
-	Error                error
+	Title                   title.GameTitle
+	GameInstalled           bool
+	PlatformClientInstalled bool
+	PreviouslyRegistered    bool
+	Registered              bool
+	Error                   error
 }
 
 func NewGameRouter(repository RegistryRepository, finder GameFinder) *GameRouter {
@@ -69,21 +71,35 @@ func (r GameRouter) RegisterHandlers() []HandlerRegistrationResult {
 	results := make([]HandlerRegistrationResult, 0, len(r.GameTitles))
 	for _, gameTitle := range r.GameTitles {
 		result := HandlerRegistrationResult{
-			ProtocolScheme: gameTitle.ProtocolScheme,
-			GameLabel:      gameTitle.GameLabel,
+			Title: gameTitle,
 		}
 
-		installed, err := r.finder.IsGameInstalledAnywhere(gameTitle.FinderConfigs)
+		installed, err := r.finder.IsInstalledAnywhere(gameTitle.FinderConfigs)
 		if err != nil {
 			result.Error = fmt.Errorf("failed to determine whether game is installed: %e", err)
 			results = append(results, result)
 			continue
 		}
-		result.Installed = installed
+		result.GameInstalled = installed
 
 		if !installed {
 			results = append(results, result)
 			continue
+		}
+
+		if gameTitle.RequiresPlatformClient() {
+			platformClientInstalled, err := r.finder.IsInstalled(gameTitle.PlatformClient.FinderConfig)
+			if err != nil {
+				result.Error = fmt.Errorf("failed to determine whether required platform (%s) is installed: %e", gameTitle.PlatformClient.Platform, err)
+				results = append(results, result)
+				continue
+			}
+			result.PlatformClientInstalled = platformClientInstalled
+
+			if !platformClientInstalled {
+				results = append(results, result)
+				continue
+			}
 		}
 
 		registered, err := r.IsHandlerRegistered(gameTitle)
@@ -193,12 +209,19 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 		return fmt.Errorf("port is required but was not given in URL: %s", port)
 	}
 
-	gameTitle.LauncherConfig.InstallPath, err = r.finder.GetGameInstallDirFromSomewhere(gameTitle.FinderConfigs)
+	// Build final launcher config
+	launcherConfig := gameTitle.LauncherConfig
+	if gameTitle.RequiresPlatformClient() {
+		launcherConfig.ExecutablePath = gameTitle.PlatformClient.LauncherConfig.ExecutablePath
+		launcherConfig.InstallPath, err = r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
+	} else {
+		launcherConfig.InstallPath, err = r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
+	}
 	if err != nil {
 		return err
 	}
 
-	gameLauncher := launcher.NewGameLauncher(gameTitle.LauncherConfig, gameTitle.CmdBuilder)
+	gameLauncher := launcher.NewGameLauncher(launcherConfig, gameTitle.CmdBuilder)
 	err = gameLauncher.StartGame(u.Scheme, u.Hostname(), port, u)
 	if err != nil {
 		return err

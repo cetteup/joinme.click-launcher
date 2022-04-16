@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"golang.org/x/sys/windows/registry"
 	"os"
+	"path/filepath"
 )
 
 type Type string
@@ -27,20 +28,20 @@ type Config struct {
 	CustomInstallPath string
 }
 
-type GameFinder struct {
+type SoftwareFinder struct {
 	repository RegistryRepository
 }
 
-func NewGameFinder(repository RegistryRepository) *GameFinder {
-	return &GameFinder{
+func NewSoftwareFinder(repository RegistryRepository) *SoftwareFinder {
+	return &SoftwareFinder{
 		repository: repository,
 	}
 }
 
-func (f GameFinder) IsGameInstalledAnywhere(configs []Config) (bool, error) {
+func (f SoftwareFinder) IsInstalledAnywhere(configs []Config) (bool, error) {
 	for i, config := range configs {
-		installed, err := f.IsGameInstalled(config)
-		// Fail silently unless config is the last chance to find the game
+		installed, err := f.IsInstalled(config)
+		// Fail silently unless config is the last chance to find the software
 		if err != nil && i == len(configs)-1 {
 			return false, err
 		}
@@ -53,17 +54,17 @@ func (f GameFinder) IsGameInstalledAnywhere(configs []Config) (bool, error) {
 	return false, nil
 }
 
-func (f GameFinder) IsGameInstalled(config Config) (bool, error) {
+func (f SoftwareFinder) IsInstalled(config Config) (bool, error) {
 	switch config.ForType {
 	case CustomPathFinder:
-		return f.isGameInstalledAccordingToCustomPath(config)
+		return f.isInstalledAccordingToCustomPath(config)
 	default:
-		return f.isGameInstalledAccordingToRegistry(config)
+		return f.isInstalledAccordingToRegistry(config)
 	}
 }
 
-func (f GameFinder) isGameInstalledAccordingToRegistry(config Config) (bool, error) {
-	_, err := f.getGameInstallDirFromRegistry(config)
+func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, error) {
+	_, err := f.getInstallDirFromRegistry(config)
 
 	if err != nil {
 		if errors.Is(err, registry.ErrNotExist) {
@@ -75,7 +76,7 @@ func (f GameFinder) isGameInstalledAccordingToRegistry(config Config) (bool, err
 	return true, nil
 }
 
-func (f GameFinder) isGameInstalledAccordingToCustomPath(config Config) (bool, error) {
+func (f SoftwareFinder) isInstalledAccordingToCustomPath(config Config) (bool, error) {
 	_, err := os.Stat(config.CustomInstallPath)
 
 	if err != nil {
@@ -88,10 +89,10 @@ func (f GameFinder) isGameInstalledAccordingToCustomPath(config Config) (bool, e
 	return true, nil
 }
 
-func (f GameFinder) GetGameInstallDirFromSomewhere(configs []Config) (string, error) {
+func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
 	for i, config := range configs {
-		installDir, err := f.GetGameInstallDir(config)
-		// Fail silently unless config is the last chance to find the game
+		installDir, err := f.GetInstallDir(config)
+		// Fail silently unless config is the last chance to find the software
 		if err != nil && i == len(configs)-1 {
 			return "", err
 		}
@@ -101,18 +102,50 @@ func (f GameFinder) GetGameInstallDirFromSomewhere(configs []Config) (string, er
 		}
 	}
 
-	return "", fmt.Errorf("game install path could not be determined")
+	return "", fmt.Errorf("install path could not be determined")
 }
 
-func (f GameFinder) GetGameInstallDir(config Config) (string, error) {
+func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
+	path, err := f.getInstallDir(config)
+	if err != nil {
+		return "", err
+	}
+
+	// Make sure to return a directory path, even if registry/user-provided config point to a file
+	// Also validates paths found in registry also exist on disk
+	pathCandidates := []string{path, filepath.Dir(path)}
+	for _, candidate := range pathCandidates {
+		isDir, err := f.isValidDirPath(candidate)
+		if err != nil {
+			return "", err
+		}
+
+		if isDir {
+			return candidate, nil
+		}
+	}
+
+	return "", fmt.Errorf("failed to determine install path based on received path: %s", path)
+}
+
+func (f SoftwareFinder) getInstallDir(config Config) (string, error) {
 	switch config.ForType {
 	case CustomPathFinder:
 		return config.CustomInstallPath, nil
 	default:
-		return f.getGameInstallDirFromRegistry(config)
+		return f.getInstallDirFromRegistry(config)
 	}
 }
 
-func (f GameFinder) getGameInstallDirFromRegistry(config Config) (string, error) {
+func (f SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
 	return f.repository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
+}
+
+func (f SoftwareFinder) isValidDirPath(path string) (bool, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+
+	return info.IsDir(), nil
 }

@@ -3,6 +3,7 @@ package titles
 import (
 	"encoding/hex"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -153,4 +154,18 @@ func Decrypt(data []byte) ([]byte, error) {
 	}()
 
 	return pDataOut.ToByteArray(), nil
+}
+
+func buildOriginURL(offerIDs []string, args []string) string {
+	params := url.Values{
+		"offerIds":  {strings.Join(offerIDs, ",")},
+		"authCode":  {},
+		"cmdParams": {url.PathEscape(strings.Join(args, " "))},
+	}
+	u := url.URL{
+		Scheme:   "origin2",
+		Path:     "game/launch",
+		RawQuery: params.Encode(),
+	}
+	return u.String()
 }

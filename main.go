@@ -22,7 +22,7 @@ func init() {
 
 	registryRepository := internal.NewRegistryRepository()
 
-	gameFinder := finder.NewGameFinder(registryRepository)
+	gameFinder := finder.NewSoftwareFinder(registryRepository)
 	gameRouter = router.NewGameRouter(registryRepository, gameFinder)
 	gameRouter.AddTitle(titles.Bf1942)
 	gameRouter.AddTitle(titles.BfVietnam)
@@ -49,20 +49,22 @@ func main() {
 	if len(args) == 0 {
 		results := gameRouter.RegisterHandlers()
 		sort.Slice(results, func(i, j int) bool {
-			return results[i].ProtocolScheme < results[j].ProtocolScheme
+			return results[i].Title.ProtocolScheme < results[j].Title.ProtocolScheme
 		})
 		for _, result := range results {
 			var message string
 			if result.Error != nil {
 				message = fmt.Sprintf("handler registration failed (%s)\n", result.Error)
-			} else if !result.Installed {
+			} else if !result.GameInstalled {
 				message = "not installed"
+			} else if result.GameInstalled && result.Title.RequiresPlatformClient() && !result.PlatformClientInstalled {
+				message = fmt.Sprintf("installed, but required platform client is missing (%s)", result.Title.PlatformClient.Platform)
 			} else if result.PreviouslyRegistered {
 				message = "launcher already registered"
 			} else {
 				message = "launcher registered successfully"
 			}
-			fmt.Printf("%s: %s\n", result.GameLabel, message)
+			fmt.Printf("%s: %s\n", result.Title.GameLabel, message)
 		}
 	} else if len(args) == 1 {
 		err := gameRouter.StartGame(args[0])
