@@ -39,5 +39,5 @@
     }
   },
   "IconPath": "resource/icon.ico",
-  "ManifestPath": ""
+  "ManifestPath": "resource/joinme.click-launcher.exe.manifest"
 }
