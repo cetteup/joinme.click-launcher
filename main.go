@@ -25,6 +25,8 @@ func init() {
 	gameFinder := finder.NewSoftwareFinder(registryRepository)
 	gameRouter = router.NewGameRouter(registryRepository, gameFinder)
 	gameRouter.AddTitle(titles.Bf1942)
+	gameRouter.AddTitle(titles.Bf1942RoadToRome)
+	gameRouter.AddTitle(titles.Bf1942SecretWeaponsOfWW2)
 	gameRouter.AddTitle(titles.BfVietnam)
 	gameRouter.AddTitle(titles.Bf2)
 	gameRouter.AddTitle(titles.Bf2SF)

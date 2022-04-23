@@ -22,12 +22,56 @@ var Bf1942 = title.GameTitle{
 		DefaultArgs:    []string{"+restart", "1"},
 		ExecutablePath: "BF1942.exe",
 	},
-	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
-		args := []string{
-			"+joinServer", host,
-			"+port", port,
-		}
+	CmdBuilder: bf1942CmdBuilder,
+}
 
-		return args, nil
+var bf1942CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
+	args := []string{
+		"+joinServer", host,
+		"+port", port,
+	}
+
+	return args, nil
+}
+
+var Bf1942RoadToRome = title.GameTitle{
+	ProtocolScheme: "bf1942rtr",
+	GameLabel:      "Battlefield 1942: The Road to Rome",
+	RequiresPort:   true,
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack1",
+			RegistryValueName: "GAMEDIR",
+		},
 	},
+	LauncherConfig: launcher.Config{
+		DefaultArgs: []string{
+			"+restart", "1",
+			"+game", "XPack1",
+		},
+		ExecutablePath: "BF1942.exe",
+	},
+	CmdBuilder: bf1942CmdBuilder,
+}
+
+var Bf1942SecretWeaponsOfWW2 = title.GameTitle{
+	ProtocolScheme: "bf1942sw",
+	GameLabel:      "Battlefield 1942: Secret Weapons of WWII",
+	RequiresPort:   true,
+	FinderConfigs: []finder.Config{
+		{
+			ForType:           finder.RegistryFinder,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack2",
+			RegistryValueName: "GAMEDIR",
+		},
+	},
+	LauncherConfig: launcher.Config{
+		DefaultArgs: []string{
+			"+restart", "1",
+			"+game", "XPack2",
+		},
+		ExecutablePath: "BF1942.exe",
+	},
+	CmdBuilder: bf1942CmdBuilder,
 }
