@@ -14,6 +14,7 @@ const (
 	bf2ModSpecialForces = "xpack"
 	bf2ModAIX2          = "AIX2"
 	bf2ModPirates       = "bfp2"
+	bf2ModPoE2          = "poe2"
 )
 
 var Bf2 = title.GameTitle{
@@ -59,7 +60,7 @@ var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme stri
 
 	query := u.Query()
 	if query != nil && query.Has(UrlQueryKeyMod) {
-		mod, err := getValidMod(installPath, bf2ModBasePath, query.Get(UrlQueryKeyMod), bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates)
+		mod, err := getValidMod(installPath, bf2ModBasePath, query.Get(UrlQueryKeyMod), bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
 		if err != nil {
 			return nil, err
 		}
