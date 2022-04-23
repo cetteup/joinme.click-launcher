@@ -7,6 +7,11 @@ import (
 	"net/url"
 )
 
+const (
+	bfVietnamModBasePath      = "Mods"
+	bfVietnamModBattlegroup42 = "Battlegroup42"
+)
+
 var BfVietnam = title.GameTitle{
 	ProtocolScheme: "bfvietnam",
 	GameLabel:      "Battlefield Vietnam",
@@ -26,6 +31,16 @@ var BfVietnam = title.GameTitle{
 		args := []string{
 			"+joinServer", host,
 			"+port", port,
+		}
+
+		query := u.Query()
+		if query != nil && query.Has(UrlQueryKeyMod) {
+			mod, err := getValidMod(installPath, bfVietnamModBasePath, query.Get(UrlQueryKeyMod), bfVietnamModBattlegroup42)
+			if err != nil {
+				return nil, err
+			}
+
+			args = append(args, "+game", mod)
 		}
 
 		return args, nil
