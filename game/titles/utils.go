@@ -174,7 +174,7 @@ func buildOriginURL(offerIDs []string, args []string) string {
 func getValidMod(installPath string, modBasePath string, givenMod string, supportedMods ...string) (string, error) {
 	var mod string
 	for _, supportedMod := range supportedMods {
-		if strings.ToLower(givenMod) == strings.ToLower(supportedMod) {
+		if strings.EqualFold(givenMod, supportedMod) {
 			mod = supportedMod
 			break
 		}
