@@ -7,6 +7,16 @@ import (
 	"net/url"
 )
 
+const (
+	bf1942ModBasePath           = "Mods"
+	bf1942ModRoadToRome         = "Xpack1"
+	bf1942ModSecretWeaponsOfWW2 = "Xpack2"
+	bf1942Mod1918               = "bf1918"
+	bf1942ModDCFinal            = "DC_Final"
+	bf1942ModDesertCombat       = "DesertCombat"
+	bf1942ModPirates            = "Pirates"
+)
+
 var Bf1942 = title.GameTitle{
 	ProtocolScheme: "bf1942",
 	GameLabel:      "Battlefield 1942",
@@ -29,6 +39,21 @@ var bf1942CmdBuilder launcher.CommandBuilder = func(installPath string, scheme s
 	args := []string{
 		"+joinServer", host,
 		"+port", port,
+	}
+
+	query := u.Query()
+	if query != nil && query.Has(UrlQueryKeyMod) {
+		mod, err := getValidMod(
+			installPath,
+			bf1942ModBasePath,
+			query.Get(UrlQueryKeyMod),
+			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, "+game", mod)
 	}
 
 	return args, nil
