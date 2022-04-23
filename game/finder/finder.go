@@ -3,8 +3,8 @@ package finder
 import (
 	"errors"
 	"fmt"
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"golang.org/x/sys/windows/registry"
-	"os"
 	"path/filepath"
 )
 
@@ -77,16 +77,7 @@ func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, err
 }
 
 func (f SoftwareFinder) isInstalledAccordingToCustomPath(config Config) (bool, error) {
-	_, err := os.Stat(config.CustomInstallPath)
-
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return false, nil
-		}
-		return false, err
-	}
-
-	return true, nil
+	return internal.IsValidDirPath(config.CustomInstallPath)
 }
 
 func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
@@ -115,7 +106,7 @@ func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
 	// Also validates paths found in registry also exist on disk
 	pathCandidates := []string{path, filepath.Dir(path)}
 	for _, candidate := range pathCandidates {
-		isDir, err := f.isValidDirPath(candidate)
+		isDir, err := internal.IsValidDirPath(candidate)
 		if err != nil {
 			return "", err
 		}
@@ -139,13 +130,4 @@ func (f SoftwareFinder) getInstallDir(config Config) (string, error) {
 
 func (f SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
 	return f.repository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
-}
-
-func (f SoftwareFinder) isValidDirPath(path string) (bool, error) {
-	info, err := os.Stat(path)
-	if err != nil {
-		return false, err
-	}
-
-	return info.IsDir(), nil
 }
