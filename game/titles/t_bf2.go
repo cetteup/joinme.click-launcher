@@ -1,6 +1,7 @@
 package titles
 
 import (
+	"fmt"
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
@@ -8,7 +9,11 @@ import (
 )
 
 const (
-	ProfileFolder = "Battlefield 2"
+	bf2ProfileFolder    = "Battlefield 2"
+	bf2ModBasePath      = "mods"
+	bf2ModSpecialForces = "xpack"
+	bf2ModAIX2          = "AIX2"
+	bf2ModPirates       = "bfp2"
 )
 
 var Bf2 = title.GameTitle{
@@ -33,7 +38,7 @@ var Bf2 = title.GameTitle{
 }
 
 var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
-	profileCon, err := GetDefaultUserProfileCon(ProfileFolder)
+	profileCon, err := GetDefaultUserProfileCon(bf2ProfileFolder)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +55,19 @@ var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme stri
 		"+port", port,
 		"+playerName", playerName,
 		"+playerPassword", password,
+	}
+
+	query := u.Query()
+	if query != nil && query.Has(UrlQueryKeyMod) {
+		mod, err := getValidMod(installPath, bf2ModBasePath, query.Get(UrlQueryKeyMod), bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates)
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args,
+			"+modPath", fmt.Sprintf("mods/%s", mod),
+			"+ignoreAsserts", "1",
+		)
 	}
 
 	return args, nil
