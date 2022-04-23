@@ -22,7 +22,7 @@ var Bf4 = title.GameTitle{
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "bf4.exe",
 	},
-	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		offerIDs := []string{"1007968", "1011575", "1011576", "1011577", "1010268", "1010269", "1010270", "1010271", "1010958", "1010959", "1010960", "1010961", "1007077", "1016751", "1016757", "1016754", "1015365", "1015364", "1015363", "1015362"}
 		args := append(frostbite3DefaultArgs, "-gameId", host)
 

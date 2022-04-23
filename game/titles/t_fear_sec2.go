@@ -22,7 +22,7 @@ var FearSec2 = title.GameTitle{
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "FEARMP.exe",
 	},
-	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"+join", fmt.Sprintf("%s:%s", host, port)}, nil
 	},
 }

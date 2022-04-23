@@ -21,7 +21,7 @@ var Vietcong = title.GameTitle{
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "vietcong.exe",
 	},
-	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"-ip", host, "-port", port}, nil
 	},
 }

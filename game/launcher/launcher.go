@@ -20,7 +20,7 @@ type Config struct {
 	InstallPath    string
 }
 
-type CommandBuilder func(scheme string, host string, port string, u *url.URL) ([]string, error)
+type CommandBuilder func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error)
 
 type GameLauncher struct {
 	Config     Config
@@ -35,7 +35,7 @@ func NewGameLauncher(config Config, cmdBuilder CommandBuilder) *GameLauncher {
 }
 
 func (l *GameLauncher) StartGame(scheme string, host string, port string, u *url.URL) error {
-	args, err := l.CmdBuilder(scheme, host, port, u)
+	args, err := l.CmdBuilder(l.Config.InstallPath, scheme, host, port, u)
 	if err != nil {
 		return err
 	}

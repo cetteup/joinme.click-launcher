@@ -32,7 +32,7 @@ var Bf2 = title.GameTitle{
 	CmdBuilder: bf2CmdBuilder,
 }
 
-var bf2CmdBuilder launcher.CommandBuilder = func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 	profileCon, err := GetDefaultUserProfileCon(ProfileFolder)
 	if err != nil {
 		return nil, err

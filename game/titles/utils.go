@@ -3,6 +3,7 @@ package titles
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -168,4 +169,29 @@ func buildOriginURL(offerIDs []string, args []string) string {
 		RawQuery: params.Encode(),
 	}
 	return u.String()
+}
+
+func getValidMod(installPath string, modBasePath string, givenMod string, supportedMods ...string) (string, error) {
+	var mod string
+	for _, supportedMod := range supportedMods {
+		if strings.ToLower(givenMod) == strings.ToLower(supportedMod) {
+			mod = supportedMod
+			break
+		}
+	}
+
+	if mod == "" {
+		return "", fmt.Errorf("mod not supported: %s", givenMod)
+	}
+
+	modPath := filepath.Join(installPath, modBasePath, mod)
+	installed, err := internal.IsValidDirPath(modPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to determine whether %s mod is installed: %e", mod, err)
+	}
+	if !installed {
+		return "", fmt.Errorf("mod not installed: %s", mod)
+	}
+
+	return mod, nil
 }

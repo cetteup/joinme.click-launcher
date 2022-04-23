@@ -22,7 +22,7 @@ var BfVietnam = title.GameTitle{
 		DefaultArgs:    []string{"+restart", "1"},
 		ExecutablePath: "BfVietnam.exe",
 	},
-	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{
 			"+joinServer", host,
 			"+port", port,

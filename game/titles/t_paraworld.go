@@ -8,6 +8,12 @@ import (
 	"net/url"
 )
 
+const (
+	paraworldModBasePath    = "Data"
+	paraworldModBoosterPack = "BoosterPack1"
+	paraworldModMirage      = "MIRAGE"
+)
+
 var Paraworld = title.GameTitle{
 	ProtocolScheme: "paraworld",
 	GameLabel:      "ParaWorld",
@@ -22,7 +28,17 @@ var Paraworld = title.GameTitle{
 	LauncherConfig: launcher.Config{
 		ExecutablePath: "bin\\Paraworld.exe",
 	},
-	CmdBuilder: func(scheme string, host string, port string, u *url.URL) ([]string, error) {
-		return []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}, nil
+	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
+		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}
+		query := u.Query()
+		if query != nil && query.Has(UrlQueryKeyMod) {
+			mod, err := getValidMod(installPath, paraworldModBasePath, query.Get(UrlQueryKeyMod), paraworldModBoosterPack, paraworldModMirage)
+			if err != nil {
+				return nil, err
+			}
+
+			args = append(args, "-enable", mod)
+		}
+		return args, nil
 	},
 }

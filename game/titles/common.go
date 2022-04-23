@@ -6,6 +6,10 @@ import (
 	"net/url"
 )
 
+const (
+	UrlQueryKeyMod = "mod"
+)
+
 var frostbite3DefaultArgs = []string{
 	"-gameMode", "MP",
 	"-role", "soldier",
@@ -13,6 +17,6 @@ var frostbite3DefaultArgs = []string{
 	"-joinWithParty", "false",
 }
 
-var PlusConnectCmdBuilder launcher.CommandBuilder = func(scheme string, host string, port string, u *url.URL) ([]string, error) {
+var PlusConnectCmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 	return []string{"+connect", fmt.Sprintf("%s:%s", host, port)}, nil
 }
