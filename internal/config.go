@@ -2,20 +2,22 @@ package internal
 
 import (
 	"errors"
-	"gopkg.in/yaml.v2"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v2"
 )
 
 const (
 	ConfigFilename = "config.yaml"
 )
 
-type Config struct {
-	Games map[string]CustomLauncherConfig `yaml:"games"`
+type config struct {
+	QuietLaunch bool                            `yaml:"quietLaunch"`
+	Games       map[string]CustomLauncherConfig `yaml:"games"`
 }
 
-func (c *Config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {
+func (c *config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {
 	gameConfig, exists := c.Games[game]
 	if !exists {
 		return nil
@@ -60,7 +62,7 @@ func LoadConfig() error {
 		return err
 	}
 
-	err = yaml.Unmarshal(content, &RunningConfig)
+	err = yaml.Unmarshal(content, &Config)
 	if err != nil {
 		return err
 	}
@@ -68,6 +70,4 @@ func LoadConfig() error {
 	return nil
 }
 
-var RunningConfig = &Config{
-	Games: map[string]CustomLauncherConfig{},
-}
+var Config = &config{}

@@ -3,14 +3,15 @@ package router
 import (
 	"errors"
 	"fmt"
+	"net/url"
+	"os"
+	"path/filepath"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"golang.org/x/sys/windows/registry"
-	"net/url"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -60,7 +61,7 @@ func NewGameRouter(repository RegistryRepository, finder GameFinder) *GameRouter
 }
 
 func (r GameRouter) AddTitle(gameTitle title.GameTitle) {
-	customConfig := internal.RunningConfig.GetCustomLauncherConfig(gameTitle.ProtocolScheme)
+	customConfig := internal.Config.GetCustomLauncherConfig(gameTitle.ProtocolScheme)
 	if customConfig.HasValues() {
 		gameTitle.AddCustomConfig(*customConfig)
 	}

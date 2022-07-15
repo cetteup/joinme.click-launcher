@@ -3,14 +3,15 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"sort"
+	"time"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/router"
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
-	"os"
-	"sort"
-	"time"
 )
 
 func init() {
@@ -49,7 +50,11 @@ var (
 )
 
 func main() {
-	args := os.Args[1:]
+	var quietLaunch bool
+	flag.BoolVar(&quietLaunch, "quiet", false, "Do not leave the window open any longer than required")
+	flag.Parse()
+
+	args := flag.Args()
 	if len(args) == 0 {
 		results := gameRouter.RegisterHandlers()
 		sort.Slice(results, func(i, j int) bool {
@@ -78,6 +83,10 @@ func main() {
 			fmt.Printf("Launched game based on URL: %s\n", args[0])
 		}
 	}
-	fmt.Println("Window will close in 15 seconds")
-	time.Sleep(15 * time.Second)
+
+	// Leave window open for a bit unless disabled via arg or config
+	if !quietLaunch && !internal.Config.QuietLaunch {
+		fmt.Println("Window will close in 15 seconds")
+		time.Sleep(15 * time.Second)
+	}
 }
