@@ -207,7 +207,7 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 
 	port := u.Port()
 	if gameTitle.RequiresPort && port == "" {
-		return fmt.Errorf("port is required but was not given in URL: %s", port)
+		return fmt.Errorf("port is required but was not given in URL")
 	}
 
 	// Build final launcher config

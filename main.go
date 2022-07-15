@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"sort"
 	"time"
 
@@ -12,13 +13,16 @@ import (
 	"github.com/cetteup/joinme.click-launcher/game/router"
 	"github.com/cetteup/joinme.click-launcher/game/titles"
 	"github.com/cetteup/joinme.click-launcher/internal"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func init() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+
 	err := internal.LoadConfig()
 	if err != nil {
-		fmt.Printf("Failed to load configuration: %s\n", err)
-		fmt.Println("Continuing with defaults")
+		log.Err(err).Msg("Failed to load configuration from file, continuing with defaults")
 	}
 
 	registryRepository := internal.NewRegistryRepository()
@@ -63,7 +67,7 @@ func main() {
 		for _, result := range results {
 			var message string
 			if result.Error != nil {
-				message = fmt.Sprintf("handler registration failed (%s)\n", result.Error)
+				message = "handler registration failed"
 			} else if !result.GameInstalled {
 				message = "not installed"
 			} else if result.GameInstalled && result.Title.RequiresPlatformClient() && !result.PlatformClientInstalled {
@@ -73,20 +77,29 @@ func main() {
 			} else {
 				message = "launcher registered successfully"
 			}
-			fmt.Printf("%s: %s\n", result.Title.GameLabel, message)
+			log.Info().
+				Err(result.Error).
+				Str("game", result.Title.GameLabel).
+				Str("result", message).
+				Msg("Checked status for")
 		}
 	} else if len(args) == 1 {
 		err := gameRouter.StartGame(args[0])
 		if err != nil {
-			fmt.Printf("Failed to launch based on URL: %s (%s)\n", args[0], err)
+			log.Error().
+				Err(err).
+				Str("url", args[0]).
+				Msg("Failed to launch game")
 		} else {
-			fmt.Printf("Launched game based on URL: %s\n", args[0])
+			log.Info().
+				Str("url", args[0]).
+				Msg("Successfully launched game")
 		}
 	}
 
 	// Leave window open for a bit unless disabled via arg or config
 	if !quietLaunch && !internal.Config.QuietLaunch {
-		fmt.Println("Window will close in 15 seconds")
+		log.Info().Msg("Window will close in 15 seconds")
 		time.Sleep(15 * time.Second)
 	}
 }
