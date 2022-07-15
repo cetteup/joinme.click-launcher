@@ -1,9 +1,16 @@
 package launcher
 
 import (
+	"fmt"
 	"net/url"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
+	"time"
+
+	"github.com/mitchellh/go-ps"
+	"github.com/rs/zerolog/log"
 )
 
 type LaunchDir int
@@ -16,36 +23,62 @@ const (
 type Config struct {
 	DefaultArgs    []string
 	StartIn        LaunchDir
+	ExecutableName string
+	// Relative path from install path to folder containing the executable
 	ExecutablePath string
 	InstallPath    string
+	// Indicates whether game needs to be "cold-launched" (whether we need to kill any pre-existing game instances)
+	CloseBeforeLaunch bool
+	// Additional process names related to this game (some games start multiple processes, which we need to kill pre-launch)
+	AdditionalProcessNames map[string]bool
 }
 
 type CommandBuilder func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error)
 
-type GameLauncher struct {
-	Config     Config
-	CmdBuilder CommandBuilder
-}
-
-func NewGameLauncher(config Config, cmdBuilder CommandBuilder) *GameLauncher {
-	return &GameLauncher{
-		Config:     config,
-		CmdBuilder: cmdBuilder,
+func PrepareLaunch(config Config) error {
+	if !config.CloseBeforeLaunch {
+		return nil
 	}
-}
 
-func (l *GameLauncher) StartGame(scheme string, host string, port string, u *url.URL) error {
-	args, err := l.CmdBuilder(l.Config.InstallPath, scheme, host, port, u)
+	processes, err := ps.Processes()
 	if err != nil {
 		return err
 	}
 
-	args = append(args, l.Config.DefaultArgs...)
+	killed := map[int]string{}
+	for _, process := range processes {
+		if isGameProcess(config, process) {
+			log.Info().
+				Int("pid", process.Pid()).
+				Str("executable", process.Executable()).
+				Msg("Killing existing game process")
+			if err = killProcess(process.Pid()); err != nil {
+				return err
+			}
+			killed[process.Pid()] = process.Executable()
+		}
+	}
 
-	path := filepath.Join(l.Config.InstallPath, l.Config.ExecutablePath)
+	// Wait for killed processes to exit
+	if err = waitForProcessesToExit(killed); err != nil {
+		return err
+	}
 
-	dir := l.Config.InstallPath
-	if l.Config.StartIn == BinaryDir {
+	return nil
+}
+
+func StartGame(config Config, cmdBuilder CommandBuilder, scheme string, host string, port string, u *url.URL) error {
+	args, err := cmdBuilder(config.InstallPath, scheme, host, port, u)
+	if err != nil {
+		return err
+	}
+
+	args = append(args, config.DefaultArgs...)
+
+	path := filepath.Join(config.InstallPath, config.ExecutablePath, config.ExecutableName)
+
+	dir := config.InstallPath
+	if config.StartIn == BinaryDir {
 		// Launch in binary directory instead of install path if requested
 		dir = filepath.Dir(path)
 	}
@@ -57,4 +90,60 @@ func (l *GameLauncher) StartGame(scheme string, host string, port string, u *url
 	}
 
 	return cmd.Start()
+}
+
+func isGameProcess(config Config, process ps.Process) bool {
+	if process.Executable() == config.ExecutableName {
+		return true
+	}
+	if _, isAdditionalGameProcess := config.AdditionalProcessNames[process.Executable()]; isAdditionalGameProcess {
+		return true
+	}
+
+	return false
+}
+
+func killProcess(pid int) error {
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+	if err = proc.Signal(syscall.SIGKILL); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func waitForProcessesToExit(processes map[int]string) error {
+	iterations := 0
+	for ; len(processes) > 0 && iterations < 5; iterations++ {
+		for pid, executable := range processes {
+			log.Debug().
+				Int("pid", pid).
+				Str("executable", executable).
+				Msg("Checking if game process exited")
+			proc, err := ps.FindProcess(pid)
+			if err != nil {
+				return err
+			}
+
+			// Remove process from map if it exited (was no longer found)
+			if proc == nil {
+				log.Debug().
+					Int("pid", pid).
+					Str("executable", executable).
+					Msg("Game process is gone")
+				delete(processes, pid)
+			}
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	// Return error if not all processes exited yet
+	if len(processes) > 0 {
+		return fmt.Errorf("timed out waiting for killed game processes to exit")
+	}
+
+	return nil
 }

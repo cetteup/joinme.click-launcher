@@ -1,11 +1,12 @@
 package titles
 
 import (
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/platform"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 var Bf1 = title.GameTitle{
@@ -20,7 +21,8 @@ var Bf1 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "bf1.exe",
+		ExecutableName:    "bf1.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		offerIDs := []string{"1026023"}

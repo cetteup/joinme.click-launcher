@@ -213,6 +213,7 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	// Build final launcher config
 	launcherConfig := gameTitle.LauncherConfig
 	if gameTitle.RequiresPlatformClient() {
+		launcherConfig.ExecutableName = gameTitle.PlatformClient.LauncherConfig.ExecutableName
 		launcherConfig.ExecutablePath = gameTitle.PlatformClient.LauncherConfig.ExecutablePath
 		launcherConfig.InstallPath, err = r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
 	} else {
@@ -222,9 +223,11 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 		return err
 	}
 
-	gameLauncher := launcher.NewGameLauncher(launcherConfig, gameTitle.CmdBuilder)
-	err = gameLauncher.StartGame(u.Scheme, u.Hostname(), port, u)
-	if err != nil {
+	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
+	if err = launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
+		return err
+	}
+	if err = launcher.StartGame(launcherConfig, gameTitle.CmdBuilder, u.Scheme, u.Hostname(), port, u); err != nil {
 		return err
 	}
 

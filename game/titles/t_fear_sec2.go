@@ -2,10 +2,11 @@ package titles
 
 import (
 	"fmt"
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 var FearSec2 = title.GameTitle{
@@ -20,7 +21,8 @@ var FearSec2 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "FEARMP.exe",
+		ExecutableName:    "FEARMP.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"+join", fmt.Sprintf("%s:%s", host, port)}, nil

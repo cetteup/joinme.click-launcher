@@ -18,7 +18,8 @@ var Cod = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "CoDMP.exe",
+		ExecutableName:    "CoDMP.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: PlusConnectCmdBuilder,
 }
@@ -34,7 +35,8 @@ var CodUO = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "CoDUOMP.exe",
+		ExecutableName:    "CoDUOMP.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: PlusConnectCmdBuilder,
 }

@@ -18,7 +18,8 @@ var Cod4 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "iw3mp.exe",
+		ExecutableName:    "iw3mp.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: PlusConnectCmdBuilder,
 }

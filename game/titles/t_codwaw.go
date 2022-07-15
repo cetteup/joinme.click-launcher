@@ -18,7 +18,8 @@ var CodWaw = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "CoDWaWmp.exe",
+		ExecutableName:    "CoDWaWmp.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: PlusConnectCmdBuilder,
 }

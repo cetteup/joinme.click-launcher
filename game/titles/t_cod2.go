@@ -18,7 +18,8 @@ var Cod2 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "CoD2MP_s.exe",
+		ExecutableName:    "CoD2MP_s.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: PlusConnectCmdBuilder,
 }

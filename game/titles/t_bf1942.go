@@ -1,10 +1,11 @@
 package titles
 
 import (
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 const (
@@ -29,8 +30,9 @@ var Bf1942 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		DefaultArgs:    []string{"+restart", "1"},
-		ExecutablePath: "BF1942.exe",
+		DefaultArgs:       []string{"+restart", "1"},
+		ExecutableName:    "BF1942.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: bf1942CmdBuilder,
 }
@@ -75,7 +77,8 @@ var Bf1942RoadToRome = title.GameTitle{
 			"+restart", "1",
 			"+game", "XPack1",
 		},
-		ExecutablePath: "BF1942.exe",
+		ExecutableName:    "BF1942.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: bf1942CmdBuilder,
 }
@@ -96,7 +99,8 @@ var Bf1942SecretWeaponsOfWW2 = title.GameTitle{
 			"+restart", "1",
 			"+game", "XPack2",
 		},
-		ExecutablePath: "BF1942.exe",
+		ExecutableName:    "BF1942.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: bf1942CmdBuilder,
 }

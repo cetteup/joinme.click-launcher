@@ -1,10 +1,11 @@
 package titles
 
 import (
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 var Vietcong = title.GameTitle{
@@ -19,7 +20,8 @@ var Vietcong = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "vietcong.exe",
+		ExecutableName:    "vietcong.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"-ip", host, "-port", port}, nil

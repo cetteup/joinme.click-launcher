@@ -2,10 +2,11 @@ package titles
 
 import (
 	"fmt"
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 var Swat4 = title.GameTitle{
@@ -25,8 +26,10 @@ var Swat4 = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "Content\\System\\Swat4.exe",
-		StartIn:        launcher.BinaryDir,
+		ExecutableName:    "Swat4.exe",
+		ExecutablePath:    "Content\\System",
+		StartIn:           launcher.BinaryDir,
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: swat4CmdBuilder,
 }
@@ -51,8 +54,10 @@ var Swat4X = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "ContentExpansion\\System\\Swat4X.exe",
-		StartIn:        launcher.BinaryDir,
+		ExecutableName:    "Swat4X.exe",
+		ExecutablePath:    "ContentExpansion\\System",
+		StartIn:           launcher.BinaryDir,
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: swat4CmdBuilder,
 }

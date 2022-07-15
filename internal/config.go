@@ -13,8 +13,9 @@ const (
 )
 
 type config struct {
-	QuietLaunch bool                            `yaml:"quietLaunch"`
-	Games       map[string]CustomLauncherConfig `yaml:"games"`
+	DebugLogging bool                            `yaml:"debugLogging"`
+	QuietLaunch  bool                            `yaml:"quietLaunch"`
+	Games        map[string]CustomLauncherConfig `yaml:"games"`
 }
 
 func (c *config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {

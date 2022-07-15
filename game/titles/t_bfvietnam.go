@@ -1,10 +1,11 @@
 package titles
 
 import (
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 const (
@@ -24,8 +25,9 @@ var BfVietnam = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		DefaultArgs:    []string{"+restart", "1"},
-		ExecutablePath: "BfVietnam.exe",
+		DefaultArgs:       []string{"+restart", "1"},
+		ExecutableName:    "BfVietnam.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{

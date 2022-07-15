@@ -13,6 +13,6 @@ var OriginClient = Client{
 		RegistryValueName: "ClientPath",
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "Origin.exe",
+		ExecutableName: "Origin.exe",
 	},
 }

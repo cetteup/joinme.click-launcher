@@ -2,10 +2,11 @@ package titles
 
 import (
 	"fmt"
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 const (
@@ -33,7 +34,8 @@ var Bf2 = title.GameTitle{
 			"+menu", "1",
 			"+restart", "1",
 		},
-		ExecutablePath: "BF2.exe",
+		ExecutableName:    "BF2.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: bf2CmdBuilder,
 }
@@ -91,7 +93,8 @@ var Bf2SF = title.GameTitle{
 			"+modPath", "mods/xpack",
 			"+ignoreAsserts", "1",
 		},
-		ExecutablePath: "BF2.exe",
+		ExecutableName:    "BF2.exe",
+		CloseBeforeLaunch: true,
 	},
 	CmdBuilder: bf2CmdBuilder,
 }

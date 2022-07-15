@@ -55,8 +55,15 @@ var (
 
 func main() {
 	var quietLaunch bool
-	flag.BoolVar(&quietLaunch, "quiet", false, "Do not leave the window open any longer than required")
+	var debug bool
+	flag.BoolVar(&quietLaunch, "quiet", false, "do not leave the window open any longer than required")
+	flag.BoolVar(&debug, "debug", false, "set log level to debug")
 	flag.Parse()
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if debug || internal.Config.DebugLogging {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
 
 	args := flag.Args()
 	if len(args) == 0 {

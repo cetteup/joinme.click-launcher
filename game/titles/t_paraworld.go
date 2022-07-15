@@ -2,10 +2,11 @@ package titles
 
 import (
 	"fmt"
+	"net/url"
+
 	"github.com/cetteup/joinme.click-launcher/game/finder"
 	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"github.com/cetteup/joinme.click-launcher/game/title"
-	"net/url"
 )
 
 const (
@@ -26,7 +27,13 @@ var Paraworld = title.GameTitle{
 		},
 	},
 	LauncherConfig: launcher.Config{
-		ExecutablePath: "bin\\Paraworld.exe",
+		ExecutableName:    "Paraworld.exe",
+		ExecutablePath:    "bin",
+		CloseBeforeLaunch: true,
+		AdditionalProcessNames: map[string]bool{
+			"PWClient.exe": true,
+			"PWServer.exe": true,
+		},
 	},
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}
