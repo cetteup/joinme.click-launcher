@@ -64,7 +64,7 @@ No extra steps are required to launch a game based on one of the supported URL p
 to [bf2://95.172.92.116:16567](bf2://95.172.92.116:16567) for example, the launcher will start Battlefield 2 and
 join [2F4Y.com - Best Maps No Rules!](https://bf2.tv/servers/95.172.92.116:16567). If the game is already running and
 cannot join a server from a running state, the launcher will close any existing game instance automatically before
-launching a new one.
+launching a new one _(only supported by launcher v0.1.8-alpha and newer)_.
 
 ```text
 10: 40AM INF Killing existing game process executable=BF2.exe pid=3916
