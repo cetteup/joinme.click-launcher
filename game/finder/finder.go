@@ -3,9 +3,10 @@ package finder
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"golang.org/x/sys/windows/registry"
-	"path/filepath"
 )
 
 type Type string

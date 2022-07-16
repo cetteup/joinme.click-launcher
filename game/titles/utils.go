@@ -3,7 +3,6 @@ package titles
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/cetteup/joinme.click-launcher/internal"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -11,6 +10,8 @@ import (
 	"syscall"
 	"unicode"
 	"unsafe"
+
+	"github.com/cetteup/joinme.click-launcher/internal"
 )
 
 // CryptUnprotectData implementation adapted from https://stackoverflow.com/questions/33516053/windows-encrypted-rdp-passwords-in-golang

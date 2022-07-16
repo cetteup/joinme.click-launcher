@@ -2,8 +2,9 @@ package titles
 
 import (
 	"fmt"
-	"github.com/cetteup/joinme.click-launcher/game/launcher"
 	"net/url"
+
+	"github.com/cetteup/joinme.click-launcher/game/launcher"
 )
 
 const (
