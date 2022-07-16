@@ -27,21 +27,26 @@ func (c *config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {
 }
 
 type CustomLauncherConfig struct {
-	InstallPath    string   `yaml:"install_path"`
+	ExecutableName string   `yaml:"executable_name"`
 	ExecutablePath string   `yaml:"executable_path"`
+	InstallPath    string   `yaml:"install_path"`
 	Args           []string `yaml:"args"`
 }
 
 func (c *CustomLauncherConfig) HasValues() bool {
-	return c != nil && (c.HasInstallPath() || c.HasExecutablePath() || c.HasArgs())
+	return c != nil && (c.HasExecutableName() || c.HasExecutablePath() || c.HasInstallPath() || c.HasArgs())
 }
 
-func (c *CustomLauncherConfig) HasInstallPath() bool {
-	return c != nil && c.InstallPath != ""
+func (c *CustomLauncherConfig) HasExecutableName() bool {
+	return c != nil && c.ExecutableName != ""
 }
 
 func (c *CustomLauncherConfig) HasExecutablePath() bool {
 	return c != nil && c.ExecutablePath != ""
+}
+
+func (c *CustomLauncherConfig) HasInstallPath() bool {
+	return c != nil && c.InstallPath != ""
 }
 
 func (c *CustomLauncherConfig) HasArgs() bool {

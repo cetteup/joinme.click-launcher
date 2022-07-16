@@ -18,6 +18,14 @@ type GameTitle struct {
 }
 
 func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
+	if config.HasExecutableName() {
+		t.LauncherConfig.ExecutableName = config.ExecutableName
+	}
+
+	if config.HasExecutablePath() {
+		t.LauncherConfig.ExecutablePath = config.ExecutablePath
+	}
+
 	if config.HasInstallPath() {
 		// Prepend custom path based finder in order search any custom paths first
 		t.FinderConfigs = append([]finder.Config{
@@ -26,10 +34,6 @@ func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
 				CustomInstallPath: config.InstallPath,
 			},
 		}, t.FinderConfigs...)
-	}
-
-	if config.HasExecutablePath() {
-		t.LauncherConfig.ExecutablePath = config.ExecutablePath
 	}
 
 	if config.HasArgs() {
