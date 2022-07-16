@@ -1,3 +1,5 @@
+quiet_launch: false
+debug_logging: true
 games:
     bf2:
         install_path: C:\Games\Battlefield 2

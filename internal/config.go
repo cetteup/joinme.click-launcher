@@ -13,8 +13,8 @@ const (
 )
 
 type config struct {
-	DebugLogging bool                            `yaml:"debugLogging"`
-	QuietLaunch  bool                            `yaml:"quietLaunch"`
+	DebugLogging bool                            `yaml:"debug_logging"`
+	QuietLaunch  bool                            `yaml:"quiet_launch"`
 	Games        map[string]CustomLauncherConfig `yaml:"games"`
 }
 
