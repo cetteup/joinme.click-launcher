@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "definitions": {
+    "gameConfig": {
+      "type": "object",
+      "properties": {
+        "executable_name": {
+          "type": "string",
+          "description": "Name of the game executable (usually statically defined per game)"
+        },
+        "executable_path": {
+          "type": "string",
+          "description": "Relative path from the game's install path to folder containing the game executable (usually statically defined per game)"
+        },
+        "install_path": {
+          "type": "string",
+          "description": "Path where the game is installed (usually determined via the Windows registry)"
+        },
+        "args": {
+          "type": "array",
+          "description": "Additional arguments to pass the game when launching",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "quiet_launch": {
+      "type": "boolean",
+      "description": "Do not leave the window open any longer than required",
+      "default": false
+    },
+    "debug_logging": {
+      "type": "boolean",
+      "description": "Show lots of information relevant for debugging any issues with the launcher",
+      "default": false
+    },
+    "games": {
+      "type": "object",
+      "description": "Per-game configuration options (override defaults usually determined by launched)",
+      "properties": {
+        "bf1942": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf1942rtr": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf1942sw": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bfvietnam": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf2": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf2sf": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf4": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "bf1": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "cod": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "coduo": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "cod2": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "cod4": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "codwaw": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "fearsec2": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "paraworld": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "swat4": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "swat4x": {
+          "$ref": "#/definitions/gameConfig"
+        },
+        "vietcong": {
+          "$ref": "#/definitions/gameConfig"
+        }
+      }
+    }
+  }
+}
