@@ -43,11 +43,11 @@ var Bf2 = title.GameTitle{
 var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 	profileCon, err := GetDefaultUserProfileCon(bf2ProfileFolder)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to extract default profile from global.con: %s", err)
 	}
 	playerName, encryptedPassword, err := GetEncryptedProfileConLogin(profileCon)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
 	}
 	password, err := DecryptProfileConPassword(encryptedPassword)
 	if err != nil {

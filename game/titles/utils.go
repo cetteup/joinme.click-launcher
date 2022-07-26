@@ -51,8 +51,8 @@ func GetDefaultUserProfileCon(game string) (map[string]string, error) {
 		return nil, err
 	}
 	defaultUser, ok := globalCon[DefaultUserConKey]
-	if !ok {
-		return nil, fmt.Errorf("global.con does not reference a default profile")
+	if !ok || defaultUser == "" {
+		return nil, fmt.Errorf("reference to default profile is missing/empty")
 	}
 
 	return ReadParseConFile(filepath.Join(profilesFolder, defaultUser, ProfileConFile))
@@ -61,12 +61,13 @@ func GetDefaultUserProfileCon(game string) (map[string]string, error) {
 // GetEncryptedProfileConLogin Extract profile name and encrypted password from a parsed Profile.con file
 func GetEncryptedProfileConLogin(profileCon map[string]string) (string, string, error) {
 	nickname, ok := profileCon[ProfileNickConKey]
-	if !ok {
-		return "", "", fmt.Errorf("profile.con does not contain a gamespy nickname")
+	// GameSpy nick property is present but empty for local/singleplayer profiles
+	if !ok || nickname == "" {
+		return "", "", fmt.Errorf("gamespy nickname is missing/empty")
 	}
 	encryptedPassword, ok := profileCon[ProfilePasswordConKey]
-	if !ok {
-		return "", "", fmt.Errorf("profile.con does not contain an encrypted password")
+	if !ok || encryptedPassword == "" {
+		return "", "", fmt.Errorf("encrypted password is missing/empty")
 	}
 
 	return nickname, encryptedPassword, nil
