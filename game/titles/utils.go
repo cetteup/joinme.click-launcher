@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"unicode"
@@ -29,6 +30,8 @@ const (
 	DefaultUserConKey                = "GlobalSettings.setDefaultUser"
 	ProfileNickConKey                = "LocalProfile.setGamespyNick"
 	ProfilePasswordConKey            = "LocalProfile.setPassword"
+	// ProfileNumberMaxLength BF2 only uses 4 digit profile numbers
+	ProfileNumberMaxLength = 4
 )
 
 var (
@@ -50,12 +53,17 @@ func GetDefaultUserProfileCon(game string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defaultUser, ok := globalCon[DefaultUserConKey]
-	if !ok || defaultUser == "" {
+
+	defaultUserProfileNumber, ok := globalCon[DefaultUserConKey]
+	if !ok || defaultUserProfileNumber == "" {
 		return nil, fmt.Errorf("reference to default profile is missing/empty")
 	}
+	// Since BF2 only uses 4 digits for the profile number, 16 bits is plenty to store it
+	if _, err := strconv.ParseInt(defaultUserProfileNumber, 10, 16); err != nil || len(defaultUserProfileNumber) > ProfileNumberMaxLength {
+		return nil, fmt.Errorf("reference to default profile is not a valid profile number: %s", defaultUserProfileNumber)
+	}
 
-	return ReadParseConFile(filepath.Join(profilesFolder, defaultUser, ProfileConFile))
+	return ReadParseConFile(filepath.Join(profilesFolder, defaultUserProfileNumber, ProfileConFile))
 }
 
 // GetEncryptedProfileConLogin Extract profile name and encrypted password from a parsed Profile.con file
