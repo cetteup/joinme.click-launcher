@@ -11,7 +11,7 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 | Battlefield 1942: Secret Weapons of WWII | bf1942sw://{ip}:{port}  | v0.1.7-alpha              |
 | Battlefield Vietnam                      | bfvietnam://{ip}:{port} | v0.1.7-alpha              | `Battlegroup 42`                                                                                                          |
 | Battlefield 2                            | bf2://{ip}:{port}       | v0.1.7-alpha              | `Special Forces`, `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`                                      |
-| Battlefield 2: Special Forces            | bf2://{ip}:{port}       | v0.1.3-alpha              |
+| Battlefield 2: Special Forces            | bf2sf://{ip}:{port}     | v0.1.3-alpha              |
 | Battlefield 4                            | bf4://{gameid}          | v0.1.5-alpha              |
 | Battlefield 1                            | bf1://{gameid}          | v0.1.5-alpha              |
 | Call of Duty                             | cod://{ip}:{port}       | v0.1.3-alpha              |
@@ -31,7 +31,7 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 
 ### Registering URL handlers
 
-Before you launch games based on URLs, the launcher need to register as a URL handler for the supported URL protocols.
+Before you can launch games based on URLs, the launcher need to register as a URL handler for the supported URL protocols.
 In order to do this, simply run the launcher once after download. It will check which of the supported games are
 installed and register itself as a URL handler for each one it finds. After registering, the launcher shows the result
 for each supported game.
@@ -79,9 +79,7 @@ clicking the link.
 
 ### Advanced configuration
 
-You can customize some elements of how the launcher starts your games. For example, you can provide additional command line arguments on a per-game basis. The config needs to be places in the same folder as the launcher executable as `config.yaml`.
-
-
+You can customize some elements of how the launcher starts your games. For example, you can provide additional command line arguments on a per-game basis. The config needs to be placed in the same folder as the launcher executable as `config.yaml`.
 
 #### General configuration options
 
