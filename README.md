@@ -1,6 +1,6 @@
 # joinme.click-launcher
 
-Launcher utility to handle custom game URL protocols supported on joinme.click
+Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
 
 ## Supported games
 
