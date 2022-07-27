@@ -96,7 +96,7 @@ func main() {
 			log.Error().
 				Err(err).
 				Str("url", args[0]).
-				Msg("Failed to launch game")
+				Msg("Game could not be launched")
 		} else {
 			log.Info().
 				Str("url", args[0]).

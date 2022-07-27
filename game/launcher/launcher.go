@@ -42,7 +42,7 @@ func PrepareLaunch(config Config) error {
 
 	processes, err := ps.Processes()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to retrieve process list: %s", err)
 	}
 
 	killed := map[int]string{}
@@ -53,7 +53,7 @@ func PrepareLaunch(config Config) error {
 				Str("executable", process.Executable()).
 				Msg("Killing existing game process")
 			if err = killProcess(process.Pid()); err != nil {
-				return err
+				return fmt.Errorf("failed to kill existing game process %s (%d): %s", process.Executable(), process.Pid(), err)
 			}
 			killed[process.Pid()] = process.Executable()
 		}
@@ -125,7 +125,7 @@ func waitForProcessesToExit(processes map[int]string) error {
 				Msg("Checking if game process exited")
 			proc, err := ps.FindProcess(pid)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to check if killed game process is still running: %s", err)
 			}
 
 			// Remove process from map if it exited (was no longer found)
