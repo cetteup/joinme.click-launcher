@@ -41,29 +41,55 @@ var (
 	localFree          = kernel32.NewProc("LocalFree")
 )
 
-func GetDefaultUserProfileCon(game string) (map[string]string, error) {
+func GetDefaultUserProfileCon(gameFolderName string) (map[string]string, error) {
+	profileNumber, err := GetDefaultUserProfileNumber(gameFolderName)
+	if err != nil {
+		return map[string]string{}, fmt.Errorf("failed to extract default profile number from global.con: %s", err)
+	}
+
+	profileConPath, err := GetProfileConFilePath(gameFolderName, profileNumber)
+	if err != nil {
+		return map[string]string{}, err
+	}
+
+	profileCon, err := ReadParseConFile(profileConPath)
+	if err != nil {
+		return map[string]string{}, fmt.Errorf("failed to read profile.con for current default profile (%s): %s", profileNumber, err)
+	}
+
+	return profileCon, nil
+}
+
+func GetProfilesFolderPath(gameFolderName string) (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	profilesFolder := filepath.Join(homeDir, DocumentsFolder, game, "Profiles")
+	return filepath.Join(homeDir, DocumentsFolder, gameFolderName, "Profiles"), nil
+}
+
+func GetDefaultUserProfileNumber(gameFolderName string) (string, error) {
+	profilesFolder, err := GetProfilesFolderPath(gameFolderName)
+	if err != nil {
+		return "", err
+	}
 
 	// Get preferred profile from Global.con
 	globalCon, err := ReadParseConFile(filepath.Join(profilesFolder, GlobalConFile))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	defaultUserProfileNumber, ok := globalCon[DefaultUserConKey]
-	if !ok || defaultUserProfileNumber == "" {
-		return nil, fmt.Errorf("reference to default profile is missing/empty")
+	profileNumber, ok := globalCon[DefaultUserConKey]
+	if !ok || profileNumber == "" {
+		return "", fmt.Errorf("reference to default profile is missing/empty")
 	}
 	// Since BF2 only uses 4 digits for the profile number, 16 bits is plenty to store it
-	if _, err := strconv.ParseInt(defaultUserProfileNumber, 10, 16); err != nil || len(defaultUserProfileNumber) > ProfileNumberMaxLength {
-		return nil, fmt.Errorf("reference to default profile is not a valid profile number: %s", defaultUserProfileNumber)
+	if _, err := strconv.ParseInt(profileNumber, 10, 16); err != nil || len(profileNumber) > ProfileNumberMaxLength {
+		return "", fmt.Errorf("reference to default profile is not a valid profile number: %s", profileNumber)
 	}
 
-	return ReadParseConFile(filepath.Join(profilesFolder, defaultUserProfileNumber, ProfileConFile))
+	return profileNumber, nil
 }
 
 // GetEncryptedProfileConLogin Extract profile name and encrypted password from a parsed Profile.con file
@@ -100,6 +126,14 @@ func DecryptProfileConPassword(enc string) (string, error) {
 	}, string(dec))
 
 	return clean, nil
+}
+
+func GetProfileConFilePath(gameFolderName string, profileNumber string) (string, error) {
+	profilesFolder, err := GetProfilesFolderPath(gameFolderName)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(profilesFolder, profileNumber, ProfileConFile), nil
 }
 
 func ReadParseConFile(path string) (map[string]string, error) {
