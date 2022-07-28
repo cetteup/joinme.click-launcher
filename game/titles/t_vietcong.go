@@ -11,7 +11,6 @@ import (
 var Vietcong = title.GameTitle{
 	ProtocolScheme: "vietcong",
 	GameLabel:      "Vietcong",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -23,6 +22,7 @@ var Vietcong = title.GameTitle{
 		ExecutableName:    "vietcong.exe",
 		CloseBeforeLaunch: true,
 	},
+	URLValidator: ipPortURLValidator,
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"-ip", host, "-port", port}, nil
 	},

@@ -12,7 +12,6 @@ import (
 var Swat4 = title.GameTitle{
 	ProtocolScheme: "swat4",
 	GameLabel:      "SWAT 4",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -31,7 +30,8 @@ var Swat4 = title.GameTitle{
 		StartIn:           launcher.BinaryDir,
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: swat4CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   swat4CmdBuilder,
 }
 
 var swat4CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
@@ -59,5 +59,6 @@ var Swat4X = title.GameTitle{
 		StartIn:           launcher.BinaryDir,
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: swat4CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   swat4CmdBuilder,
 }

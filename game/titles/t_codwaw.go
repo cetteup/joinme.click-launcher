@@ -9,7 +9,6 @@ import (
 var CodWaw = title.GameTitle{
 	ProtocolScheme: "codwaw",
 	GameLabel:      "Call of Duty: World at War",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -21,5 +20,6 @@ var CodWaw = title.GameTitle{
 		ExecutableName:    "CoDWaWmp.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: plusConnectCmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   plusConnectCmdBuilder,
 }

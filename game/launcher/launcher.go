@@ -33,6 +33,8 @@ type Config struct {
 	AdditionalProcessNames map[string]bool
 }
 
+type URLValidator func(u *url.URL) error
+
 type CommandBuilder func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error)
 
 func PrepareLaunch(config Config) error {

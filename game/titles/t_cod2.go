@@ -9,7 +9,6 @@ import (
 var Cod2 = title.GameTitle{
 	ProtocolScheme: "cod2",
 	GameLabel:      "Call of Duty 2",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -21,5 +20,6 @@ var Cod2 = title.GameTitle{
 		ExecutableName:    "CoD2MP_s.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: plusConnectCmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   plusConnectCmdBuilder,
 }

@@ -3,6 +3,7 @@ package titles
 import (
 	"encoding/hex"
 	"fmt"
+	"net"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -32,6 +33,8 @@ const (
 	ProfilePasswordConKey            = "LocalProfile.setPassword"
 	// ProfileNumberMaxLength BF2 only uses 4 digit profile numbers
 	ProfileNumberMaxLength = 4
+	portMin                = 1
+	portMax                = 65535
 )
 
 var (
@@ -238,4 +241,20 @@ func getValidMod(installPath string, modBasePath string, givenMod string, suppor
 	}
 
 	return mod, nil
+}
+
+func isValidIPv4(input string) bool {
+	ip := net.ParseIP(input)
+	if ip == nil {
+		return false
+	}
+	return ip.To4() != nil
+}
+
+func isValidPort(input string) bool {
+	portAsInt, err := strconv.ParseInt(input, 10, 32)
+	if err != nil {
+		return false
+	}
+	return portAsInt >= portMin && portAsInt <= portMax
 }

@@ -21,7 +21,6 @@ const (
 var Bf2 = title.GameTitle{
 	ProtocolScheme: "bf2",
 	GameLabel:      "Battlefield 2",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -37,7 +36,8 @@ var Bf2 = title.GameTitle{
 		ExecutableName:    "BF2.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: bf2CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   bf2CmdBuilder,
 }
 
 var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
@@ -99,5 +99,6 @@ var Bf2SF = title.GameTitle{
 		ExecutableName:    "BF2.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: bf2CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   bf2CmdBuilder,
 }

@@ -18,7 +18,6 @@ const (
 var Paraworld = title.GameTitle{
 	ProtocolScheme: "paraworld",
 	GameLabel:      "ParaWorld",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -35,6 +34,7 @@ var Paraworld = title.GameTitle{
 			"PWServer.exe": true,
 		},
 	},
+	URLValidator: ipPortURLValidator,
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}
 		query := u.Query()

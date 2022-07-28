@@ -16,7 +16,6 @@ const (
 var BfVietnam = title.GameTitle{
 	ProtocolScheme: "bfvietnam",
 	GameLabel:      "Battlefield Vietnam",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -29,6 +28,7 @@ var BfVietnam = title.GameTitle{
 		ExecutableName:    "BfVietnam.exe",
 		CloseBeforeLaunch: true,
 	},
+	URLValidator: ipPortURLValidator,
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{
 			"+joinServer", host,

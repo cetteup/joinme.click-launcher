@@ -9,7 +9,6 @@ import (
 var Cod = title.GameTitle{
 	ProtocolScheme: "cod",
 	GameLabel:      "Call of Duty",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -21,7 +20,8 @@ var Cod = title.GameTitle{
 		ExecutableName:    "CoDMP.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: plusConnectCmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   plusConnectCmdBuilder,
 }
 
 var CodUO = title.GameTitle{
@@ -38,5 +38,6 @@ var CodUO = title.GameTitle{
 		ExecutableName:    "CoDUOMP.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: plusConnectCmdBuilder,
+	URLValidator: frostbite3GameIdURLValidator,
+	CmdBuilder:   plusConnectCmdBuilder,
 }

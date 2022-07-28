@@ -21,7 +21,6 @@ const (
 var Bf1942 = title.GameTitle{
 	ProtocolScheme: "bf1942",
 	GameLabel:      "Battlefield 1942",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -34,7 +33,8 @@ var Bf1942 = title.GameTitle{
 		ExecutableName:    "BF1942.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: bf1942CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   bf1942CmdBuilder,
 }
 
 var bf1942CmdBuilder launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
@@ -64,7 +64,6 @@ var bf1942CmdBuilder launcher.CommandBuilder = func(installPath string, scheme s
 var Bf1942RoadToRome = title.GameTitle{
 	ProtocolScheme: "bf1942rtr",
 	GameLabel:      "Battlefield 1942: The Road to Rome",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -80,13 +79,13 @@ var Bf1942RoadToRome = title.GameTitle{
 		ExecutableName:    "BF1942.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: bf1942CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   bf1942CmdBuilder,
 }
 
 var Bf1942SecretWeaponsOfWW2 = title.GameTitle{
 	ProtocolScheme: "bf1942sw",
 	GameLabel:      "Battlefield 1942: Secret Weapons of WWII",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -102,5 +101,6 @@ var Bf1942SecretWeaponsOfWW2 = title.GameTitle{
 		ExecutableName:    "BF1942.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: bf1942CmdBuilder,
+	URLValidator: ipPortURLValidator,
+	CmdBuilder:   bf1942CmdBuilder,
 }

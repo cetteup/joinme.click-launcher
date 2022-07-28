@@ -12,7 +12,6 @@ import (
 var FearSec2 = title.GameTitle{
 	ProtocolScheme: "fearsec2",
 	GameLabel:      "F.E.A.R. Combat (SEC2)",
-	RequiresPort:   true,
 	FinderConfigs: []finder.Config{
 		{
 			ForType:           finder.RegistryFinder,
@@ -24,6 +23,7 @@ var FearSec2 = title.GameTitle{
 		ExecutableName:    "FEARMP.exe",
 		CloseBeforeLaunch: true,
 	},
+	URLValidator: ipPortURLValidator,
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		return []string{"+join", fmt.Sprintf("%s:%s", host, port)}, nil
 	},

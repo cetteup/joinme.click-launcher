@@ -205,9 +205,8 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 		return fmt.Errorf("game not supported: %s", u.Scheme)
 	}
 
-	port := u.Port()
-	if gameTitle.RequiresPort && port == "" {
-		return fmt.Errorf("port is required but was not given in URL")
+	if err = gameTitle.URLValidator(u); err != nil {
+		return err
 	}
 
 	// Build final launcher config
@@ -227,7 +226,7 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	if err = launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
 		return err
 	}
-	if err = launcher.StartGame(launcherConfig, gameTitle.CmdBuilder, u.Scheme, u.Hostname(), port, u); err != nil {
+	if err = launcher.StartGame(launcherConfig, gameTitle.CmdBuilder, u.Scheme, u.Hostname(), u.Port(), u); err != nil {
 		return err
 	}
 

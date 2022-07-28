@@ -10,10 +10,10 @@ import (
 type GameTitle struct {
 	ProtocolScheme string
 	GameLabel      string
-	RequiresPort   bool
 	PlatformClient *platform.Client
 	FinderConfigs  []finder.Config
 	LauncherConfig launcher.Config
+	URLValidator   launcher.URLValidator
 	CmdBuilder     launcher.CommandBuilder
 }
 

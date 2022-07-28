@@ -24,6 +24,7 @@ var Bf1 = title.GameTitle{
 		ExecutableName:    "bf1.exe",
 		CloseBeforeLaunch: true,
 	},
+	URLValidator: frostbite3GameIdURLValidator,
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		offerIDs := []string{"1026023"}
 		args := append(frostbite3DefaultArgs, "-gameId", host)
