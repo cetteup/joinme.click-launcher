@@ -38,8 +38,8 @@ var Paraworld = title.GameTitle{
 	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
 		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}
 		query := u.Query()
-		if query != nil && query.Has(UrlQueryKeyMod) {
-			mod, err := getValidMod(installPath, paraworldModBasePath, query.Get(UrlQueryKeyMod), paraworldModBoosterPack, paraworldModMirage)
+		if query != nil && query.Has(urlQueryKeyMod) {
+			mod, err := getValidMod(installPath, paraworldModBasePath, query.Get(urlQueryKeyMod), paraworldModBoosterPack, paraworldModMirage)
 			if err != nil {
 				return nil, err
 			}

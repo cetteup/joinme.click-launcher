@@ -44,11 +44,11 @@ var bf1942CmdBuilder launcher.CommandBuilder = func(installPath string, scheme s
 	}
 
 	query := u.Query()
-	if query != nil && query.Has(UrlQueryKeyMod) {
+	if query != nil && query.Has(urlQueryKeyMod) {
 		mod, err := getValidMod(
 			installPath,
 			bf1942ModBasePath,
-			query.Get(UrlQueryKeyMod),
+			query.Get(urlQueryKeyMod),
 			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates,
 		)
 		if err != nil {

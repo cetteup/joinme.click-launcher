@@ -36,8 +36,8 @@ var BfVietnam = title.GameTitle{
 		}
 
 		query := u.Query()
-		if query != nil && query.Has(UrlQueryKeyMod) {
-			mod, err := getValidMod(installPath, bfVietnamModBasePath, query.Get(UrlQueryKeyMod), bfVietnamModBattlegroup42)
+		if query != nil && query.Has(urlQueryKeyMod) {
+			mod, err := getValidMod(installPath, bfVietnamModBasePath, query.Get(urlQueryKeyMod), bfVietnamModBattlegroup42)
 			if err != nil {
 				return nil, err
 			}

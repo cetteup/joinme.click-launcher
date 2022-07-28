@@ -64,8 +64,8 @@ var bf2CmdBuilder launcher.CommandBuilder = func(installPath string, scheme stri
 	}
 
 	query := u.Query()
-	if query != nil && query.Has(UrlQueryKeyMod) {
-		mod, err := getValidMod(installPath, bf2ModBasePath, query.Get(UrlQueryKeyMod), bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
+	if query != nil && query.Has(urlQueryKeyMod) {
+		mod, err := getValidMod(installPath, bf2ModBasePath, query.Get(urlQueryKeyMod), bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
 		if err != nil {
 			return nil, err
 		}

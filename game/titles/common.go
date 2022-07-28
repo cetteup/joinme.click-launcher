@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	UrlQueryKeyMod = "mod"
+	urlQueryKeyMod = "mod"
 )
 
 var frostbite3DefaultArgs = []string{
