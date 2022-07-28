@@ -21,7 +21,7 @@ var Cod = title.GameTitle{
 		ExecutableName:    "CoDMP.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: PlusConnectCmdBuilder,
+	CmdBuilder: plusConnectCmdBuilder,
 }
 
 var CodUO = title.GameTitle{
@@ -38,5 +38,5 @@ var CodUO = title.GameTitle{
 		ExecutableName:    "CoDUOMP.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: PlusConnectCmdBuilder,
+	CmdBuilder: plusConnectCmdBuilder,
 }

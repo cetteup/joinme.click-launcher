@@ -21,5 +21,5 @@ var CodWaw = title.GameTitle{
 		ExecutableName:    "CoDWaWmp.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: PlusConnectCmdBuilder,
+	CmdBuilder: plusConnectCmdBuilder,
 }

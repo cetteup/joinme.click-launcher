@@ -21,5 +21,5 @@ var Cod4 = title.GameTitle{
 		ExecutableName:    "iw3mp.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: PlusConnectCmdBuilder,
+	CmdBuilder: plusConnectCmdBuilder,
 }

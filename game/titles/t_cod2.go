@@ -21,5 +21,5 @@ var Cod2 = title.GameTitle{
 		ExecutableName:    "CoD2MP_s.exe",
 		CloseBeforeLaunch: true,
 	},
-	CmdBuilder: PlusConnectCmdBuilder,
+	CmdBuilder: plusConnectCmdBuilder,
 }
