@@ -20,6 +20,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.17
+          project_path: cmd/joinme.click-launcher
           pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && go generate
           extra_files: config.example.yaml
           sha256sum: true
