@@ -16,3 +16,6 @@
 
 # Project files
 .idea
+
+# Generated resource files
+resource.syso
