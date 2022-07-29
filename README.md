@@ -1,5 +1,7 @@
 # joinme.click-launcher
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/cetteup/joinme.click-launcher)](https://goreportcard.com/report/github.com/cetteup/joinme.click-launcher)
+
 Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
 
 ## Supported games
