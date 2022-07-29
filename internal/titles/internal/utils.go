@@ -14,6 +14,7 @@ import (
 	"unsafe"
 
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
+	"golang.org/x/sys/windows"
 )
 
 // CryptUnprotectData implementation adapted from https://stackoverflow.com/questions/33516053/windows-encrypted-rdp-passwords-in-golang
@@ -25,7 +26,6 @@ type DATA_BLOB struct {
 
 const (
 	CRYPTPROTECT_UI_FORBIDDEN uint32 = 0x1
-	DocumentsFolder                  = "Documents"
 	GlobalConFile                    = "Global.con"
 	ProfileConFile                   = "Profile.con"
 	DefaultUserConKey                = "GlobalSettings.setDefaultUser"
@@ -64,11 +64,11 @@ func GetDefaultUserProfileCon(gameFolderName string) (map[string]string, error) 
 }
 
 func GetProfilesFolderPath(gameFolderName string) (string, error) {
-	homeDir, err := os.UserHomeDir()
+	documentsDir, err := windows.KnownFolderPath(windows.FOLDERID_Documents, windows.KF_FLAG_DEFAULT)
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(homeDir, DocumentsFolder, gameFolderName, "Profiles"), nil
+	return filepath.Join(documentsDir, gameFolderName, "Profiles"), nil
 }
 
 func GetDefaultUserProfileNumber(gameFolderName string) (string, error) {
