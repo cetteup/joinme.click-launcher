@@ -2,7 +2,7 @@
 
 on:
   release:
-    types: [created]
+    types: [created, edited]
 
 jobs:
   releases-matrix:
@@ -24,3 +24,4 @@ jobs:
           pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && go generate cmd/joinme.click-launcher
           extra_files: config.example.yaml
           sha256sum: true
+          overwrite: true
