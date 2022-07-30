@@ -16,8 +16,8 @@ import (
 type LaunchDir int
 
 const (
-	InstallDir LaunchDir = iota
-	BinaryDir
+	LaunchDirInstallDir LaunchDir = iota
+	LaunchDirBinaryDir
 )
 
 type Config struct {
@@ -80,7 +80,7 @@ func StartGame(config Config, cmdBuilder CommandBuilder, scheme string, host str
 	path := filepath.Join(config.InstallPath, config.ExecutablePath, config.ExecutableName)
 
 	dir := config.InstallPath
-	if config.StartIn == BinaryDir {
+	if config.StartIn == LaunchDirBinaryDir {
 		// Launch in binary directory instead of install path if requested
 		dir = filepath.Dir(path)
 	}
