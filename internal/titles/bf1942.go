@@ -38,17 +38,17 @@ var Bf1942 = domain.GameTitle{
 	CmdBuilder:   bf1942CmdBuilder,
 }
 
-var bf1942CmdBuilder game_launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
+var bf1942CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config) ([]string, error) {
 	args := []string{
-		"+joinServer", host,
-		"+port", port,
+		"+joinServer", u.Hostname(),
+		"+port", u.Port(),
 	}
 
 	query := u.Query()
 	if internal.QueryHasMod(query) {
 		mod, err := internal.GetValidModFromQuery(
 			query,
-			installPath,
+			config.InstallPath,
 			bf1942ModBasePath,
 			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates,
 		)

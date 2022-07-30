@@ -36,12 +36,12 @@ var Paraworld = domain.GameTitle{
 		},
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
-		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", host, port)}
+	CmdBuilder: func(u *url.URL, config game_launcher.Config) ([]string, error) {
+		args := []string{"-autoconnect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port())}
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(query, installPath, paraworldModBasePath, paraworldModBoosterPack, paraworldModMirage)
+			mod, err := internal.GetValidModFromQuery(query, config.InstallPath, paraworldModBasePath, paraworldModBoosterPack, paraworldModMirage)
 			if err != nil {
 				return nil, err
 			}

@@ -226,7 +226,7 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	if err = game_launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
 		return err
 	}
-	if err = game_launcher.StartGame(launcherConfig, gameTitle.CmdBuilder, u.Scheme, u.Hostname(), u.Port(), u); err != nil {
+	if err = game_launcher.StartGame(u, launcherConfig, gameTitle.CmdBuilder); err != nil {
 		return err
 	}
 

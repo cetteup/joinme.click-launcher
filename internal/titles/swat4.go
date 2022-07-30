@@ -35,8 +35,8 @@ var Swat4 = domain.GameTitle{
 	CmdBuilder:   swat4CmdBuilder,
 }
 
-var swat4CmdBuilder game_launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
-	return []string{fmt.Sprintf("%s:%s", host, port)}, nil
+var swat4CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config) ([]string, error) {
+	return []string{fmt.Sprintf("%s:%s", u.Hostname(), u.Port())}, nil
 }
 
 var Swat4X = domain.GameTitle{

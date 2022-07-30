@@ -41,7 +41,7 @@ var Bf2 = domain.GameTitle{
 	CmdBuilder:   bf2CmdBuilder,
 }
 
-var bf2CmdBuilder game_launcher.CommandBuilder = func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
+var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config) ([]string, error) {
 	profileCon, err := internal.GetDefaultUserProfileCon(bf2ProfileFolder)
 	if err != nil {
 		return nil, err
@@ -58,15 +58,15 @@ var bf2CmdBuilder game_launcher.CommandBuilder = func(installPath string, scheme
 	}
 
 	args := []string{
-		"+joinServer", host,
-		"+port", port,
+		"+joinServer", u.Hostname(),
+		"+port", u.Port(),
 		"+playerName", playerName,
 		"+playerPassword", password,
 	}
 
 	query := u.Query()
 	if internal.QueryHasMod(query) {
-		mod, err := internal.GetValidModFromQuery(query, installPath, bf2ModBasePath, bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
+		mod, err := internal.GetValidModFromQuery(query, config.InstallPath, bf2ModBasePath, bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
 		if err != nil {
 			return nil, err
 		}

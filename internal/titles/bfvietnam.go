@@ -30,15 +30,15 @@ var BfVietnam = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder: func(installPath string, scheme string, host string, port string, u *url.URL) ([]string, error) {
+	CmdBuilder: func(u *url.URL, config game_launcher.Config) ([]string, error) {
 		args := []string{
-			"+joinServer", host,
-			"+port", port,
+			"+joinServer", u.Hostname(),
+			"+port", u.Port(),
 		}
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(query, installPath, bfVietnamModBasePath, bfVietnamModBattlegroup42)
+			mod, err := internal.GetValidModFromQuery(query, config.InstallPath, bfVietnamModBasePath, bfVietnamModBattlegroup42)
 			if err != nil {
 				return nil, err
 			}
