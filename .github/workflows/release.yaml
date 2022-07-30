@@ -21,7 +21,7 @@ jobs:
           goarch: ${{ matrix.goarch }}
           goversion: 1.17
           project_path: cmd/joinme.click-launcher
-          pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && go generate cmd/joinme.click-launcher
+          pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && cd cmd/joinme.click-launcher && go generate
           extra_files: config.example.yaml
           sha256sum: true
           overwrite: true
