@@ -38,72 +38,46 @@ var Bf2 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   bf2CmdBuilder,
-}
-
-var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	profileCon, err := internal.GetDefaultUserProfileCon(bf2ProfileFolder)
-	if err != nil {
-		return nil, err
-	}
-
-	playerName, encryptedPassword, err := internal.GetEncryptedProfileConLogin(profileCon)
-	if err != nil {
-		return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
-	}
-
-	password, err := internal.DecryptProfileConPassword(encryptedPassword)
-	if err != nil {
-		return nil, err
-	}
-
-	args := []string{"+playerName", playerName, "+playerPassword", password}
-	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
-	}
-
-	query := u.Query()
-	if internal.QueryHasMod(query) {
-		mod, err := internal.GetValidModFromQuery(
-			query,
-			config.InstallPath,
-			bf2ModPathTemplate,
-			software_finder.PathTypeFile,
-			bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2,
-		)
+	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+		profileCon, err := internal.GetDefaultUserProfileCon(bf2ProfileFolder)
 		if err != nil {
 			return nil, err
 		}
 
-		args = append(args,
-			"+modPath", fmt.Sprintf("mods/%s", mod),
-			"+ignoreAsserts", "1",
-		)
-	}
+		playerName, encryptedPassword, err := internal.GetEncryptedProfileConLogin(profileCon)
+		if err != nil {
+			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
+		}
 
-	return args, nil
-}
+		password, err := internal.DecryptProfileConPassword(encryptedPassword)
+		if err != nil {
+			return nil, err
+		}
 
-var Bf2SF = domain.GameTitle{
-	ProtocolScheme: "bf2sf",
-	GameLabel:      "Battlefield 2: Special Forces",
-	FinderConfigs: []software_finder.Config{
-		{
-			ForType:           software_finder.RegistryFinder,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
-			RegistryValueName: "InstallDir",
-		},
+		args := []string{"+playerName", playerName, "+playerPassword", password}
+		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
+		}
+
+		query := u.Query()
+		if internal.QueryHasMod(query) {
+			mod, err := internal.GetValidModFromQuery(
+				query,
+				config.InstallPath,
+				bf2ModPathTemplate,
+				software_finder.PathTypeFile,
+				bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			args = append(args,
+				"+modPath", fmt.Sprintf("mods/%s", mod),
+				"+ignoreAsserts", "1",
+			)
+		}
+
+		return args, nil
 	},
-	LauncherConfig: game_launcher.Config{
-		DefaultArgs: []string{
-			"+menu", "1",
-			"+restart", "1",
-			"+modPath", "mods/xpack",
-			"+ignoreAsserts", "1",
-		},
-		ExecutableName:    "BF2.exe",
-		CloseBeforeLaunch: true,
-	},
-	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   bf2CmdBuilder,
 }

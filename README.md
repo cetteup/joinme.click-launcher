@@ -6,14 +6,11 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 
 ## Supported games
 
-| Game                                     | URL protocol            | Minimum launcher version¹ | Supported mods                                                                                                            |
-|------------------------------------------|-------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| Battlefield 1942                         | bf1942://{ip}:{port}    | v0.1.7-alpha              | `The Road to Rome`, `Secret Weapons of WWII`, `Battlefield 1918`, `Desert Combat (0.7)`, `Desert Combat Final`, `Pirates` |
-| Battlefield 1942: The Road to Rome       | bf1942rtr://{ip}:{port} | v0.1.7-alpha              |
-| Battlefield 1942: Secret Weapons of WWII | bf1942sw://{ip}:{port}  | v0.1.7-alpha              |
-| Battlefield Vietnam                      | bfvietnam://{ip}:{port} | v0.1.7-alpha              | `Battlegroup 42`                                                                                                          |
-| Battlefield 2                            | bf2://{ip}:{port}       | v0.1.7-alpha              | `Special Forces`, `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`                                      |
-| Battlefield 2: Special Forces            | bf2sf://{ip}:{port}     | v0.1.3-alpha              |
+| Game                                     | URL protocol            | Minimum launcher version¹ | Supported mods                                                                                                              |
+|------------------------------------------|-------------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| Battlefield 1942                         | bf1942://{ip}:{port}    | v0.1.7-alpha              | `The Road to Rome`², `Secret Weapons of WWII`², `Battlefield 1918`, `Desert Combat (0.7)`, `Desert Combat Final`, `Pirates` |
+| Battlefield Vietnam                      | bfvietnam://{ip}:{port} | v0.1.7-alpha              | `Battlegroup 42`                                                                                                            |
+| Battlefield 2                            | bf2://{ip}:{port}       | v0.1.7-alpha              | `Special Forces`², `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`                                       |
 | Battlefield 4                            | bf4://{gameid}          | v0.1.5-alpha              |
 | Battlefield 1                            | bf1://{gameid}          | v0.1.5-alpha              |
 | Call of Duty                             | cod://{ip}:{port}       | v0.1.3-alpha              |
@@ -24,10 +21,12 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 | F.E.A.R. Combat (SEC2)                   | fearsec2://{ip}:{port}  | v0.1.3-alpha              |
 | ParaWorld                                | paraworld://{ip}:{port} | v0.1.7-alpha              |
 | SWAT 4                                   | swat4://{ip}:{port}     | v0.1.3-alpha              |
-| SWAT 4: The Stetchkov Syndicate          | swat4x://{ip}:{port}    | v0.1.3-alpha              |
+| SWAT 4: The Stetchkov Syndicate³         | swat4x://{ip}:{port}    | v0.1.3-alpha              |
 | Vietcong                                 | vietcong://{ip}:{port}  | v0.1.3-alpha              |
 
 ¹ refers to the minimum launcher version supporting all features relevant to the game
+² these addons are considered mods for technical reasons, since they use the same game executable which is launched with different parameters
+³ while technically an addon, it uses a separate game executable and is thus considered a differnt game
 
 ## Usage
 
@@ -41,10 +40,7 @@ for each supported game.
 ```text
 10: 37AM INF Checked status for game="Battlefield 1" result="launcher registered successfully"
 10: 37AM INF Checked status for game="Battlefield 1942" result="not installed"
-10: 37AM INF Checked status for game="Battlefield 1942: The Road to Rome" result="not installed"
-10: 37AM INF Checked status for game="Battlefield 1942: Secret Weapons of WWII" result="not installed"
 10: 37AM INF Checked status for game="Battlefield 2" result="launcher registered successfully"
-10: 37AM INF Checked status for game="Battlefield 2: Special Forces" result="launcher registered successfully"
 10: 37AM INF Checked status for game="Battlefield 4" result="launcher registered successfully"
 10: 37AM INF Checked status for game="Battlefield Vietnam" result="launcher registered successfully"
 10: 37AM INF Checked status for game="Call of Duty" result="launcher registered successfully"

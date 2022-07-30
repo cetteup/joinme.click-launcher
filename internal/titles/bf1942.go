@@ -35,73 +35,27 @@ var Bf1942 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   bf1942CmdBuilder,
-}
-
-var bf1942CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	var args []string
-	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
-	}
-
-	query := u.Query()
-	if internal.QueryHasMod(query) {
-		mod, err := internal.GetValidModFromQuery(
-			query,
-			config.InstallPath,
-			bf1942ModPathTemplate,
-			software_finder.PathTypeFile,
-			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates)
-		if err != nil {
-			return nil, err
+	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+		var args []string
+		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 		}
 
-		args = append(args, "+game", mod)
-	}
+		query := u.Query()
+		if internal.QueryHasMod(query) {
+			mod, err := internal.GetValidModFromQuery(
+				query,
+				config.InstallPath,
+				bf1942ModPathTemplate,
+				software_finder.PathTypeFile,
+				bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates)
+			if err != nil {
+				return nil, err
+			}
 
-	return args, nil
-}
+			args = append(args, "+game", mod)
+		}
 
-var Bf1942RoadToRome = domain.GameTitle{
-	ProtocolScheme: "bf1942rtr",
-	GameLabel:      "Battlefield 1942: The Road to Rome",
-	FinderConfigs: []software_finder.Config{
-		{
-			ForType:           software_finder.RegistryFinder,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack1",
-			RegistryValueName: "GAMEDIR",
-		},
+		return args, nil
 	},
-	LauncherConfig: game_launcher.Config{
-		DefaultArgs: []string{
-			"+restart", "1",
-			"+game", "XPack1",
-		},
-		ExecutableName:    "BF1942.exe",
-		CloseBeforeLaunch: true,
-	},
-	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   bf1942CmdBuilder,
-}
-
-var Bf1942SecretWeaponsOfWW2 = domain.GameTitle{
-	ProtocolScheme: "bf1942sw",
-	GameLabel:      "Battlefield 1942: Secret Weapons of WWII",
-	FinderConfigs: []software_finder.Config{
-		{
-			ForType:           software_finder.RegistryFinder,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack2",
-			RegistryValueName: "GAMEDIR",
-		},
-	},
-	LauncherConfig: game_launcher.Config{
-		DefaultArgs: []string{
-			"+restart", "1",
-			"+game", "XPack2",
-		},
-		ExecutableName:    "BF1942.exe",
-		CloseBeforeLaunch: true,
-	},
-	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   bf1942CmdBuilder,
 }
