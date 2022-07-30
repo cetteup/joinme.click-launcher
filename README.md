@@ -25,7 +25,9 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 | Vietcong                                 | vietcong://{ip}:{port}  | v0.1.3-alpha              |
 
 ¹ refers to the minimum launcher version supporting all features relevant to the game
+
 ² these addons are considered mods for technical reasons, since they use the same game executable which is launched with different parameters
+
 ³ while technically an addon, it uses a separate game executable and is thus considered a differnt game
 
 ## Usage
