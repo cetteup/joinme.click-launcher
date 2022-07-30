@@ -4,7 +4,7 @@
 
 Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
 
-https://user-images.githubusercontent.com/17167062/182001734-e6d0b6ea-4b5d-4465-a8c2-4a1338b7824c.mp4
+![joinme click-launcher](https://user-images.githubusercontent.com/17167062/182002183-38b134c4-6749-4273-b08b-9147f80b7b81.gif)
 
 ## Supported games
 
