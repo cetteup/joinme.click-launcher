@@ -38,10 +38,10 @@ var Bf1942 = domain.GameTitle{
 	CmdBuilder:   bf1942CmdBuilder,
 }
 
-var bf1942CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config) ([]string, error) {
-	args := []string{
-		"+joinServer", u.Hostname(),
-		"+port", u.Port(),
+var bf1942CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	var args []string
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 	}
 
 	query := u.Query()

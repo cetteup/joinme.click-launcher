@@ -41,7 +41,7 @@ var Bf2 = domain.GameTitle{
 	CmdBuilder:   bf2CmdBuilder,
 }
 
-var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config) ([]string, error) {
+var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 	profileCon, err := internal.GetDefaultUserProfileCon(bf2ProfileFolder)
 	if err != nil {
 		return nil, err
@@ -57,11 +57,9 @@ var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_la
 		return nil, err
 	}
 
-	args := []string{
-		"+joinServer", u.Hostname(),
-		"+port", u.Port(),
-		"+playerName", playerName,
-		"+playerPassword", password,
+	args := []string{"+playerName", playerName, "+playerPassword", password}
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 	}
 
 	query := u.Query()

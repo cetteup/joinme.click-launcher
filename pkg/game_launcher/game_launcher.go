@@ -14,10 +14,14 @@ import (
 )
 
 type LaunchDir int
+type LaunchType int
 
 const (
 	LaunchDirInstallDir LaunchDir = iota
 	LaunchDirBinaryDir
+
+	LaunchTypeLaunchAndJoin LaunchType = iota
+	LaunchTypeLaunchOnly
 )
 
 type Config struct {
@@ -35,7 +39,7 @@ type Config struct {
 
 type URLValidator func(u *url.URL) error
 
-type CommandBuilder func(u *url.URL, config Config) ([]string, error)
+type CommandBuilder func(u *url.URL, config Config, launchType LaunchType) ([]string, error)
 
 func PrepareLaunch(config Config) error {
 	if !config.CloseBeforeLaunch {
@@ -69,8 +73,8 @@ func PrepareLaunch(config Config) error {
 	return nil
 }
 
-func StartGame(u *url.URL, config Config, cmdBuilder CommandBuilder) error {
-	args, err := cmdBuilder(u, config)
+func StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
+	args, err := cmdBuilder(u, config, launchType)
 	if err != nil {
 		return err
 	}

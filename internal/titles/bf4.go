@@ -26,8 +26,12 @@ var Bf4 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.Frostbite3GameIdURLValidator,
-	CmdBuilder: func(u *url.URL, config game_launcher.Config) ([]string, error) {
-		args := append(internal.Frostbite3DefaultArgs, "-gameId", u.Hostname())
+	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+		var args []string
+		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+			args = append(args, internal.Frostbite3DefaultArgs...)
+			args = append(args, "-gameId", u.Hostname())
+		}
 
 		offerIDs := []string{"1007968", "1011575", "1011576", "1011577", "1010268", "1010269", "1010270", "1010271", "1010958", "1010959", "1010960", "1010961", "1007077", "1016751", "1016757", "1016754", "1015365", "1015364", "1015363", "1015362"}
 		originURL := internal.BuildOriginURL(offerIDs, args)

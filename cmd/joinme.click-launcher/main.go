@@ -92,7 +92,7 @@ func main() {
 				Msg("Checked status for")
 		}
 	} else if len(args) == 1 {
-		err := gameRouter.StartGame(args[0])
+		err := gameRouter.RunURL(args[0])
 		if err != nil {
 			log.Error().
 				Err(err).

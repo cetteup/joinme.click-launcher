@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
@@ -13,6 +14,9 @@ import (
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 	"golang.org/x/sys/windows/registry"
 )
+
+type Action int
+type ActionPathKey string
 
 const (
 	RegPathSoftware   = "SOFTWARE"
@@ -22,6 +26,13 @@ const (
 	RegPathCommand    = "command"
 	RegKeyDefault     = ""
 	RegKeyURLProtocol = "URL Protocol"
+
+	ActionUrlHostname = "act"
+
+	ActionLaunchAndJoin Action = iota
+	ActionLaunchOnly
+
+	ActionPathKeyLaunch ActionPathKey = "launch"
 )
 
 type RegistryRepository interface {
@@ -194,7 +205,7 @@ func (r GameRouter) getHandlerCommand() (string, error) {
 	return fmt.Sprintf("\"%s\" \"%%1\"", launcherPath), nil
 }
 
-func (r GameRouter) StartGame(commandLineUrl string) error {
+func (r GameRouter) RunURL(commandLineUrl string) error {
 	u, err := url.Parse(commandLineUrl)
 	if err != nil {
 		return err
@@ -205,8 +216,26 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 		return fmt.Errorf("game not supported: %s", u.Scheme)
 	}
 
-	if err = gameTitle.URLValidator(u); err != nil {
+	action, err := r.getActionFromURL(u)
+	if err != nil {
 		return err
+	}
+
+	switch action {
+	case ActionLaunchOnly:
+		return r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchOnly)
+	default:
+		return r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchAndJoin)
+	}
+}
+
+func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType game_launcher.LaunchType) error {
+	// Only join url use/require URL parameters, so only validate those
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		err := gameTitle.URLValidator(u)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Build final launcher config
@@ -214,21 +243,43 @@ func (r GameRouter) StartGame(commandLineUrl string) error {
 	if gameTitle.RequiresPlatformClient() {
 		launcherConfig.ExecutableName = gameTitle.PlatformClient.LauncherConfig.ExecutableName
 		launcherConfig.ExecutablePath = gameTitle.PlatformClient.LauncherConfig.ExecutablePath
-		launcherConfig.InstallPath, err = r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
+		installPath, err := r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
+		if err != nil {
+			return err
+		}
+		launcherConfig.InstallPath = installPath
 	} else {
-		launcherConfig.InstallPath, err = r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
-	}
-	if err != nil {
-		return err
+		installPath, err := r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
+		if err != nil {
+			return err
+		}
+		launcherConfig.InstallPath = installPath
 	}
 
 	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
-	if err = game_launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
+	if err := game_launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
 		return err
 	}
-	if err = game_launcher.StartGame(u, launcherConfig, gameTitle.CmdBuilder); err != nil {
+	if err := game_launcher.StartGame(u, launcherConfig, launchType, gameTitle.CmdBuilder); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (r GameRouter) getActionFromURL(u *url.URL) (Action, error) {
+	if !r.isActionURL(u) {
+		return ActionLaunchAndJoin, nil
+	}
+
+	switch strings.TrimPrefix(u.Path, "/") {
+	case string(ActionPathKeyLaunch):
+		return ActionLaunchOnly, nil
+	default:
+		return 0, fmt.Errorf("action not supported: %s", u.Path)
+	}
+}
+
+func (r GameRouter) isActionURL(u *url.URL) bool {
+	return u.Hostname() == ActionUrlHostname
 }
