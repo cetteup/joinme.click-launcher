@@ -11,7 +11,7 @@ const (
 	PlatformOrigin Platform = "Origin"
 )
 
-type Client struct {
+type PlatformClient struct {
 	Platform       Platform
 	FinderConfig   software_finder.Config
 	LauncherConfig game_launcher.Config

@@ -9,7 +9,7 @@ import (
 type GameTitle struct {
 	ProtocolScheme string
 	GameLabel      string
-	PlatformClient *Client
+	PlatformClient *PlatformClient
 	FinderConfigs  []software_finder.Config
 	LauncherConfig game_launcher.Config
 	URLValidator   game_launcher.URLValidator

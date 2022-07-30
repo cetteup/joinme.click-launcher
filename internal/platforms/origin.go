@@ -6,7 +6,7 @@ import (
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
 
-var OriginClient = domain.Client{
+var OriginClient = domain.PlatformClient{
 	Platform: domain.PlatformOrigin,
 	FinderConfig: software_finder.Config{
 		ForType:           software_finder.RegistryFinder,
