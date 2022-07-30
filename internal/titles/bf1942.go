@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	bf1942ModBasePath           = "Mods"
+	bf1942ModPathTemplate       = "Mods\\%s\\lexiconAll.dat"
 	bf1942ModRoadToRome         = "Xpack1"
 	bf1942ModSecretWeaponsOfWW2 = "Xpack2"
 	bf1942Mod1918               = "bf1918"
@@ -49,9 +49,9 @@ var bf1942CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game
 		mod, err := internal.GetValidModFromQuery(
 			query,
 			config.InstallPath,
-			bf1942ModBasePath,
-			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates,
-		)
+			bf1942ModPathTemplate,
+			software_finder.PathTypeFile,
+			bf1942ModRoadToRome, bf1942ModSecretWeaponsOfWW2, bf1942Mod1918, bf1942ModDesertCombat, bf1942ModDCFinal, bf1942ModPirates)
 		if err != nil {
 			return nil, err
 		}

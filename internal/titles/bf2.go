@@ -12,7 +12,7 @@ import (
 
 const (
 	bf2ProfileFolder    = "Battlefield 2"
-	bf2ModBasePath      = "mods"
+	bf2ModPathTemplate  = "mods\\%s\\Common_client.zip"
 	bf2ModSpecialForces = "xpack"
 	bf2ModAIX2          = "AIX2"
 	bf2ModPirates       = "bfp2"
@@ -66,7 +66,13 @@ var bf2CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_la
 
 	query := u.Query()
 	if internal.QueryHasMod(query) {
-		mod, err := internal.GetValidModFromQuery(query, config.InstallPath, bf2ModBasePath, bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2)
+		mod, err := internal.GetValidModFromQuery(
+			query,
+			config.InstallPath,
+			bf2ModPathTemplate,
+			software_finder.PathTypeFile,
+			bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2,
+		)
 		if err != nil {
 			return nil, err
 		}

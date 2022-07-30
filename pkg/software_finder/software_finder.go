@@ -77,7 +77,7 @@ func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, err
 }
 
 func (f SoftwareFinder) isInstalledAccordingToCustomPath(config Config) (bool, error) {
-	return IsValidDirPath(config.CustomInstallPath)
+	return DirExists(config.CustomInstallPath)
 }
 
 func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
@@ -106,7 +106,7 @@ func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
 	// Also validates paths found in registry also exist on disk
 	pathCandidates := []string{path, filepath.Dir(path)}
 	for _, candidate := range pathCandidates {
-		isDir, err := IsValidDirPath(candidate)
+		isDir, err := DirExists(candidate)
 		if err != nil {
 			return "", err
 		}

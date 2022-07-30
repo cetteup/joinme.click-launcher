@@ -5,7 +5,14 @@ import (
 	"os"
 )
 
-func IsValidDirPath(path string) (bool, error) {
+type PathType int
+
+const (
+	PathTypeFile = iota
+	PathTypeDir
+)
+
+func PathExistsAndIsType(path string, expect PathType) (bool, error) {
 	info, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -14,5 +21,13 @@ func IsValidDirPath(path string) (bool, error) {
 		return false, err
 	}
 
-	return info.IsDir(), nil
+	return expect == PathTypeFile && !info.IsDir() || expect == PathTypeDir && info.IsDir(), nil
+}
+
+func DirExists(path string) (bool, error) {
+	existsAndIsType, err := PathExistsAndIsType(path, PathTypeDir)
+	if err != nil {
+		return false, err
+	}
+	return existsAndIsType, nil
 }

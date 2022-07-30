@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	bfVietnamModBasePath      = "Mods"
+	bfVietnamModPathTemplate  = "Mods\\%s\\lexiconAll.dat"
 	bfVietnamModBattlegroup42 = "Battlegroup42"
 )
 
@@ -38,7 +38,13 @@ var BfVietnam = domain.GameTitle{
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(query, config.InstallPath, bfVietnamModBasePath, bfVietnamModBattlegroup42)
+			mod, err := internal.GetValidModFromQuery(
+				query,
+				config.InstallPath,
+				bfVietnamModPathTemplate,
+				software_finder.PathTypeFile,
+				bfVietnamModBattlegroup42,
+			)
 			if err != nil {
 				return nil, err
 			}

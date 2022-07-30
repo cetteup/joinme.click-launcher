@@ -222,7 +222,7 @@ func QueryHasMod(query url.Values) bool {
 	return query != nil && query.Has(urlQueryKeyMod)
 }
 
-func GetValidModFromQuery(query url.Values, installPath string, modBasePath string, supportedMods ...string) (string, error) {
+func GetValidModFromQuery(query url.Values, installPath string, modPathTemplate string, pathType software_finder.PathType, supportedMods ...string) (string, error) {
 	givenMod := query.Get(urlQueryKeyMod)
 	if givenMod == "" {
 		return "", fmt.Errorf("query does not contain a mod")
@@ -240,8 +240,9 @@ func GetValidModFromQuery(query url.Values, installPath string, modBasePath stri
 		return "", fmt.Errorf("mod not supported: %s", givenMod)
 	}
 
-	modPath := filepath.Join(installPath, modBasePath, mod)
-	installed, err := software_finder.IsValidDirPath(modPath)
+	// Join game install path with "rendered" mod path template
+	verifyPath := filepath.Join(installPath, fmt.Sprintf(modPathTemplate, givenMod))
+	installed, err := software_finder.PathExistsAndIsType(verifyPath, pathType)
 	if err != nil {
 		return "", fmt.Errorf("failed to determine whether %s mod is installed: %e", mod, err)
 	}

@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	paraworldModBasePath    = "Data"
-	paraworldModBoosterPack = "BoosterPack1"
-	paraworldModMirage      = "MIRAGE"
+	paraworldModPathTemplate = "Data\\%s\\UI\\All_def.txt"
+	paraworldModBoosterPack  = "BoosterPack1"
+	paraworldModMirage       = "MIRAGE"
 )
 
 var Paraworld = domain.GameTitle{
@@ -41,7 +41,13 @@ var Paraworld = domain.GameTitle{
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(query, config.InstallPath, paraworldModBasePath, paraworldModBoosterPack, paraworldModMirage)
+			mod, err := internal.GetValidModFromQuery(
+				query,
+				config.InstallPath,
+				paraworldModPathTemplate,
+				software_finder.PathTypeFile,
+				paraworldModBoosterPack, paraworldModMirage,
+			)
 			if err != nil {
 				return nil, err
 			}
