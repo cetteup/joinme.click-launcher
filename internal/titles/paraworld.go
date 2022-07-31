@@ -37,7 +37,7 @@ var Paraworld = domain.GameTitle{
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		var args []string
+		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 			args = append(args, "-autoconnect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port()))
 		}

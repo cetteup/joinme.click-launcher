@@ -27,7 +27,7 @@ var Bf4 = domain.GameTitle{
 	},
 	URLValidator: internal.Frostbite3GameIdURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		var args []string
+		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 			args = append(args, internal.Frostbite3DefaultArgs...)
 			args = append(args, "-gameId", u.Hostname())

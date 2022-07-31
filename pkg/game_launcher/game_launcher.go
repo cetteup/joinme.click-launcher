@@ -79,8 +79,6 @@ func StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder Comm
 		return err
 	}
 
-	args = append(args, config.DefaultArgs...)
-
 	path := filepath.Join(config.InstallPath, config.ExecutablePath, config.ExecutableName)
 
 	dir := config.InstallPath

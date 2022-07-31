@@ -54,7 +54,7 @@ var Bf2 = domain.GameTitle{
 			return nil, err
 		}
 
-		args := []string{"+playerName", playerName, "+playerPassword", password}
+		args := append(config.DefaultArgs, "+playerName", playerName, "+playerPassword", password)
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 		}

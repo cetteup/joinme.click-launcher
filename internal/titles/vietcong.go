@@ -26,7 +26,7 @@ var Vietcong = domain.GameTitle{
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			return []string{"-ip", u.Hostname(), "-port", u.Port()}, nil
+			return append(config.DefaultArgs, "-ip", u.Hostname(), "-port", u.Port()), nil
 		}
 		return nil, nil
 	},
