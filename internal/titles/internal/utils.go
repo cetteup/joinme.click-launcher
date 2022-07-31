@@ -155,10 +155,10 @@ func ParseConFile(content []byte) map[string]string {
 	for _, line := range lines {
 		elements := strings.SplitN(line, " ", 2)
 
-		// TODO do something other than ignoring any invalid lines hereß
+		// TODO do something other than ignoring any invalid lines here?
 		if len(elements) == 2 {
 			// Add key, value or append to value
-			value := strings.ReplaceAll(elements[1], "\"", "")
+			value := strings.Trim(elements[1], "\"")
 			current, exists := parsed[elements[0]]
 			if exists {
 				value = strings.Join([]string{current, value}, ",")
