@@ -2,7 +2,7 @@ module github.com/cetteup/joinme.click-launcher
 
 go 1.18
 
-require golang.org/x/sys v0.0.0-20220731174439-a90be440212d
+require golang.org/x/sys v0.0.0-20220804214406-8e32c043e418
 
 require (
 	github.com/mitchellh/go-ps v1.0.0
