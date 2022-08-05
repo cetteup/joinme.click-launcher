@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
-	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
+	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
@@ -29,6 +30,57 @@ var Bf2 = domain.GameTitle{
 			RegistryValueName: "InstallDir",
 		},
 	},
+	Mods: []domain.GameMod{
+		domain.MakeMod(
+			"Special Forces",
+			bf2ModSpecialForces,
+			[]software_finder.Config{
+				{
+					ForType:           software_finder.RegistryFinder,
+					RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
+					RegistryValueName: "InstallDir",
+				},
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, bf2ModSpecialForces),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+		domain.MakeMod(
+			"Allied Intent Xtended",
+			bf2ModAIX2,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, bf2ModAIX2),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+		domain.MakeMod(
+			"Pirates (Yarr2)",
+			bf2ModPirates,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, bf2ModPirates),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+		domain.MakeMod(
+			"Point of Existence 2",
+			bf2ModPoE2,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, bf2ModPoE2),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+	},
 	LauncherConfig: game_launcher.Config{
 		DefaultArgs: []string{
 			"+menu", "1",
@@ -37,19 +89,19 @@ var Bf2 = domain.GameTitle{
 		ExecutableName:    "BF2.exe",
 		CloseBeforeLaunch: true,
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		profileCon, err := internal.GetDefaultUserProfileCon(bf2ProfileFolder)
+		profileCon, err := localinternal.GetDefaultUserProfileCon(bf2ProfileFolder)
 		if err != nil {
 			return nil, err
 		}
 
-		playerName, encryptedPassword, err := internal.GetEncryptedProfileConLogin(profileCon)
+		playerName, encryptedPassword, err := localinternal.GetEncryptedProfileConLogin(profileCon)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
 		}
 
-		password, err := internal.DecryptProfileConPassword(encryptedPassword)
+		password, err := localinternal.DecryptProfileConPassword(encryptedPassword)
 		if err != nil {
 			return nil, err
 		}
@@ -61,19 +113,8 @@ var Bf2 = domain.GameTitle{
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(
-				query,
-				config.InstallPath,
-				bf2ModPathTemplate,
-				software_finder.PathTypeFile,
-				bf2ModSpecialForces, bf2ModAIX2, bf2ModPirates, bf2ModPoE2,
-			)
-			if err != nil {
-				return nil, err
-			}
-
 			args = append(args,
-				"+modPath", fmt.Sprintf("mods/%s", mod),
+				"+modPath", fmt.Sprintf("mods/%s", internal.GetModFromQuery(query)),
 				"+ignoreAsserts", "1",
 			)
 		}

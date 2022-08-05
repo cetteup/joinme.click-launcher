@@ -3,7 +3,6 @@ package internal
 import (
 	"encoding/hex"
 	"fmt"
-	"net"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -13,7 +12,6 @@ import (
 	"unicode"
 	"unsafe"
 
-	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 	"golang.org/x/sys/windows"
 )
 
@@ -33,8 +31,6 @@ const (
 	ProfilePasswordConKey            = "LocalProfile.setPassword"
 	// ProfileNumberMaxLength BF2 only uses 4 digit profile numbers
 	ProfileNumberMaxLength = 4
-	portMin                = 1
-	portMax                = 65535
 )
 
 var (
@@ -216,55 +212,4 @@ func BuildOriginURL(offerIDs []string, args []string) string {
 		RawQuery: params.Encode(),
 	}
 	return u.String()
-}
-
-func QueryHasMod(query url.Values) bool {
-	return query != nil && query.Has(urlQueryKeyMod)
-}
-
-func GetValidModFromQuery(query url.Values, installPath string, modPathTemplate string, pathType software_finder.PathType, supportedMods ...string) (string, error) {
-	givenMod := query.Get(urlQueryKeyMod)
-	if givenMod == "" {
-		return "", fmt.Errorf("query does not contain a mod")
-	}
-
-	var mod string
-	for _, supportedMod := range supportedMods {
-		if strings.EqualFold(givenMod, supportedMod) {
-			mod = supportedMod
-			break
-		}
-	}
-
-	if mod == "" {
-		return "", fmt.Errorf("mod not supported: %s", givenMod)
-	}
-
-	// Join game install path with "rendered" mod path template
-	verifyPath := filepath.Join(installPath, fmt.Sprintf(modPathTemplate, givenMod))
-	installed, err := software_finder.PathExistsAndIsType(verifyPath, pathType)
-	if err != nil {
-		return "", fmt.Errorf("failed to determine whether %s mod is installed: %e", mod, err)
-	}
-	if !installed {
-		return "", fmt.Errorf("mod not installed: %s", mod)
-	}
-
-	return mod, nil
-}
-
-func IsValidIPv4(input string) bool {
-	ip := net.ParseIP(input)
-	if ip == nil {
-		return false
-	}
-	return ip.To4() != nil && ip.IsGlobalUnicast()
-}
-
-func IsValidPort(input string) bool {
-	portAsInt, err := strconv.ParseInt(input, 10, 32)
-	if err != nil {
-		return false
-	}
-	return portAsInt >= portMin && portAsInt <= portMax
 }

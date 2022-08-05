@@ -42,7 +42,7 @@ func TestIPPortURLValidator(t *testing.T) {
 		{
 			name: "error for invalid port",
 			prepareURL: func(u *url.URL) {
-				u.Host = net.JoinHostPort(u.Hostname(), strconv.Itoa(portMax+1))
+				u.Host = net.JoinHostPort(u.Hostname(), strconv.Itoa(65536))
 			},
 			wantErrContains: "url port is not a valid network port",
 		},

@@ -12,6 +12,7 @@ import (
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/router"
 	"github.com/cetteup/joinme.click-launcher/internal/titles"
+	"github.com/cetteup/joinme.click-launcher/pkg/file_repository"
 	"github.com/cetteup/joinme.click-launcher/pkg/registry_repository"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 	"github.com/rs/zerolog"
@@ -27,8 +28,9 @@ func init() {
 	}
 
 	registryRepository := registry_repository.NewRegistryRepository()
+	fileRepository := file_repository.NewFileRepository()
 
-	gameFinder := software_finder.NewSoftwareFinder(registryRepository)
+	gameFinder := software_finder.NewSoftwareFinder(registryRepository, fileRepository)
 	gameRouter = router.NewGameRouter(registryRepository, gameFinder)
 	gameRouter.AddTitle(titles.Bf1942)
 	gameRouter.AddTitle(titles.BfVietnam)

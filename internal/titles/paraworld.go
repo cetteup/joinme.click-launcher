@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
-	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
+	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
@@ -26,6 +27,30 @@ var Paraworld = domain.GameTitle{
 			RegistryValueName: "InstallDir",
 		},
 	},
+	Mods: []domain.GameMod{
+		domain.MakeMod(
+			"Booster pack",
+			paraworldModBoosterPack,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(paraworldModPathTemplate, paraworldModBoosterPack),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+		domain.MakeMod(
+			"Mirage",
+			paraworldModMirage,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(paraworldModPathTemplate, paraworldModMirage),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+	},
 	LauncherConfig: game_launcher.Config{
 		ExecutableName:    "Paraworld.exe",
 		ExecutablePath:    "bin",
@@ -35,7 +60,7 @@ var Paraworld = domain.GameTitle{
 			"PWServer.exe": true,
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
@@ -44,18 +69,7 @@ var Paraworld = domain.GameTitle{
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(
-				query,
-				config.InstallPath,
-				paraworldModPathTemplate,
-				software_finder.PathTypeFile,
-				paraworldModBoosterPack, paraworldModMirage,
-			)
-			if err != nil {
-				return nil, err
-			}
-
-			args = append(args, "-enable", mod)
+			args = append(args, "-enable", internal.GetModFromQuery(query))
 		}
 		return args, nil
 	},

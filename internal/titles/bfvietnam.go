@@ -1,10 +1,12 @@
 package titles
 
 import (
+	"fmt"
 	"net/url"
 
+	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
-	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
+	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
@@ -24,12 +26,25 @@ var BfVietnam = domain.GameTitle{
 			RegistryValueName: "GAMEDIR",
 		},
 	},
+	Mods: []domain.GameMod{
+		domain.MakeMod(
+			"Battlegroup 42",
+			bfVietnamModBattlegroup42,
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bfVietnamModPathTemplate, bfVietnamModBattlegroup42),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
+	},
 	LauncherConfig: game_launcher.Config{
 		DefaultArgs:       []string{"+restart", "1"},
 		ExecutableName:    "BfVietnam.exe",
 		CloseBeforeLaunch: true,
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
@@ -38,18 +53,7 @@ var BfVietnam = domain.GameTitle{
 
 		query := u.Query()
 		if internal.QueryHasMod(query) {
-			mod, err := internal.GetValidModFromQuery(
-				query,
-				config.InstallPath,
-				bfVietnamModPathTemplate,
-				software_finder.PathTypeFile,
-				bfVietnamModBattlegroup42,
-			)
-			if err != nil {
-				return nil, err
-			}
-
-			args = append(args, "+game", mod)
+			args = append(args, "+game", internal.GetModFromQuery(query))
 		}
 
 		return args, nil

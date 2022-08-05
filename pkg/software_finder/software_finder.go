@@ -8,33 +8,45 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-type Type string
+type FinderType string
+type PathType int
 
 const (
-	RegistryFinder   Type = "RegistryFinder"
-	CustomPathFinder Type = "CustomPathFinder"
+	RegistryFinder FinderType = "RegistryFinder"
+	PathFinder     FinderType = "PathFinder"
+
+	PathTypeFile = iota
+	PathTypeDir
 )
 
-type RegistryRepository interface {
+type registryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
 	SetStringValue(k registry.Key, path string, valueName string, value string) error
 	CreateKey(k registry.Key, path string) error
 }
 
+type fileRepository interface {
+	FileExists(path string) (bool, error)
+	DirExists(path string) (bool, error)
+}
+
 type Config struct {
-	ForType           Type
+	ForType           FinderType
 	RegistryPath      string
 	RegistryValueName string
-	CustomInstallPath string
+	InstallPath       string
+	PathType          PathType
 }
 
 type SoftwareFinder struct {
-	repository RegistryRepository
+	registryRepository registryRepository
+	fileRepository     fileRepository
 }
 
-func NewSoftwareFinder(repository RegistryRepository) *SoftwareFinder {
+func NewSoftwareFinder(repository registryRepository, fileRepository fileRepository) *SoftwareFinder {
 	return &SoftwareFinder{
-		repository: repository,
+		registryRepository: repository,
+		fileRepository:     fileRepository,
 	}
 }
 
@@ -56,8 +68,8 @@ func (f SoftwareFinder) IsInstalledAnywhere(configs []Config) (bool, error) {
 
 func (f SoftwareFinder) IsInstalled(config Config) (bool, error) {
 	switch config.ForType {
-	case CustomPathFinder:
-		return f.isInstalledAccordingToCustomPath(config)
+	case PathFinder:
+		return f.isInstalledAccordingToPath(config)
 	default:
 		return f.isInstalledAccordingToRegistry(config)
 	}
@@ -76,8 +88,15 @@ func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, err
 	return true, nil
 }
 
-func (f SoftwareFinder) isInstalledAccordingToCustomPath(config Config) (bool, error) {
-	return DirExists(config.CustomInstallPath)
+func (f SoftwareFinder) isInstalledAccordingToPath(config Config) (bool, error) {
+	switch config.PathType {
+	case PathTypeFile:
+		return f.fileRepository.FileExists(config.InstallPath)
+	case PathTypeDir:
+		return f.fileRepository.DirExists(config.InstallPath)
+	default:
+		return false, fmt.Errorf("unsupported path type: %d", config.PathType)
+	}
 }
 
 func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
@@ -106,7 +125,7 @@ func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
 	// Also validates paths found in registry also exist on disk
 	pathCandidates := []string{path, filepath.Dir(path)}
 	for _, candidate := range pathCandidates {
-		isDir, err := DirExists(candidate)
+		isDir, err := f.fileRepository.DirExists(candidate)
 		if err != nil {
 			return "", err
 		}
@@ -121,13 +140,24 @@ func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
 
 func (f SoftwareFinder) getInstallDir(config Config) (string, error) {
 	switch config.ForType {
-	case CustomPathFinder:
-		return config.CustomInstallPath, nil
+	case PathFinder:
+		return f.getInstallDirFromPath(config)
 	default:
 		return f.getInstallDirFromRegistry(config)
 	}
 }
 
+func (f SoftwareFinder) getInstallDirFromPath(config Config) (string, error) {
+	switch config.PathType {
+	case PathTypeFile:
+		return filepath.Dir(config.InstallPath), nil
+	case PathTypeDir:
+		return config.InstallPath, nil
+	default:
+		return "", fmt.Errorf("unsupported path type: %d", config.PathType)
+	}
+}
+
 func (f SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
-	return f.repository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
+	return f.registryRepository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
 }

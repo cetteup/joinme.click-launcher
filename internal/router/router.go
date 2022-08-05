@@ -216,6 +216,10 @@ func (r GameRouter) RunURL(commandLineUrl string) error {
 		return fmt.Errorf("game not supported: %s", u.Scheme)
 	}
 
+	if err = r.ensurePrerequisites(gameTitle, u); err != nil {
+		return err
+	}
+
 	action, err := r.getActionFromURL(u)
 	if err != nil {
 		return err
@@ -227,6 +231,75 @@ func (r GameRouter) RunURL(commandLineUrl string) error {
 	default:
 		return r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchAndJoin)
 	}
+}
+
+func (r GameRouter) ensurePrerequisites(gameTitle domain.GameTitle, u *url.URL) error {
+	if err := r.ensureGameIsInstalled(gameTitle); err != nil {
+		return err
+	}
+	if err := r.ensurePlatformClientIsInstalledIfRequired(gameTitle); err != nil {
+		return err
+	}
+	if err := r.ensureModIsSupportedAndInstalledIfGiven(gameTitle, u); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r GameRouter) ensureGameIsInstalled(gameTitle domain.GameTitle) error {
+	gameInstalled, err := r.finder.IsInstalledAnywhere(gameTitle.FinderConfigs)
+	if err != nil {
+		return err
+	}
+	if !gameInstalled {
+		return fmt.Errorf("game not installed")
+	}
+
+	return nil
+}
+
+func (r GameRouter) ensurePlatformClientIsInstalledIfRequired(gameTitle domain.GameTitle) error {
+	if !gameTitle.RequiresPlatformClient() {
+		return nil
+	}
+
+	clientInstalled, err := r.finder.IsInstalled(gameTitle.PlatformClient.FinderConfig)
+	if err != nil {
+		return err
+	}
+	if !clientInstalled {
+		return fmt.Errorf("required platform client not installed: %s", gameTitle.PlatformClient.Platform)
+	}
+
+	return nil
+}
+
+func (r GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.GameTitle, u *url.URL) error {
+	query := u.Query()
+	if !internal.QueryHasMod(query) {
+		return nil
+	}
+
+	slug := internal.GetModFromQuery(query)
+	mod := gameTitle.GetMod(slug)
+	if mod == nil {
+		return fmt.Errorf("mod not supported: %s", slug)
+	}
+
+	gameInstallPath, err := r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
+	if err != nil {
+		return err
+	}
+	modInstalled, err := r.finder.IsInstalledAnywhere(mod.ComputeFinderConfigs(gameInstallPath))
+	if err != nil {
+		return err
+	}
+	if !modInstalled {
+		return fmt.Errorf("mod not installed: %s (%s)", mod.Name, strings.ToLower(mod.Slug))
+	}
+
+	return nil
 }
 
 func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType game_launcher.LaunchType) error {
