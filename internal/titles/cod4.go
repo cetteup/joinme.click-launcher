@@ -8,8 +8,8 @@ import (
 )
 
 var Cod4 = domain.GameTitle{
+	Name:           "Call of Duty 4: Modern Warfare",
 	ProtocolScheme: "cod4",
-	GameLabel:      "Call of Duty 4: Modern Warfare",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

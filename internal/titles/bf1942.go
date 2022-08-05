@@ -20,8 +20,8 @@ const (
 )
 
 var Bf1942 = domain.GameTitle{
+	Name:           "Battlefield 1942",
 	ProtocolScheme: "bf1942",
-	GameLabel:      "Battlefield 1942",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

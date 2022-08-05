@@ -11,8 +11,8 @@ import (
 )
 
 var Swat4 = domain.GameTitle{
+	Name:           "SWAT 4",
 	ProtocolScheme: "swat4",
-	GameLabel:      "SWAT 4",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
@@ -43,8 +43,8 @@ var swat4CmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_
 }
 
 var Swat4X = domain.GameTitle{
+	Name:           "SWAT 4: The Stetchkov Syndicate",
 	ProtocolScheme: "swat4x",
-	GameLabel:      "SWAT 4: The Stetchkov Syndicate",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

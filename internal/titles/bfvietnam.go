@@ -15,8 +15,8 @@ const (
 )
 
 var BfVietnam = domain.GameTitle{
+	Name:           "Battlefield Vietnam",
 	ProtocolScheme: "bfvietnam",
-	GameLabel:      "Battlefield Vietnam",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

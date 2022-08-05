@@ -161,7 +161,7 @@ func (r GameRouter) RegisterHandler(gameTitle domain.GameTitle) error {
 		return err
 	}
 
-	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyDefault, fmt.Sprintf("URL:%s protocol", gameTitle.GameLabel))
+	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyDefault, fmt.Sprintf("URL:%s protocol", gameTitle.Name))
 	if err != nil {
 		return err
 	}

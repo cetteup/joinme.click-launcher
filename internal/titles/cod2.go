@@ -8,8 +8,8 @@ import (
 )
 
 var Cod2 = domain.GameTitle{
+	Name:           "Call of Duty 2",
 	ProtocolScheme: "cod2",
-	GameLabel:      "Call of Duty 2",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

@@ -7,8 +7,8 @@ import (
 )
 
 type GameTitle struct {
+	Name           string
 	ProtocolScheme string
-	GameLabel      string
 	PlatformClient *PlatformClient
 	FinderConfigs  []software_finder.Config
 	LauncherConfig game_launcher.Config

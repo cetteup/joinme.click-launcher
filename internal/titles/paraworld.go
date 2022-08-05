@@ -17,8 +17,8 @@ const (
 )
 
 var Paraworld = domain.GameTitle{
+	Name:           "ParaWorld",
 	ProtocolScheme: "paraworld",
-	GameLabel:      "ParaWorld",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

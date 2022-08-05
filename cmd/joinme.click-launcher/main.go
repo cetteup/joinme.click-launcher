@@ -84,7 +84,7 @@ func main() {
 			}
 			log.Info().
 				Err(result.Error).
-				Str("game", result.Title.GameLabel).
+				Str("game", result.Title.Name).
 				Str("result", message).
 				Msg("Checked status for")
 		}

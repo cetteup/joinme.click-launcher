@@ -8,8 +8,8 @@ import (
 )
 
 var Cod = domain.GameTitle{
+	Name:           "Call of Duty",
 	ProtocolScheme: "cod",
-	GameLabel:      "Call of Duty",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
@@ -26,8 +26,8 @@ var Cod = domain.GameTitle{
 }
 
 var CodUO = domain.GameTitle{
+	Name:           "Call of Duty: United Offensive",
 	ProtocolScheme: "coduo",
-	GameLabel:      "Call of Duty: United Offensive",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

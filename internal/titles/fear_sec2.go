@@ -11,8 +11,8 @@ import (
 )
 
 var FearSec2 = domain.GameTitle{
+	Name:           "F.E.A.R. Combat (SEC2)",
 	ProtocolScheme: "fearsec2",
-	GameLabel:      "F.E.A.R. Combat (SEC2)",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

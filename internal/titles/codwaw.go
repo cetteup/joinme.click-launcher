@@ -8,8 +8,8 @@ import (
 )
 
 var CodWaw = domain.GameTitle{
+	Name:           "Call of Duty: World at War",
 	ProtocolScheme: "codwaw",
-	GameLabel:      "Call of Duty: World at War",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

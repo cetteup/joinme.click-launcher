@@ -11,8 +11,8 @@ import (
 )
 
 var Bf1 = domain.GameTitle{
+	Name:           "Battlefield 1",
 	ProtocolScheme: "bf1",
-	GameLabel:      "Battlefield 1",
 	PlatformClient: &platforms.OriginClient,
 	FinderConfigs: []software_finder.Config{
 		{

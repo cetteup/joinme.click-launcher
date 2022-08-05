@@ -10,8 +10,8 @@ import (
 )
 
 var Vietcong = domain.GameTitle{
+	Name:           "Vietcong",
 	ProtocolScheme: "vietcong",
-	GameLabel:      "Vietcong",
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
