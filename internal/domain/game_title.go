@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -58,6 +59,13 @@ func (t GameTitle) GetMod(slug string) *GameMod {
 	return nil
 }
 
+func (t *GameTitle) String() string {
+	if t == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%s (%s)", t.Name, t.ProtocolScheme)
+}
+
 func MakeMod(name string, slug string, finderConfigs []software_finder.Config) GameMod {
 	return GameMod{
 		Name:          name,
@@ -84,4 +92,11 @@ func (m GameMod) ComputeFinderConfigs(gameInstallPath string) []software_finder.
 		computedConfigs = append(computedConfigs, config)
 	}
 	return computedConfigs
+}
+
+func (m *GameMod) String() string {
+	if m == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%s (%s)", m.Name, strings.ToLower(m.Slug))
 }

@@ -212,31 +212,31 @@ func (r GameRouter) getHandlerCommand() (string, error) {
 	return fmt.Sprintf("\"%s\" \"%%1\"", launcherPath), nil
 }
 
-func (r GameRouter) RunURL(commandLineUrl string) error {
+func (r GameRouter) RunURL(commandLineUrl string) (*domain.GameTitle, error) {
 	u, err := url.Parse(commandLineUrl)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	gameTitle, ok := r.GameTitles[u.Scheme]
 	if !ok {
-		return fmt.Errorf("game not supported: %s", u.Scheme)
+		return nil, fmt.Errorf("game not supported: %s", u.Scheme)
 	}
 
 	if err = r.ensurePrerequisites(gameTitle, u); err != nil {
-		return err
+		return &gameTitle, err
 	}
 
 	action, err := r.getActionFromURL(u)
 	if err != nil {
-		return err
+		return &gameTitle, err
 	}
 
 	switch action {
 	case ActionLaunchOnly:
-		return r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchOnly)
+		return &gameTitle, r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchOnly)
 	default:
-		return r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchAndJoin)
+		return &gameTitle, r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchAndJoin)
 	}
 }
 
@@ -303,7 +303,7 @@ func (r GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.Gam
 		return err
 	}
 	if !modInstalled {
-		return fmt.Errorf("mod not installed: %s (%s)", mod.Name, strings.ToLower(mod.Slug))
+		return fmt.Errorf("mod not installed: %s", mod.Name)
 	}
 
 	return nil

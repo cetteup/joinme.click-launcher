@@ -93,16 +93,18 @@ func main() {
 				Msg("Checked status for")
 		}
 	} else if len(args) == 1 {
-		err := gameRouter.RunURL(args[0])
+		title, err := gameRouter.RunURL(args[0])
 		if err != nil {
 			log.Error().
 				Err(err).
+				Str("game", title.String()).
 				Str("url", args[0]).
 				Msg("Game could not be launched")
 		} else {
 			log.Info().
+				Str("game", title.String()).
 				Str("url", args[0]).
-				Msg("Successfully launched game")
+				Msg("Game launched")
 		}
 	}
 
