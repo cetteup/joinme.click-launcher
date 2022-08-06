@@ -115,7 +115,7 @@ var Bf1942 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: localinternal.IPPortURLValidator,
-	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())

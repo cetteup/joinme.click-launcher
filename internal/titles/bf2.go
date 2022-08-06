@@ -90,7 +90,7 @@ var Bf2 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: localinternal.IPPortURLValidator,
-	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		profileCon, err := localinternal.GetDefaultUserProfileCon(bf2ProfileFolder)
 		if err != nil {
 			return nil, err

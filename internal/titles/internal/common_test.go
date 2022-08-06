@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -145,13 +146,15 @@ func TestPlusConnectCmdBuilder(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// GIVEN
+			ctrl := gomock.NewController(t)
+			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: tt.givenHost}
 			config := game_launcher.Config{
 				DefaultArgs: tt.givenDefaultArgs,
 			}
 
 			// WHEN
-			cmd, err := PlusConnectCmdBuilder(u, config, tt.givenLaunchType)
+			cmd, err := PlusConnectCmdBuilder(mockRepository, u, config, tt.givenLaunchType)
 
 			// THEN
 			require.NoError(t, err)

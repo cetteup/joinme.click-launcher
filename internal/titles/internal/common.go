@@ -51,7 +51,7 @@ var Frostbite3DefaultArgs = []string{
 	"-joinWithParty", "false",
 }
 
-var PlusConnectCmdBuilder game_launcher.CommandBuilder = func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+var PlusConnectCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		return append(config.DefaultArgs, "+connect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port())), nil
 	}

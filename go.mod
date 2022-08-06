@@ -5,6 +5,7 @@ go 1.18
 require golang.org/x/sys v0.0.0-20220804214406-8e32c043e418
 
 require (
+	github.com/golang/mock v1.6.0
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.27.0
 	github.com/stretchr/testify v1.8.0

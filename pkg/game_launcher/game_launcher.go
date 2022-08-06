@@ -24,6 +24,21 @@ const (
 	LaunchTypeLaunchOnly
 )
 
+type FileRepository interface {
+	FileExists(path string) (bool, error)
+	DirExists(path string) (bool, error)
+}
+
+type GameLauncher struct {
+	repository FileRepository
+}
+
+func NewGameLauncher(repository FileRepository) *GameLauncher {
+	return &GameLauncher{
+		repository: repository,
+	}
+}
+
 type Config struct {
 	DefaultArgs    []string
 	StartIn        LaunchDir
@@ -39,9 +54,11 @@ type Config struct {
 
 type URLValidator func(u *url.URL) error
 
-type CommandBuilder func(u *url.URL, config Config, launchType LaunchType) ([]string, error)
+// CommandBuilder Function to construct slice of launch arguments for a game. Receives a file repository in order to be
+// able to access any config file it may need to construct the arguments.
+type CommandBuilder func(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
 
-func PrepareLaunch(config Config) error {
+func (l *GameLauncher) PrepareLaunch(config Config) error {
 	if !config.CloseBeforeLaunch {
 		return nil
 	}
@@ -73,8 +90,8 @@ func PrepareLaunch(config Config) error {
 	return nil
 }
 
-func StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
-	args, err := cmdBuilder(u, config, launchType)
+func (l *GameLauncher) StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
+	args, err := cmdBuilder(l.repository, u, config, launchType)
 	if err != nil {
 		return err
 	}

@@ -26,7 +26,7 @@ var Bf4 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.Frostbite3GameIdURLValidator,
-	CmdBuilder: func(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		args := config.DefaultArgs
 		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 			args = append(args, internal.Frostbite3DefaultArgs...)

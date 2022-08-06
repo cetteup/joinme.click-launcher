@@ -35,22 +35,28 @@ const (
 	ActionPathKeyLaunch ActionPathKey = "launch"
 )
 
-type RegistryRepository interface {
+type registryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
 	SetStringValue(k registry.Key, path string, valueName string, value string) error
 	CreateKey(k registry.Key, path string) error
 }
 
-type GameFinder interface {
+type gameFinder interface {
 	IsInstalledAnywhere(configs []software_finder.Config) (bool, error)
 	IsInstalled(config software_finder.Config) (bool, error)
 	GetInstallDirFromSomewhere(configs []software_finder.Config) (string, error)
 	GetInstallDir(config software_finder.Config) (string, error)
 }
 
+type gameLauncher interface {
+	PrepareLaunch(config game_launcher.Config) error
+	StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error
+}
+
 type GameRouter struct {
-	repository RegistryRepository
-	finder     GameFinder
+	repository registryRepository
+	finder     gameFinder
+	launcher   gameLauncher
 	GameTitles map[string]domain.GameTitle
 }
 
@@ -63,10 +69,11 @@ type HandlerRegistrationResult struct {
 	Error                   error
 }
 
-func NewGameRouter(repository RegistryRepository, finder GameFinder) *GameRouter {
+func NewGameRouter(repository registryRepository, finder gameFinder, launcher gameLauncher) *GameRouter {
 	return &GameRouter{
 		repository: repository,
 		finder:     finder,
+		launcher:   launcher,
 		GameTitles: map[string]domain.GameTitle{},
 	}
 }
@@ -330,10 +337,10 @@ func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType
 	}
 
 	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
-	if err := game_launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
+	if err := r.launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
 		return err
 	}
-	if err := game_launcher.StartGame(u, launcherConfig, launchType, gameTitle.CmdBuilder); err != nil {
+	if err := r.launcher.StartGame(u, launcherConfig, launchType, gameTitle.CmdBuilder); err != nil {
 		return err
 	}
 
