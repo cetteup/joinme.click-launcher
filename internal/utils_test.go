@@ -53,6 +53,48 @@ func TestQueryHasMod(t *testing.T) {
 	}
 }
 
+func TestGetModFromQuery(t *testing.T) {
+	type test struct {
+		name        string
+		givenQuery  url.Values
+		expectedMod string
+	}
+
+	tests := []test{
+		{
+			name: "successfully extracts mod from query",
+			givenQuery: map[string][]string{
+				urlQueryKeyMod: {"xpack"},
+			},
+			expectedMod: "xpack",
+		},
+		{
+			name: "empty string if query does not contain mod key",
+			givenQuery: map[string][]string{
+				"some-other-query-param": {"some-value"},
+			},
+			expectedMod: "",
+		},
+		{
+			name:        "empty string if query is empty map",
+			givenQuery:  map[string][]string{},
+			expectedMod: "",
+		},
+		{
+			name:        "empty string if query is nil",
+			givenQuery:  nil,
+			expectedMod: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mod := GetModFromQuery(tt.givenQuery)
+			assert.Equal(t, tt.expectedMod, mod)
+		})
+	}
+}
+
 func TestIsValidIPv4(t *testing.T) {
 	type test struct {
 		name        string
