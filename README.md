@@ -1,5 +1,6 @@
 # joinme.click-launcher
 
+[![CI](https://github.com/cetteup/joinme.click-launcher/workflows/CI/badge.svg)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3ACI)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cetteup/joinme.click-launcher)](https://goreportcard.com/report/github.com/cetteup/joinme.click-launcher)
 
 Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
@@ -30,7 +31,7 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 
 ² these addons are considered mods for technical reasons, since they use the same game executable which is launched with different parameters
 
-³ while technically an addon, it uses a separate game executable and is thus considered a differnt game
+³ while technically an addon, it uses a separate game executable and is thus considered a different game
 
 ## Usage
 
