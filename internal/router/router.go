@@ -78,7 +78,7 @@ func NewGameRouter(repository registryRepository, finder gameFinder, launcher ga
 	}
 }
 
-func (r GameRouter) AddTitle(gameTitle domain.GameTitle) {
+func (r *GameRouter) AddTitle(gameTitle domain.GameTitle) {
 	customConfig := internal.Config.GetCustomLauncherConfig(gameTitle.ProtocolScheme)
 	if customConfig.HasValues() {
 		gameTitle.AddCustomConfig(*customConfig)
@@ -86,7 +86,7 @@ func (r GameRouter) AddTitle(gameTitle domain.GameTitle) {
 	r.GameTitles[gameTitle.ProtocolScheme] = gameTitle
 }
 
-func (r GameRouter) RegisterHandlers() []handlerRegistrationResult {
+func (r *GameRouter) RegisterHandlers() []handlerRegistrationResult {
 	results := make([]handlerRegistrationResult, 0, len(r.GameTitles))
 	for _, gameTitle := range r.GameTitles {
 		result := handlerRegistrationResult{
@@ -143,7 +143,7 @@ func (r GameRouter) RegisterHandlers() []handlerRegistrationResult {
 	return results
 }
 
-func (r GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, error) {
+func (r *GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, error) {
 	path := r.getUrlHandlerRegistryPath(gameTitle, []string{regPathShell, regPathOpen, regPathCommand})
 	value, err := r.repository.GetStringValue(registry.CURRENT_USER, path, regValueNameDefault)
 	if err != nil {
@@ -161,7 +161,7 @@ func (r GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, error
 	return value == expected, nil
 }
 
-func (r GameRouter) registerHandler(gameTitle domain.GameTitle) error {
+func (r *GameRouter) registerHandler(gameTitle domain.GameTitle) error {
 	basePath := r.getUrlHandlerRegistryPath(gameTitle, nil)
 	err := r.repository.CreateKey(registry.CURRENT_USER, basePath)
 	if err != nil {
@@ -195,7 +195,7 @@ func (r GameRouter) registerHandler(gameTitle domain.GameTitle) error {
 	return r.repository.SetStringValue(registry.CURRENT_USER, cmdPath, regValueNameDefault, cmd)
 }
 
-func (r GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, children []string) string {
+func (r *GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, children []string) string {
 	path := filepath.Join(regPathSoftware, regPathClasses, gameTitle.ProtocolScheme)
 	for _, child := range children {
 		path = filepath.Join(path, child)
@@ -204,7 +204,7 @@ func (r GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, childr
 	return path
 }
 
-func (r GameRouter) getHandlerCommand() (string, error) {
+func (r *GameRouter) getHandlerCommand() (string, error) {
 	launcherPath, err := os.Executable()
 	if err != nil {
 		return "", err
@@ -212,7 +212,7 @@ func (r GameRouter) getHandlerCommand() (string, error) {
 	return fmt.Sprintf("\"%s\" \"%%1\"", launcherPath), nil
 }
 
-func (r GameRouter) RunURL(commandLineUrl string) (*domain.GameTitle, error) {
+func (r *GameRouter) RunURL(commandLineUrl string) (*domain.GameTitle, error) {
 	u, err := url.Parse(commandLineUrl)
 	if err != nil {
 		return nil, err
@@ -240,7 +240,7 @@ func (r GameRouter) RunURL(commandLineUrl string) (*domain.GameTitle, error) {
 	}
 }
 
-func (r GameRouter) ensurePrerequisites(gameTitle domain.GameTitle, u *url.URL) error {
+func (r *GameRouter) ensurePrerequisites(gameTitle domain.GameTitle, u *url.URL) error {
 	if err := r.ensureGameIsInstalled(gameTitle); err != nil {
 		return err
 	}
@@ -254,7 +254,7 @@ func (r GameRouter) ensurePrerequisites(gameTitle domain.GameTitle, u *url.URL) 
 	return nil
 }
 
-func (r GameRouter) ensureGameIsInstalled(gameTitle domain.GameTitle) error {
+func (r *GameRouter) ensureGameIsInstalled(gameTitle domain.GameTitle) error {
 	gameInstalled, err := r.finder.IsInstalledAnywhere(gameTitle.FinderConfigs)
 	if err != nil {
 		return err
@@ -266,7 +266,7 @@ func (r GameRouter) ensureGameIsInstalled(gameTitle domain.GameTitle) error {
 	return nil
 }
 
-func (r GameRouter) ensurePlatformClientIsInstalledIfRequired(gameTitle domain.GameTitle) error {
+func (r *GameRouter) ensurePlatformClientIsInstalledIfRequired(gameTitle domain.GameTitle) error {
 	if !gameTitle.RequiresPlatformClient() {
 		return nil
 	}
@@ -282,7 +282,7 @@ func (r GameRouter) ensurePlatformClientIsInstalledIfRequired(gameTitle domain.G
 	return nil
 }
 
-func (r GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.GameTitle, u *url.URL) error {
+func (r *GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.GameTitle, u *url.URL) error {
 	query := u.Query()
 	if !internal.QueryHasMod(query) {
 		return nil
@@ -309,7 +309,7 @@ func (r GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.Gam
 	return nil
 }
 
-func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType game_launcher.LaunchType) error {
+func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType game_launcher.LaunchType) error {
 	// Only join url use/require URL parameters, so only validate those
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		err := gameTitle.URLValidator(u)
@@ -347,7 +347,7 @@ func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType
 	return nil
 }
 
-func (r GameRouter) getActionFromURL(u *url.URL) (action, error) {
+func (r *GameRouter) getActionFromURL(u *url.URL) (action, error) {
 	if !r.isActionURL(u) {
 		return actionLaunchAndJoin, nil
 	}
@@ -360,6 +360,6 @@ func (r GameRouter) getActionFromURL(u *url.URL) (action, error) {
 	}
 }
 
-func (r GameRouter) isActionURL(u *url.URL) bool {
+func (r *GameRouter) isActionURL(u *url.URL) bool {
 	return u.Hostname() == actionUrlHostname
 }
