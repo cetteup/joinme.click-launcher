@@ -1,6 +1,6 @@
 # joinme.click-launcher
 
-[![CI](https://github.com/cetteup/joinme.click-launcher/workflows/CI/badge.svg)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3ACI)
+[![ci](https://github.com/cetteup/joinme.click-launcher/workflows/ci/badge.svg)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3Aci)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cetteup/joinme.click-launcher)](https://goreportcard.com/report/github.com/cetteup/joinme.click-launcher)
 
 Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
