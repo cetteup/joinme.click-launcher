@@ -46,11 +46,11 @@ func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
 	}
 }
 
-func (t GameTitle) RequiresPlatformClient() bool {
+func (t *GameTitle) RequiresPlatformClient() bool {
 	return t.PlatformClient != nil
 }
 
-func (t GameTitle) GetMod(slug string) *GameMod {
+func (t *GameTitle) GetMod(slug string) *GameMod {
 	for _, mod := range t.Mods {
 		if strings.EqualFold(slug, mod.Slug) {
 			return &mod
@@ -82,7 +82,7 @@ type GameMod struct {
 
 // ComputeFinderConfigs Mod finder configs (can) only contain relative paths based on the game's install dir.
 // So, we need to compute absolute paths for any software_finder.PathFinder configs before we can use them.
-func (m GameMod) ComputeFinderConfigs(gameInstallPath string) []software_finder.Config {
+func (m *GameMod) ComputeFinderConfigs(gameInstallPath string) []software_finder.Config {
 	computedConfigs := make([]software_finder.Config, 0, len(m.finderConfigs))
 	for _, config := range m.finderConfigs {
 		// Config is not a pointer, so we can change "it" and the function call remains idempotent
