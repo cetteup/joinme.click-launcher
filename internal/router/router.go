@@ -15,24 +15,24 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-type Action int
-type ActionPathKey string
+type action int
+type actionPathKey string
 
 const (
-	RegPathSoftware   = "SOFTWARE"
-	RegPathClasses    = "Classes"
-	RegPathOpen       = "open"
-	RegPathShell      = "shell"
-	RegPathCommand    = "command"
-	RegKeyDefault     = ""
-	RegKeyURLProtocol = "URL Protocol"
+	regPathSoftware         = "SOFTWARE"
+	regPathClasses          = "Classes"
+	regPathOpen             = "open"
+	regPathShell            = "shell"
+	regPathCommand          = "command"
+	regValueNameDefault     = ""
+	regValueNameURLProtocol = "URL Protocol"
 
-	ActionUrlHostname = "act"
+	actionUrlHostname = "act"
 
-	ActionLaunchAndJoin Action = iota
-	ActionLaunchOnly
+	actionLaunchAndJoin action = iota
+	actionLaunchOnly
 
-	ActionPathKeyLaunch ActionPathKey = "launch"
+	actionPathKeyLaunch actionPathKey = "launch"
 )
 
 type registryRepository interface {
@@ -60,7 +60,7 @@ type GameRouter struct {
 	GameTitles map[string]domain.GameTitle
 }
 
-type HandlerRegistrationResult struct {
+type handlerRegistrationResult struct {
 	Title                   domain.GameTitle
 	GameInstalled           bool
 	PlatformClientInstalled bool
@@ -86,10 +86,10 @@ func (r GameRouter) AddTitle(gameTitle domain.GameTitle) {
 	r.GameTitles[gameTitle.ProtocolScheme] = gameTitle
 }
 
-func (r GameRouter) RegisterHandlers() []HandlerRegistrationResult {
-	results := make([]HandlerRegistrationResult, 0, len(r.GameTitles))
+func (r GameRouter) RegisterHandlers() []handlerRegistrationResult {
+	results := make([]handlerRegistrationResult, 0, len(r.GameTitles))
 	for _, gameTitle := range r.GameTitles {
-		result := HandlerRegistrationResult{
+		result := handlerRegistrationResult{
 			Title: gameTitle,
 		}
 
@@ -121,7 +121,7 @@ func (r GameRouter) RegisterHandlers() []HandlerRegistrationResult {
 			}
 		}
 
-		registered, err := r.IsHandlerRegistered(gameTitle)
+		registered, err := r.isHandlerRegistered(gameTitle)
 		if err != nil {
 			result.Error = fmt.Errorf("failed to determine whether handler is registered: %e", err)
 			results = append(results, result)
@@ -130,7 +130,7 @@ func (r GameRouter) RegisterHandlers() []HandlerRegistrationResult {
 		result.PreviouslyRegistered = registered
 
 		if !registered {
-			if err = r.RegisterHandler(gameTitle); err != nil {
+			if err = r.registerHandler(gameTitle); err != nil {
 				result.Error = fmt.Errorf("failed to register as URL protocol handler: %e", err)
 			} else {
 				result.Registered = true
@@ -143,9 +143,9 @@ func (r GameRouter) RegisterHandlers() []HandlerRegistrationResult {
 	return results
 }
 
-func (r GameRouter) IsHandlerRegistered(gameTitle domain.GameTitle) (bool, error) {
-	path := r.getUrlHandlerRegistryPath(gameTitle, []string{RegPathShell, RegPathOpen, RegPathCommand})
-	value, err := r.repository.GetStringValue(registry.CURRENT_USER, path, RegKeyDefault)
+func (r GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, error) {
+	path := r.getUrlHandlerRegistryPath(gameTitle, []string{regPathShell, regPathOpen, regPathCommand})
+	value, err := r.repository.GetStringValue(registry.CURRENT_USER, path, regValueNameDefault)
 	if err != nil {
 		if errors.Is(err, registry.ErrNotExist) {
 			return false, nil
@@ -161,23 +161,23 @@ func (r GameRouter) IsHandlerRegistered(gameTitle domain.GameTitle) (bool, error
 	return value == expected, nil
 }
 
-func (r GameRouter) RegisterHandler(gameTitle domain.GameTitle) error {
+func (r GameRouter) registerHandler(gameTitle domain.GameTitle) error {
 	basePath := r.getUrlHandlerRegistryPath(gameTitle, nil)
 	err := r.repository.CreateKey(registry.CURRENT_USER, basePath)
 	if err != nil {
 		return err
 	}
 
-	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyDefault, fmt.Sprintf("URL:%s protocol", gameTitle.Name))
+	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, regValueNameDefault, fmt.Sprintf("URL:%s protocol", gameTitle.Name))
 	if err != nil {
 		return err
 	}
-	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, RegKeyURLProtocol, "")
+	err = r.repository.SetStringValue(registry.CURRENT_USER, basePath, regValueNameURLProtocol, "")
 	if err != nil {
 		return err
 	}
 
-	subKeys := []string{RegPathShell, RegPathOpen, RegPathCommand}
+	subKeys := []string{regPathShell, regPathOpen, regPathCommand}
 	for i := range subKeys {
 		subPath := r.getUrlHandlerRegistryPath(gameTitle, subKeys[:i+1])
 		err = r.repository.CreateKey(registry.CURRENT_USER, subPath)
@@ -192,11 +192,11 @@ func (r GameRouter) RegisterHandler(gameTitle domain.GameTitle) error {
 		return err
 	}
 
-	return r.repository.SetStringValue(registry.CURRENT_USER, cmdPath, RegKeyDefault, cmd)
+	return r.repository.SetStringValue(registry.CURRENT_USER, cmdPath, regValueNameDefault, cmd)
 }
 
 func (r GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, children []string) string {
-	path := filepath.Join(RegPathSoftware, RegPathClasses, gameTitle.ProtocolScheme)
+	path := filepath.Join(regPathSoftware, regPathClasses, gameTitle.ProtocolScheme)
 	for _, child := range children {
 		path = filepath.Join(path, child)
 	}
@@ -233,7 +233,7 @@ func (r GameRouter) RunURL(commandLineUrl string) (*domain.GameTitle, error) {
 	}
 
 	switch action {
-	case ActionLaunchOnly:
+	case actionLaunchOnly:
 		return &gameTitle, r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchOnly)
 	default:
 		return &gameTitle, r.startGame(gameTitle, u, game_launcher.LaunchTypeLaunchAndJoin)
@@ -347,19 +347,19 @@ func (r GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType
 	return nil
 }
 
-func (r GameRouter) getActionFromURL(u *url.URL) (Action, error) {
+func (r GameRouter) getActionFromURL(u *url.URL) (action, error) {
 	if !r.isActionURL(u) {
-		return ActionLaunchAndJoin, nil
+		return actionLaunchAndJoin, nil
 	}
 
 	switch strings.TrimPrefix(u.Path, "/") {
-	case string(ActionPathKeyLaunch):
-		return ActionLaunchOnly, nil
+	case string(actionPathKeyLaunch):
+		return actionLaunchOnly, nil
 	default:
 		return 0, fmt.Errorf("action not supported: %s", u.Path)
 	}
 }
 
 func (r GameRouter) isActionURL(u *url.URL) bool {
-	return u.Hostname() == ActionUrlHostname
+	return u.Hostname() == actionUrlHostname
 }
