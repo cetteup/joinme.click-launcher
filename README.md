@@ -1,7 +1,10 @@
 # joinme.click-launcher
 
-[![ci](https://github.com/cetteup/joinme.click-launcher/workflows/ci/badge.svg)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3Aci)
+[![ci](https://img.shields.io/github/workflow/status/cetteup/joinme.click-launcher/ci?label=ci)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3Aci)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cetteup/joinme.click-launcher)](https://goreportcard.com/report/github.com/cetteup/joinme.click-launcher)
+[![License](https://img.shields.io/github/license/cetteup/joinme.click-launcher)](/LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/cetteup/joinme.click-launcher)](https://github.com/cetteup/joinme.click-launcher/commits/main)
+[![Discord](https://img.shields.io/discord/1001891950544306259?label=Discord)](https://discord.gg/wwsuMk9g4E)
 
 Launcher utility to handle custom game URL protocols supported on [joinme.click](https://joinme.click/).
 
