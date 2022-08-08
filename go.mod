@@ -2,7 +2,7 @@ module github.com/cetteup/joinme.click-launcher
 
 go 1.18
 
-require golang.org/x/sys v0.0.0-20220804214406-8e32c043e418
+require golang.org/x/sys v0.0.0-20220808155132-1c4a2a72c664
 
 require (
 	github.com/golang/mock v1.6.0
