@@ -109,8 +109,13 @@ func TestIsValidIPv4(t *testing.T) {
 			wantIsValid: true,
 		},
 		{
-			name:        "true for for valid private IPv4",
+			name:        "true for valid private IPv4",
 			givenInput:  "192.168.1.1",
+			wantIsValid: true,
+		},
+		{
+			name:        "true for valid loopback IPv4",
+			givenInput:  "127.0.0.1",
 			wantIsValid: true,
 		},
 		{
@@ -119,8 +124,18 @@ func TestIsValidIPv4(t *testing.T) {
 			wantIsValid: false,
 		},
 		{
-			name:        "false for IPv6",
+			name:        "false for public IPv6",
 			givenInput:  "2606:4700:4700::1111",
+			wantIsValid: false,
+		},
+		{
+			name:        "false for private IPv6",
+			givenInput:  "fd77:5a47:30c1:37e4::aaaa",
+			wantIsValid: false,
+		},
+		{
+			name:        "false for loopback IPv6",
+			givenInput:  "::1",
 			wantIsValid: false,
 		},
 		{

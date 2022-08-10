@@ -25,7 +25,7 @@ func IsValidIPv4(input string) bool {
 	if ip == nil {
 		return false
 	}
-	return ip.To4() != nil && ip.IsGlobalUnicast()
+	return ip.To4() != nil && (ip.IsGlobalUnicast() || ip.IsLoopback())
 }
 
 func IsValidPort(input string) bool {
