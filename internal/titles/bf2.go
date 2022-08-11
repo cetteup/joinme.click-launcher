@@ -8,11 +8,11 @@ import (
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
+	"github.com/cetteup/joinme.click-launcher/pkg/refractor_config_handler"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
 
 const (
-	bf2ProfileFolder    = "Battlefield 2"
 	bf2ModPathTemplate  = "mods\\%s\\Common_client.zip"
 	bf2ModSpecialForces = "xpack"
 	bf2ModAIX2          = "AIX2"
@@ -91,7 +91,8 @@ var Bf2 = domain.GameTitle{
 	},
 	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		profileCon, err := localinternal.GetDefaultUserProfileCon(bf2ProfileFolder)
+		configHandler := refractor_config_handler.New(fr)
+		profileCon, err := localinternal.GetDefaultUserProfileCon(configHandler)
 		if err != nil {
 			return nil, err
 		}

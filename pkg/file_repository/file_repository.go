@@ -46,3 +46,7 @@ func (r *FileRepository) DirExists(path string) (bool, error) {
 	}
 	return existsAndIsDir, nil
 }
+
+func (r *FileRepository) ReadFile(path string) ([]byte, error) {
+	return os.ReadFile(path)
+}

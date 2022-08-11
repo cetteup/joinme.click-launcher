@@ -25,8 +25,7 @@ const (
 )
 
 type FileRepository interface {
-	FileExists(path string) (bool, error)
-	DirExists(path string) (bool, error)
+	ReadFile(path string) ([]byte, error)
 }
 
 type GameLauncher struct {

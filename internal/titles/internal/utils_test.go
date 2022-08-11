@@ -3,49 +3,51 @@
 package internal
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/cetteup/joinme.click-launcher/pkg/refractor_config_handler"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetEncryptedProfileConLogin(t *testing.T) {
 	type test struct {
-		name              string
-		prepareProfileCon func(profileCon map[string]string)
-		wantErrContains   string
+		name                 string
+		prepareProfileConMap func(profileCon *refractor_config_handler.Config)
+		wantErrContains      string
 	}
 
 	tests := []test{
 		{
-			name:              "successfully extracts encrypted login details",
-			prepareProfileCon: func(profileCon map[string]string) {},
+			name:                 "successfully extracts encrypted login details",
+			prepareProfileConMap: func(profileCon *refractor_config_handler.Config) {},
 		},
 		{
 			name: "fails if nickname is missing",
-			prepareProfileCon: func(profileCon map[string]string) {
-				delete(profileCon, ProfileNickConKey)
+			prepareProfileConMap: func(profileCon *refractor_config_handler.Config) {
+				profileCon.Delete(profileConKeyGamespyNick)
 			},
 			wantErrContains: "gamespy nickname is missing/empty",
 		},
 		{
 			name: "fails if nickname is empty",
-			prepareProfileCon: func(profileCon map[string]string) {
-				profileCon[ProfileNickConKey] = ""
+			prepareProfileConMap: func(profileCon *refractor_config_handler.Config) {
+				profileCon.SetValue(profileConKeyGamespyNick, *refractor_config_handler.NewValue(""))
 			},
 			wantErrContains: "gamespy nickname is missing/empty",
 		},
 		{
 			name: "fails if password is missing",
-			prepareProfileCon: func(profileCon map[string]string) {
-				delete(profileCon, ProfilePasswordConKey)
+			prepareProfileConMap: func(profileCon *refractor_config_handler.Config) {
+				profileCon.Delete(profileConKeyPassword)
 			},
 			wantErrContains: "encrypted password is missing/empty",
 		},
 		{
 			name: "fails if password is empty",
-			prepareProfileCon: func(profileCon map[string]string) {
-				profileCon[ProfilePasswordConKey] = ""
+			prepareProfileConMap: func(profileCon *refractor_config_handler.Config) {
+				profileCon.SetValue(profileConKeyPassword, *refractor_config_handler.NewValue(""))
 			},
 			wantErrContains: "encrypted password is missing/empty",
 		},
@@ -54,11 +56,9 @@ func TestGetEncryptedProfileConLogin(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// GIVEN
-			profileCon := map[string]string{
-				ProfileNickConKey:     "mister249",
-				ProfilePasswordConKey: "some-encrypted-password",
-			}
-			tt.prepareProfileCon(profileCon)
+			bytes := []byte(fmt.Sprintf("%s \"mister249\"\r\n%s \"some-encrypted-password\"\r\n", profileConKeyGamespyNick, profileConKeyPassword))
+			profileCon := refractor_config_handler.ConfigFromBytes(bytes)
+			tt.prepareProfileConMap(profileCon)
 
 			// WHEN
 			nickname, encryptedPassword, err := GetEncryptedProfileConLogin(profileCon)
@@ -68,54 +68,13 @@ func TestGetEncryptedProfileConLogin(t *testing.T) {
 				require.ErrorContains(t, err, tt.wantErrContains)
 			} else {
 				require.NoError(t, err)
-				assert.Equal(t, profileCon[ProfileNickConKey], nickname)
-				assert.Equal(t, profileCon[ProfilePasswordConKey], encryptedPassword)
+				expectedNickname, err := profileCon.GetValue(profileConKeyGamespyNick)
+				require.NoError(t, err)
+				assert.Equal(t, expectedNickname.String(), nickname)
+				expectedPassword, err := profileCon.GetValue(profileConKeyPassword)
+				require.NoError(t, err)
+				assert.Equal(t, expectedPassword.String(), encryptedPassword)
 			}
-		})
-	}
-}
-
-func TestParseConFile(t *testing.T) {
-	type test struct {
-		name           string
-		givenContent   string
-		expectedResult map[string]string
-	}
-
-	tests := []test{
-		{
-			name:         "successfully parses .con file content",
-			givenContent: "GlobalSettings.setDefaultUser \"0010\"\r\nGlobalSettings.setNamePrefix \"=DOG=\"\r\n",
-			expectedResult: map[string]string{
-				"GlobalSettings.setDefaultUser": "0010",
-				"GlobalSettings.setNamePrefix":  "=DOG=",
-			},
-		},
-		{
-			name:         "concatenates multiple lines with the same key",
-			givenContent: "GeneralSettings.addServerHistory \"135.125.56.26\" 29940 \"=DOG= No Explosives (Infantry)\" 934\r\nGeneralSettings.addServerHistory \"138.197.130.124\" 29900 \"Weekend Warriors Wake Island\" 78",
-			expectedResult: map[string]string{
-				"GeneralSettings.addServerHistory": "135.125.56.26\" 29940 \"=DOG= No Explosives (Infantry)\" 934,138.197.130.124\" 29900 \"Weekend Warriors Wake Island\" 78",
-			},
-		},
-		{
-			name:         "ignores lines not containing two space-separated elements",
-			givenContent: "GeneralSettings.setSortOrder 0\r\nGeneralSettings.setNumRoundsPlayed",
-			expectedResult: map[string]string{
-				"GeneralSettings.setSortOrder": "0",
-			},
-		},
-		{
-			name:           "returns empty result for no content",
-			givenContent:   "",
-			expectedResult: map[string]string{},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parsed := ParseConFile([]byte(tt.givenContent))
-			assert.Equal(t, tt.expectedResult, parsed)
 		})
 	}
 }

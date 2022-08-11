@@ -4,15 +4,13 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
 	"unicode"
 	"unsafe"
 
-	"golang.org/x/sys/windows"
+	"github.com/cetteup/joinme.click-launcher/pkg/refractor_config_handler"
 )
 
 // CryptUnprotectData implementation adapted from https://stackoverflow.com/questions/33516053/windows-encrypted-rdp-passwords-in-golang
@@ -23,12 +21,10 @@ type DATA_BLOB struct {
 }
 
 const (
-	CRYPTPROTECT_UI_FORBIDDEN uint32 = 0x1
-	GlobalConFile                    = "Global.con"
-	ProfileConFile                   = "Profile.con"
-	DefaultUserConKey                = "GlobalSettings.setDefaultUser"
-	ProfileNickConKey                = "LocalProfile.setGamespyNick"
-	ProfilePasswordConKey            = "LocalProfile.setPassword"
+	CRYPTPROTECT_UI_FORBIDDEN  uint32 = 0x1
+	globalConKeyDefaultUserRef        = "GlobalSettings.setDefaultUser"
+	profileConKeyGamespyNick          = "LocalProfile.setGamespyNick"
+	profileConKeyPassword             = "LocalProfile.setPassword"
 	// ProfileNumberMaxLength BF2 only uses 4 digit profile numbers
 	ProfileNumberMaxLength = 4
 )
@@ -40,70 +36,51 @@ var (
 	localFree          = kernel32.NewProc("LocalFree")
 )
 
-func GetDefaultUserProfileCon(gameFolderName string) (map[string]string, error) {
-	profileNumber, err := GetDefaultUserProfileNumber(gameFolderName)
+func GetDefaultUserProfileCon(configHandler *refractor_config_handler.Handler) (*refractor_config_handler.Config, error) {
+	profileNumber, err := GetDefaultUserProfileNumber(configHandler)
 	if err != nil {
-		return map[string]string{}, fmt.Errorf("failed to extract default profile number from global.con: %s", err)
+		return nil, err
 	}
 
-	profileConPath, err := GetProfileConFilePath(gameFolderName, profileNumber)
+	profileCon, err := configHandler.ReadProfileConfig(refractor_config_handler.GameBf2, profileNumber)
 	if err != nil {
-		return map[string]string{}, err
-	}
-
-	profileCon, err := ReadParseConFile(profileConPath)
-	if err != nil {
-		return map[string]string{}, fmt.Errorf("failed to read profile.con for current default profile (%s): %s", profileNumber, err)
+		return nil, fmt.Errorf("failed to read Profile.con for current default profile (%s): %s", profileNumber, err)
 	}
 
 	return profileCon, nil
 }
 
-func GetProfilesFolderPath(gameFolderName string) (string, error) {
-	documentsDir, err := windows.KnownFolderPath(windows.FOLDERID_Documents, windows.KF_FLAG_DEFAULT)
+func GetDefaultUserProfileNumber(configHandler *refractor_config_handler.Handler) (string, error) {
+	globalCon, err := configHandler.ReadGlobalConfig(refractor_config_handler.GameBf2)
 	if err != nil {
-		return "", err
-	}
-	return filepath.Join(documentsDir, gameFolderName, "Profiles"), nil
-}
-
-func GetDefaultUserProfileNumber(gameFolderName string) (string, error) {
-	profilesFolder, err := GetProfilesFolderPath(gameFolderName)
-	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to read Global.con: %s", err)
 	}
 
-	// Get preferred profile from Global.con
-	globalCon, err := ReadParseConFile(filepath.Join(profilesFolder, GlobalConFile))
+	defaultUserRef, err := globalCon.GetValue(globalConKeyDefaultUserRef)
 	if err != nil {
-		return "", err
-	}
-
-	profileNumber, ok := globalCon[DefaultUserConKey]
-	if !ok || profileNumber == "" {
-		return "", fmt.Errorf("reference to default profile is missing/empty")
+		return "", fmt.Errorf("reference to default profile is missing from Global.con")
 	}
 	// Since BF2 only uses 4 digits for the profile number, 16 bits is plenty to store it
-	if _, err := strconv.ParseInt(profileNumber, 10, 16); err != nil || len(profileNumber) > ProfileNumberMaxLength {
-		return "", fmt.Errorf("reference to default profile is not a valid profile number: %s", profileNumber)
+	if _, err := strconv.ParseInt(defaultUserRef.String(), 10, 16); err != nil || len(defaultUserRef.String()) > ProfileNumberMaxLength {
+		return "", fmt.Errorf("reference to default profile in Global.con is not a valid profile number: %s", defaultUserRef.String())
 	}
 
-	return profileNumber, nil
+	return defaultUserRef.String(), nil
 }
 
 // GetEncryptedProfileConLogin Extract profile name and encrypted password from a parsed Profile.con file
-func GetEncryptedProfileConLogin(profileCon map[string]string) (string, string, error) {
-	nickname, ok := profileCon[ProfileNickConKey]
+func GetEncryptedProfileConLogin(profileCon *refractor_config_handler.Config) (string, string, error) {
+	nickname, err := profileCon.GetValue(profileConKeyGamespyNick)
 	// GameSpy nick property is present but empty for local/singleplayer profiles
-	if !ok || nickname == "" {
+	if err != nil || nickname.String() == "" {
 		return "", "", fmt.Errorf("gamespy nickname is missing/empty")
 	}
-	encryptedPassword, ok := profileCon[ProfilePasswordConKey]
-	if !ok || encryptedPassword == "" {
+	encryptedPassword, err := profileCon.GetValue(profileConKeyPassword)
+	if err != nil || encryptedPassword.String() == "" {
 		return "", "", fmt.Errorf("encrypted password is missing/empty")
 	}
 
-	return nickname, encryptedPassword, nil
+	return nickname.String(), encryptedPassword.String(), nil
 }
 
 func DecryptProfileConPassword(enc string) (string, error) {
@@ -125,45 +102,6 @@ func DecryptProfileConPassword(enc string) (string, error) {
 	}, string(dec))
 
 	return clean, nil
-}
-
-func GetProfileConFilePath(gameFolderName string, profileNumber string) (string, error) {
-	profilesFolder, err := GetProfilesFolderPath(gameFolderName)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(profilesFolder, profileNumber, ProfileConFile), nil
-}
-
-func ReadParseConFile(path string) (map[string]string, error) {
-	content, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return ParseConFile(content), nil
-}
-
-func ParseConFile(content []byte) map[string]string {
-	lines := strings.Split(string(content), "\r\n")
-
-	parsed := map[string]string{}
-	for _, line := range lines {
-		elements := strings.SplitN(line, " ", 2)
-
-		// TODO do something other than ignoring any invalid lines here?
-		if len(elements) == 2 {
-			// Add key, value or append to value
-			value := strings.Trim(elements[1], "\"")
-			current, exists := parsed[elements[0]]
-			if exists {
-				value = strings.Join([]string{current, value}, ",")
-			}
-			parsed[elements[0]] = value
-		}
-	}
-
-	return parsed
 }
 
 func NewBlob(d []byte) *DATA_BLOB {
