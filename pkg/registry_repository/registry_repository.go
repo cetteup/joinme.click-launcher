@@ -28,7 +28,7 @@ func (r *RegistryRepository) GetStringValue(k registry.Key, path string, valueNa
 	return value, nil
 }
 
-func (r RegistryRepository) SetStringValue(k registry.Key, path string, valueName string, value string) error {
+func (r *RegistryRepository) SetStringValue(k registry.Key, path string, valueName string, value string) error {
 	key, err := registry.OpenKey(k, path, registry.QUERY_VALUE|registry.SET_VALUE)
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func (r RegistryRepository) SetStringValue(k registry.Key, path string, valueNam
 	return key.SetStringValue(valueName, value)
 }
 
-func (r RegistryRepository) DeleteValue(k registry.Key, path string, valueName string) error {
+func (r *RegistryRepository) DeleteValue(k registry.Key, path string, valueName string) error {
 	key, err := registry.OpenKey(k, path, registry.QUERY_VALUE|registry.SET_VALUE)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (r RegistryRepository) DeleteValue(k registry.Key, path string, valueName s
 	return key.DeleteValue(valueName)
 }
 
-func (r RegistryRepository) CreateKey(k registry.Key, path string) error {
+func (r *RegistryRepository) CreateKey(k registry.Key, path string) error {
 	key, _, err := registry.CreateKey(k, path, registry.QUERY_VALUE|registry.SET_VALUE)
 	defer func(key registry.Key) {
 		_ = key.Close()
@@ -60,6 +60,6 @@ func (r RegistryRepository) CreateKey(k registry.Key, path string) error {
 	return err
 }
 
-func (r RegistryRepository) DeleteKey(k registry.Key, path string) error {
+func (r *RegistryRepository) DeleteKey(k registry.Key, path string) error {
 	return registry.DeleteKey(k, path)
 }
