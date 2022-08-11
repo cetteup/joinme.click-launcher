@@ -687,5 +687,5 @@ func getRouterWithDependencies(t *testing.T) (*GameRouter, *MockregistryReposito
 	mockRepository := NewMockregistryRepository(ctrl)
 	mockFinder := NewMockgameFinder(ctrl)
 	mockLauncher := NewMockgameLauncher(ctrl)
-	return NewGameRouter(mockRepository, mockFinder, mockLauncher), mockRepository, mockFinder, mockLauncher
+	return New(mockRepository, mockFinder, mockLauncher), mockRepository, mockFinder, mockLauncher
 }

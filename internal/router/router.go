@@ -69,7 +69,7 @@ type handlerRegistrationResult struct {
 	Error                   error
 }
 
-func NewGameRouter(repository registryRepository, finder gameFinder, launcher gameLauncher) *GameRouter {
+func New(repository registryRepository, finder gameFinder, launcher gameLauncher) *GameRouter {
 	return &GameRouter{
 		repository: repository,
 		finder:     finder,

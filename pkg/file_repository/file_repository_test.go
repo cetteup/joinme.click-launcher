@@ -13,7 +13,7 @@ import (
 )
 
 func TestFileRepository_FileExists(t *testing.T) {
-	fileRepository := NewFileRepository()
+	fileRepository := New()
 
 	t.Run("true for existing file", func(t *testing.T) {
 		// GIVEN
@@ -71,7 +71,7 @@ func TestFileRepository_FileExists(t *testing.T) {
 }
 
 func TestFileRepository_DirExists(t *testing.T) {
-	fileRepository := NewFileRepository()
+	fileRepository := New()
 
 	t.Run("true for existing directory", func(t *testing.T) {
 		// GIVEN

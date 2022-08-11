@@ -15,7 +15,7 @@ const (
 type FileRepository struct {
 }
 
-func NewFileRepository() *FileRepository {
+func New() *FileRepository {
 	return &FileRepository{}
 }
 

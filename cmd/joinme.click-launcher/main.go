@@ -28,12 +28,12 @@ func init() {
 		log.Err(err).Msg("Failed to load configuration from file, continuing with defaults")
 	}
 
-	registryRepository := registry_repository.NewRegistryRepository()
-	fileRepository := file_repository.NewFileRepository()
+	registryRepository := registry_repository.New()
+	fileRepository := file_repository.New()
 
-	gameFinder := software_finder.NewSoftwareFinder(registryRepository, fileRepository)
-	gameLauncher := game_launcher.NewGameLauncher(fileRepository)
-	gameRouter = router.NewGameRouter(registryRepository, gameFinder, gameLauncher)
+	gameFinder := software_finder.New(registryRepository, fileRepository)
+	gameLauncher := game_launcher.New(fileRepository)
+	gameRouter = router.New(registryRepository, gameFinder, gameLauncher)
 	gameRouter.AddTitle(titles.Bf1942)
 	gameRouter.AddTitle(titles.BfVietnam)
 	gameRouter.AddTitle(titles.Bf2)

@@ -7,7 +7,7 @@ import (
 type RegistryRepository struct {
 }
 
-func NewRegistryRepository() *RegistryRepository {
+func New() *RegistryRepository {
 	return &RegistryRepository{}
 }
 

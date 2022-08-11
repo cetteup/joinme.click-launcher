@@ -33,7 +33,7 @@ type GameLauncher struct {
 	repository FileRepository
 }
 
-func NewGameLauncher(repository FileRepository) *GameLauncher {
+func New(repository FileRepository) *GameLauncher {
 	return &GameLauncher{
 		repository: repository,
 	}

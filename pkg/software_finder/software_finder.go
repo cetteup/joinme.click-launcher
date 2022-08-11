@@ -43,7 +43,7 @@ type SoftwareFinder struct {
 	fileRepository     fileRepository
 }
 
-func NewSoftwareFinder(repository registryRepository, fileRepository fileRepository) *SoftwareFinder {
+func New(repository registryRepository, fileRepository fileRepository) *SoftwareFinder {
 	return &SoftwareFinder{
 		registryRepository: repository,
 		fileRepository:     fileRepository,

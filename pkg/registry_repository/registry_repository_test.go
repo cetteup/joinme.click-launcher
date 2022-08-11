@@ -18,7 +18,7 @@ import (
 )
 
 func TestRegistryRepository_GetStringValue(t *testing.T) {
-	registryRepository := NewRegistryRepository()
+	registryRepository := New()
 
 	t.Run("successfully retrieves string value", func(t *testing.T) {
 		// GIVEN
@@ -78,7 +78,7 @@ func TestRegistryRepository_GetStringValue(t *testing.T) {
 }
 
 func TestRegistryRepository_DeleteValue(t *testing.T) {
-	registryRepository := NewRegistryRepository()
+	registryRepository := New()
 	rand.Seed(time.Now().UnixNano())
 
 	t.Run("successfully deletes value", func(t *testing.T) {
@@ -128,7 +128,7 @@ func TestRegistryRepository_DeleteValue(t *testing.T) {
 }
 
 func TestRegistryRepository_SetStringValue(t *testing.T) {
-	registryRepository := NewRegistryRepository()
+	registryRepository := New()
 	rand.Seed(time.Now().UnixNano())
 
 	t.Run("successfully sets string value", func(t *testing.T) {
@@ -183,7 +183,7 @@ func TestRegistryRepository_SetStringValue(t *testing.T) {
 }
 
 func TestRegistryRepository_CreateKey(t *testing.T) {
-	registryRepository := NewRegistryRepository()
+	registryRepository := New()
 	rand.Seed(time.Now().UnixNano())
 
 	t.Run("successfully creates key", func(t *testing.T) {
@@ -219,7 +219,7 @@ func TestRegistryRepository_CreateKey(t *testing.T) {
 }
 
 func TestRegistryRepository_DeleteKey(t *testing.T) {
-	registryRepository := NewRegistryRepository()
+	registryRepository := New()
 	rand.Seed(time.Now().UnixNano())
 
 	t.Run("successfully deletes key", func(t *testing.T) {
