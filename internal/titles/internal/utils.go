@@ -6,14 +6,15 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"syscall"
 	"unicode"
 	"unsafe"
 
 	"github.com/cetteup/joinme.click-launcher/pkg/refractor_config_handler"
+	"golang.org/x/sys/windows"
 )
 
 // CryptUnprotectData implementation adapted from https://stackoverflow.com/questions/33516053/windows-encrypted-rdp-passwords-in-golang
+// and https://git.zx2c4.com/wireguard-windows/tree/conf/dpapi/dpapi_windows.go?h=v0.5.3
 
 type DATA_BLOB struct {
 	cbData uint32
@@ -21,19 +22,11 @@ type DATA_BLOB struct {
 }
 
 const (
-	CRYPTPROTECT_UI_FORBIDDEN  uint32 = 0x1
-	globalConKeyDefaultUserRef        = "GlobalSettings.setDefaultUser"
-	profileConKeyGamespyNick          = "LocalProfile.setGamespyNick"
-	profileConKeyPassword             = "LocalProfile.setPassword"
+	globalConKeyDefaultUserRef = "GlobalSettings.setDefaultUser"
+	profileConKeyGamespyNick   = "LocalProfile.setGamespyNick"
+	profileConKeyPassword      = "LocalProfile.setPassword"
 	// ProfileNumberMaxLength BF2 only uses 4 digit profile numbers
 	ProfileNumberMaxLength = 4
-)
-
-var (
-	crypt32            = syscall.NewLazyDLL("crypt32.dll")
-	cryptUnprotectData = crypt32.NewProc("CryptUnprotectData")
-	kernel32           = syscall.NewLazyDLL("Kernel32.dll")
-	localFree          = kernel32.NewProc("LocalFree")
 )
 
 func GetDefaultUserProfileCon(configHandler *refractor_config_handler.Handler) (*refractor_config_handler.Config, error) {
@@ -83,13 +76,22 @@ func GetEncryptedProfileConLogin(profileCon *refractor_config_handler.Config) (s
 	return nickname.String(), encryptedPassword.String(), nil
 }
 
+func EncryptProfileConPassword(plain string) (string, error) {
+	enc, err := Encrypt([]byte(plain+"\x00"), "This is the description string.")
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(enc), nil
+}
+
 func DecryptProfileConPassword(enc string) (string, error) {
 	data, err := hex.DecodeString(enc)
 	if err != nil {
 		return "", err
 	}
 
-	dec, err := Decrypt(data)
+	dec, _, err := Decrypt(data)
 	if err != nil {
 		return "", err
 	}
@@ -104,38 +106,60 @@ func DecryptProfileConPassword(enc string) (string, error) {
 	return clean, nil
 }
 
-func NewBlob(d []byte) *DATA_BLOB {
-	if len(d) == 0 {
-		return &DATA_BLOB{}
+func newBlob(data []byte) *windows.DataBlob {
+	if len(data) == 0 {
+		return &windows.DataBlob{}
 	}
 
-	return &DATA_BLOB{
-		pbData: &d[0],
-		cbData: uint32(len(d)),
+	return &windows.DataBlob{
+		Size: uint32(len(data)),
+		Data: &data[0],
 	}
 }
 
-func (b *DATA_BLOB) ToByteArray() []byte {
-	d := make([]byte, b.cbData)
-	copy(d, (*[1 << 30]byte)(unsafe.Pointer(b.pbData))[:])
-
-	return d
+func blobToByteArray(blob windows.DataBlob) []byte {
+	bytes := make([]byte, blob.Size)
+	copy(bytes, unsafe.Slice(blob.Data, blob.Size))
+	return bytes
 }
 
-func Decrypt(data []byte) ([]byte, error) {
-	pDataIn := uintptr(unsafe.Pointer(NewBlob(data)))
-	var pDataOut DATA_BLOB
-	r, _, err := cryptUnprotectData.Call(pDataIn, 0, 0, 0, 0, uintptr(CRYPTPROTECT_UI_FORBIDDEN), uintptr(unsafe.Pointer(&pDataOut)))
+func Encrypt(data []byte, description string) ([]byte, error) {
+	dataIn := newBlob(data)
+	var dataOut windows.DataBlob
+	name, err := windows.UTF16PtrFromString(description)
+	if err != nil {
+		return nil, err
+	}
 
-	if r == 0 {
+	if err = windows.CryptProtectData(dataIn, name, nil, uintptr(0), nil, windows.CRYPTPROTECT_UI_FORBIDDEN, &dataOut); err != nil {
 		return nil, err
 	}
 
 	defer func() {
-		_, _, _ = localFree.Call(uintptr(unsafe.Pointer(pDataOut.pbData)))
+		_, _ = windows.LocalFree(windows.Handle(unsafe.Pointer(dataOut.Data)))
 	}()
 
-	return pDataOut.ToByteArray(), nil
+	return blobToByteArray(dataOut), nil
+}
+
+func Decrypt(data []byte) ([]byte, string, error) {
+	dataIn := newBlob(data)
+	var dataOut windows.DataBlob
+	name, err := windows.UTF16PtrFromString("")
+	if err != nil {
+		return nil, "", err
+	}
+
+	if err = windows.CryptUnprotectData(dataIn, &name, nil, uintptr(0), nil, windows.CRYPTPROTECT_UI_FORBIDDEN, &dataOut); err != nil {
+		return nil, "", err
+	}
+
+	defer func() {
+		_, _ = windows.LocalFree(windows.Handle(unsafe.Pointer(name)))
+		_, _ = windows.LocalFree(windows.Handle(unsafe.Pointer(dataOut.Data)))
+	}()
+
+	return blobToByteArray(dataOut), windows.UTF16PtrToString(name), nil
 }
 
 func BuildOriginURL(offerIDs []string, args []string) string {
