@@ -50,7 +50,7 @@ func New(repository registryRepository, fileRepository fileRepository) *Software
 	}
 }
 
-func (f SoftwareFinder) IsInstalledAnywhere(configs []Config) (bool, error) {
+func (f *SoftwareFinder) IsInstalledAnywhere(configs []Config) (bool, error) {
 	for i, config := range configs {
 		installed, err := f.IsInstalled(config)
 		// Fail silently unless config is the last chance to find the software
@@ -66,7 +66,7 @@ func (f SoftwareFinder) IsInstalledAnywhere(configs []Config) (bool, error) {
 	return false, nil
 }
 
-func (f SoftwareFinder) IsInstalled(config Config) (bool, error) {
+func (f *SoftwareFinder) IsInstalled(config Config) (bool, error) {
 	switch config.ForType {
 	case PathFinder:
 		return f.isInstalledAccordingToPath(config)
@@ -75,7 +75,7 @@ func (f SoftwareFinder) IsInstalled(config Config) (bool, error) {
 	}
 }
 
-func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, error) {
+func (f *SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, error) {
 	_, err := f.getInstallDirFromRegistry(config)
 
 	if err != nil {
@@ -88,7 +88,7 @@ func (f SoftwareFinder) isInstalledAccordingToRegistry(config Config) (bool, err
 	return true, nil
 }
 
-func (f SoftwareFinder) isInstalledAccordingToPath(config Config) (bool, error) {
+func (f *SoftwareFinder) isInstalledAccordingToPath(config Config) (bool, error) {
 	switch config.PathType {
 	case PathTypeFile:
 		return f.fileRepository.FileExists(config.InstallPath)
@@ -99,7 +99,7 @@ func (f SoftwareFinder) isInstalledAccordingToPath(config Config) (bool, error) 
 	}
 }
 
-func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
+func (f *SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, error) {
 	for i, config := range configs {
 		installDir, err := f.GetInstallDir(config)
 		// Fail silently unless config is the last chance to find the software
@@ -115,7 +115,7 @@ func (f SoftwareFinder) GetInstallDirFromSomewhere(configs []Config) (string, er
 	return "", fmt.Errorf("install path could not be determined")
 }
 
-func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
+func (f *SoftwareFinder) GetInstallDir(config Config) (string, error) {
 	path, err := f.getInstallDir(config)
 	if err != nil {
 		return "", err
@@ -138,7 +138,7 @@ func (f SoftwareFinder) GetInstallDir(config Config) (string, error) {
 	return "", fmt.Errorf("failed to determine install path based on received path: %s", path)
 }
 
-func (f SoftwareFinder) getInstallDir(config Config) (string, error) {
+func (f *SoftwareFinder) getInstallDir(config Config) (string, error) {
 	switch config.ForType {
 	case PathFinder:
 		return f.getInstallDirFromPath(config)
@@ -147,7 +147,7 @@ func (f SoftwareFinder) getInstallDir(config Config) (string, error) {
 	}
 }
 
-func (f SoftwareFinder) getInstallDirFromPath(config Config) (string, error) {
+func (f *SoftwareFinder) getInstallDirFromPath(config Config) (string, error) {
 	switch config.PathType {
 	case PathTypeFile:
 		return filepath.Dir(config.InstallPath), nil
@@ -158,6 +158,6 @@ func (f SoftwareFinder) getInstallDirFromPath(config Config) (string, error) {
 	}
 }
 
-func (f SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
+func (f *SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
 	return f.registryRepository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
 }
