@@ -5,7 +5,7 @@ go 1.18
 require golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab
 
 require (
-	github.com/cetteup/conman v0.0.1
+	github.com/cetteup/conman v0.0.2
 	github.com/golang/mock v1.6.0
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.27.0
