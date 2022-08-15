@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/cetteup/conman/pkg/game/bf2"
+	"github.com/cetteup/conman/pkg/handler"
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
-	"github.com/cetteup/joinme.click-launcher/pkg/refractor_config_handler"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
 
@@ -91,18 +92,18 @@ var Bf2 = domain.GameTitle{
 	},
 	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		configHandler := refractor_config_handler.New(fr)
-		profileCon, err := localinternal.GetDefaultUserProfileCon(configHandler)
+		configHandler := handler.New(fr)
+		profileCon, err := bf2.GetDefaultUserProfileCon(configHandler)
 		if err != nil {
 			return nil, err
 		}
 
-		playerName, encryptedPassword, err := localinternal.GetEncryptedProfileConLogin(profileCon)
+		playerName, encryptedPassword, err := bf2.GetEncryptedProfileConLogin(profileCon)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
 		}
 
-		password, err := localinternal.DecryptProfileConPassword(encryptedPassword)
+		password, err := bf2.DecryptProfileConPassword(encryptedPassword)
 		if err != nil {
 			return nil, err
 		}
