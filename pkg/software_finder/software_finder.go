@@ -19,13 +19,13 @@ const (
 	PathTypeDir
 )
 
-type registryRepository interface {
+type RegistryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
 	SetStringValue(k registry.Key, path string, valueName string, value string) error
 	CreateKey(k registry.Key, path string) error
 }
 
-type fileRepository interface {
+type FileRepository interface {
 	FileExists(path string) (bool, error)
 	DirExists(path string) (bool, error)
 }
@@ -39,11 +39,11 @@ type Config struct {
 }
 
 type SoftwareFinder struct {
-	registryRepository registryRepository
-	fileRepository     fileRepository
+	registryRepository RegistryRepository
+	fileRepository     FileRepository
 }
 
-func New(repository registryRepository, fileRepository fileRepository) *SoftwareFinder {
+func New(repository RegistryRepository, fileRepository FileRepository) *SoftwareFinder {
 	return &SoftwareFinder{
 		registryRepository: repository,
 		fileRepository:     fileRepository,

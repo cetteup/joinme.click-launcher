@@ -35,28 +35,28 @@ const (
 	actionPathKeyLaunch actionPathKey = "launch"
 )
 
-type registryRepository interface {
+type RegistryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
 	SetStringValue(k registry.Key, path string, valueName string, value string) error
 	CreateKey(k registry.Key, path string) error
 }
 
-type gameFinder interface {
+type GameFinder interface {
 	IsInstalledAnywhere(configs []software_finder.Config) (bool, error)
 	IsInstalled(config software_finder.Config) (bool, error)
 	GetInstallDirFromSomewhere(configs []software_finder.Config) (string, error)
 	GetInstallDir(config software_finder.Config) (string, error)
 }
 
-type gameLauncher interface {
+type GameLauncher interface {
 	PrepareLaunch(config game_launcher.Config) error
 	StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error
 }
 
 type GameRouter struct {
-	repository registryRepository
-	finder     gameFinder
-	launcher   gameLauncher
+	repository RegistryRepository
+	finder     GameFinder
+	launcher   GameLauncher
 	GameTitles map[string]domain.GameTitle
 }
 
@@ -69,7 +69,7 @@ type handlerRegistrationResult struct {
 	Error                   error
 }
 
-func New(repository registryRepository, finder gameFinder, launcher gameLauncher) *GameRouter {
+func New(repository RegistryRepository, finder GameFinder, launcher GameLauncher) *GameRouter {
 	return &GameRouter{
 		repository: repository,
 		finder:     finder,

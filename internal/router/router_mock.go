@@ -13,31 +13,31 @@ import (
 	registry "golang.org/x/sys/windows/registry"
 )
 
-// MockregistryRepository is a mock of registryRepository interface.
-type MockregistryRepository struct {
+// MockRegistryRepository is a mock of RegistryRepository interface.
+type MockRegistryRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockregistryRepositoryMockRecorder
+	recorder *MockRegistryRepositoryMockRecorder
 }
 
-// MockregistryRepositoryMockRecorder is the mock recorder for MockregistryRepository.
-type MockregistryRepositoryMockRecorder struct {
-	mock *MockregistryRepository
+// MockRegistryRepositoryMockRecorder is the mock recorder for MockRegistryRepository.
+type MockRegistryRepositoryMockRecorder struct {
+	mock *MockRegistryRepository
 }
 
-// NewMockregistryRepository creates a new mock instance.
-func NewMockregistryRepository(ctrl *gomock.Controller) *MockregistryRepository {
-	mock := &MockregistryRepository{ctrl: ctrl}
-	mock.recorder = &MockregistryRepositoryMockRecorder{mock}
+// NewMockRegistryRepository creates a new mock instance.
+func NewMockRegistryRepository(ctrl *gomock.Controller) *MockRegistryRepository {
+	mock := &MockRegistryRepository{ctrl: ctrl}
+	mock.recorder = &MockRegistryRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockregistryRepository) EXPECT() *MockregistryRepositoryMockRecorder {
+func (m *MockRegistryRepository) EXPECT() *MockRegistryRepositoryMockRecorder {
 	return m.recorder
 }
 
 // CreateKey mocks base method.
-func (m *MockregistryRepository) CreateKey(k registry.Key, path string) error {
+func (m *MockRegistryRepository) CreateKey(k registry.Key, path string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateKey", k, path)
 	ret0, _ := ret[0].(error)
@@ -45,13 +45,13 @@ func (m *MockregistryRepository) CreateKey(k registry.Key, path string) error {
 }
 
 // CreateKey indicates an expected call of CreateKey.
-func (mr *MockregistryRepositoryMockRecorder) CreateKey(k, path interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) CreateKey(k, path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockregistryRepository)(nil).CreateKey), k, path)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockRegistryRepository)(nil).CreateKey), k, path)
 }
 
 // GetStringValue mocks base method.
-func (m *MockregistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
+func (m *MockRegistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStringValue", k, path, valueName)
 	ret0, _ := ret[0].(string)
@@ -60,13 +60,13 @@ func (m *MockregistryRepository) GetStringValue(k registry.Key, path, valueName 
 }
 
 // GetStringValue indicates an expected call of GetStringValue.
-func (mr *MockregistryRepositoryMockRecorder) GetStringValue(k, path, valueName interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) GetStringValue(k, path, valueName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStringValue", reflect.TypeOf((*MockregistryRepository)(nil).GetStringValue), k, path, valueName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).GetStringValue), k, path, valueName)
 }
 
 // SetStringValue mocks base method.
-func (m *MockregistryRepository) SetStringValue(k registry.Key, path, valueName, value string) error {
+func (m *MockRegistryRepository) SetStringValue(k registry.Key, path, valueName, value string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStringValue", k, path, valueName, value)
 	ret0, _ := ret[0].(error)
@@ -74,36 +74,36 @@ func (m *MockregistryRepository) SetStringValue(k registry.Key, path, valueName,
 }
 
 // SetStringValue indicates an expected call of SetStringValue.
-func (mr *MockregistryRepositoryMockRecorder) SetStringValue(k, path, valueName, value interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) SetStringValue(k, path, valueName, value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStringValue", reflect.TypeOf((*MockregistryRepository)(nil).SetStringValue), k, path, valueName, value)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).SetStringValue), k, path, valueName, value)
 }
 
-// MockgameFinder is a mock of gameFinder interface.
-type MockgameFinder struct {
+// MockGameFinder is a mock of GameFinder interface.
+type MockGameFinder struct {
 	ctrl     *gomock.Controller
-	recorder *MockgameFinderMockRecorder
+	recorder *MockGameFinderMockRecorder
 }
 
-// MockgameFinderMockRecorder is the mock recorder for MockgameFinder.
-type MockgameFinderMockRecorder struct {
-	mock *MockgameFinder
+// MockGameFinderMockRecorder is the mock recorder for MockGameFinder.
+type MockGameFinderMockRecorder struct {
+	mock *MockGameFinder
 }
 
-// NewMockgameFinder creates a new mock instance.
-func NewMockgameFinder(ctrl *gomock.Controller) *MockgameFinder {
-	mock := &MockgameFinder{ctrl: ctrl}
-	mock.recorder = &MockgameFinderMockRecorder{mock}
+// NewMockGameFinder creates a new mock instance.
+func NewMockGameFinder(ctrl *gomock.Controller) *MockGameFinder {
+	mock := &MockGameFinder{ctrl: ctrl}
+	mock.recorder = &MockGameFinderMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockgameFinder) EXPECT() *MockgameFinderMockRecorder {
+func (m *MockGameFinder) EXPECT() *MockGameFinderMockRecorder {
 	return m.recorder
 }
 
 // GetInstallDir mocks base method.
-func (m *MockgameFinder) GetInstallDir(config software_finder.Config) (string, error) {
+func (m *MockGameFinder) GetInstallDir(config software_finder.Config) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetInstallDir", config)
 	ret0, _ := ret[0].(string)
@@ -112,13 +112,13 @@ func (m *MockgameFinder) GetInstallDir(config software_finder.Config) (string, e
 }
 
 // GetInstallDir indicates an expected call of GetInstallDir.
-func (mr *MockgameFinderMockRecorder) GetInstallDir(config interface{}) *gomock.Call {
+func (mr *MockGameFinderMockRecorder) GetInstallDir(config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstallDir", reflect.TypeOf((*MockgameFinder)(nil).GetInstallDir), config)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstallDir", reflect.TypeOf((*MockGameFinder)(nil).GetInstallDir), config)
 }
 
 // GetInstallDirFromSomewhere mocks base method.
-func (m *MockgameFinder) GetInstallDirFromSomewhere(configs []software_finder.Config) (string, error) {
+func (m *MockGameFinder) GetInstallDirFromSomewhere(configs []software_finder.Config) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetInstallDirFromSomewhere", configs)
 	ret0, _ := ret[0].(string)
@@ -127,13 +127,13 @@ func (m *MockgameFinder) GetInstallDirFromSomewhere(configs []software_finder.Co
 }
 
 // GetInstallDirFromSomewhere indicates an expected call of GetInstallDirFromSomewhere.
-func (mr *MockgameFinderMockRecorder) GetInstallDirFromSomewhere(configs interface{}) *gomock.Call {
+func (mr *MockGameFinderMockRecorder) GetInstallDirFromSomewhere(configs interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstallDirFromSomewhere", reflect.TypeOf((*MockgameFinder)(nil).GetInstallDirFromSomewhere), configs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstallDirFromSomewhere", reflect.TypeOf((*MockGameFinder)(nil).GetInstallDirFromSomewhere), configs)
 }
 
 // IsInstalled mocks base method.
-func (m *MockgameFinder) IsInstalled(config software_finder.Config) (bool, error) {
+func (m *MockGameFinder) IsInstalled(config software_finder.Config) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsInstalled", config)
 	ret0, _ := ret[0].(bool)
@@ -142,13 +142,13 @@ func (m *MockgameFinder) IsInstalled(config software_finder.Config) (bool, error
 }
 
 // IsInstalled indicates an expected call of IsInstalled.
-func (mr *MockgameFinderMockRecorder) IsInstalled(config interface{}) *gomock.Call {
+func (mr *MockGameFinderMockRecorder) IsInstalled(config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsInstalled", reflect.TypeOf((*MockgameFinder)(nil).IsInstalled), config)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsInstalled", reflect.TypeOf((*MockGameFinder)(nil).IsInstalled), config)
 }
 
 // IsInstalledAnywhere mocks base method.
-func (m *MockgameFinder) IsInstalledAnywhere(configs []software_finder.Config) (bool, error) {
+func (m *MockGameFinder) IsInstalledAnywhere(configs []software_finder.Config) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsInstalledAnywhere", configs)
 	ret0, _ := ret[0].(bool)
@@ -157,36 +157,36 @@ func (m *MockgameFinder) IsInstalledAnywhere(configs []software_finder.Config) (
 }
 
 // IsInstalledAnywhere indicates an expected call of IsInstalledAnywhere.
-func (mr *MockgameFinderMockRecorder) IsInstalledAnywhere(configs interface{}) *gomock.Call {
+func (mr *MockGameFinderMockRecorder) IsInstalledAnywhere(configs interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsInstalledAnywhere", reflect.TypeOf((*MockgameFinder)(nil).IsInstalledAnywhere), configs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsInstalledAnywhere", reflect.TypeOf((*MockGameFinder)(nil).IsInstalledAnywhere), configs)
 }
 
-// MockgameLauncher is a mock of gameLauncher interface.
-type MockgameLauncher struct {
+// MockGameLauncher is a mock of GameLauncher interface.
+type MockGameLauncher struct {
 	ctrl     *gomock.Controller
-	recorder *MockgameLauncherMockRecorder
+	recorder *MockGameLauncherMockRecorder
 }
 
-// MockgameLauncherMockRecorder is the mock recorder for MockgameLauncher.
-type MockgameLauncherMockRecorder struct {
-	mock *MockgameLauncher
+// MockGameLauncherMockRecorder is the mock recorder for MockGameLauncher.
+type MockGameLauncherMockRecorder struct {
+	mock *MockGameLauncher
 }
 
-// NewMockgameLauncher creates a new mock instance.
-func NewMockgameLauncher(ctrl *gomock.Controller) *MockgameLauncher {
-	mock := &MockgameLauncher{ctrl: ctrl}
-	mock.recorder = &MockgameLauncherMockRecorder{mock}
+// NewMockGameLauncher creates a new mock instance.
+func NewMockGameLauncher(ctrl *gomock.Controller) *MockGameLauncher {
+	mock := &MockGameLauncher{ctrl: ctrl}
+	mock.recorder = &MockGameLauncherMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockgameLauncher) EXPECT() *MockgameLauncherMockRecorder {
+func (m *MockGameLauncher) EXPECT() *MockGameLauncherMockRecorder {
 	return m.recorder
 }
 
 // PrepareLaunch mocks base method.
-func (m *MockgameLauncher) PrepareLaunch(config game_launcher.Config) error {
+func (m *MockGameLauncher) PrepareLaunch(config game_launcher.Config) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PrepareLaunch", config)
 	ret0, _ := ret[0].(error)
@@ -194,13 +194,13 @@ func (m *MockgameLauncher) PrepareLaunch(config game_launcher.Config) error {
 }
 
 // PrepareLaunch indicates an expected call of PrepareLaunch.
-func (mr *MockgameLauncherMockRecorder) PrepareLaunch(config interface{}) *gomock.Call {
+func (mr *MockGameLauncherMockRecorder) PrepareLaunch(config interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareLaunch", reflect.TypeOf((*MockgameLauncher)(nil).PrepareLaunch), config)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareLaunch", reflect.TypeOf((*MockGameLauncher)(nil).PrepareLaunch), config)
 }
 
 // StartGame mocks base method.
-func (m *MockgameLauncher) StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error {
+func (m *MockGameLauncher) StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartGame", u, config, launchType, cmdBuilder)
 	ret0, _ := ret[0].(error)
@@ -208,7 +208,7 @@ func (m *MockgameLauncher) StartGame(u *url.URL, config game_launcher.Config, la
 }
 
 // StartGame indicates an expected call of StartGame.
-func (mr *MockgameLauncherMockRecorder) StartGame(u, config, launchType, cmdBuilder interface{}) *gomock.Call {
+func (mr *MockGameLauncherMockRecorder) StartGame(u, config, launchType, cmdBuilder interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartGame", reflect.TypeOf((*MockgameLauncher)(nil).StartGame), u, config, launchType, cmdBuilder)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartGame", reflect.TypeOf((*MockGameLauncher)(nil).StartGame), u, config, launchType, cmdBuilder)
 }

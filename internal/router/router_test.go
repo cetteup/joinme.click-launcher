@@ -455,7 +455,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 		name                string
 		givenTitle          *domain.GameTitle
 		givenCommandLineURL string
-		expect              func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher)
+		expect              func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher)
 		wantTitle           *domain.GameTitle
 		wantErrContains     string
 	}
@@ -465,7 +465,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "successfully launches game and joins server",
 			givenCommandLineURL: "bf2://127.0.0.1:16567",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				gameInstallPath := "C:\\Games\\BF2"
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
@@ -489,7 +489,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "successfully launches game with platform client and joins server",
 			givenCommandLineURL: "bf4://1234567890",
 			givenTitle:          &titles.Bf4,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				platformClientInstallPath := "C:\\Games\\Origin"
 				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(true, nil)
@@ -516,7 +516,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "successfully launches game with mod and joins server",
 			givenCommandLineURL: "bf1942://127.0.0.1:14567?mod=xpack1",
 			givenTitle:          &titles.Bf1942,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				gameInstallPath := "C:\\Games\\BF1942"
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
@@ -544,7 +544,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "successfully launches game via action URL",
 			givenCommandLineURL: "bf2://act/launch",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				gameInstallPath := "C:\\Games\\BF2"
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
@@ -568,14 +568,14 @@ func TestGameRouter_RunURL(t *testing.T) {
 		{
 			name:                "error for unsupported game",
 			givenCommandLineURL: "not-a-supported-game://127.0.0.1:16567",
-			expect:              func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {},
+			expect:              func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {},
 			wantErrContains:     "game not supported",
 		},
 		{
 			name:                "error for unsupported mod",
 			givenCommandLineURL: "bf2://127.0.0.1:16567?mod=not-a-supported-mod",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 			},
 			wantTitle:       &titles.Bf2,
@@ -585,7 +585,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "error for unsupported action",
 			givenCommandLineURL: "bf2://act/not-a-supported-action",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 			},
 			wantTitle:       &titles.Bf2,
@@ -595,7 +595,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "error for non-installed game",
 			givenCommandLineURL: "bf2://127.0.0.1:16567",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(false, nil)
 			},
 			wantTitle:       &titles.Bf2,
@@ -605,7 +605,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "error for non-installed platform client",
 			givenCommandLineURL: "bf4://1234567890",
 			givenTitle:          &titles.Bf4,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(false, nil)
 			},
@@ -616,7 +616,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "error for non-installed mod",
 			givenCommandLineURL: "bf2://127.0.0.1:16567?mod=xpack",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				gameInstallPath := "C:\\Games\\BF2"
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
@@ -629,14 +629,14 @@ func TestGameRouter_RunURL(t *testing.T) {
 		{
 			name:                "error for non-parseable URL",
 			givenCommandLineURL: "://",
-			expect:              func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {},
+			expect:              func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {},
 			wantErrContains:     "missing protocol scheme",
 		},
 		{
 			name:                "error for invalid ip:port URL",
 			givenCommandLineURL: "bf2://127.0.0.1",
 			givenTitle:          &titles.Bf2,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 			},
 			wantTitle:       &titles.Bf2,
@@ -646,7 +646,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 			name:                "error for invalid gameid URL",
 			givenCommandLineURL: "bf4://not-a-game-id",
 			givenTitle:          &titles.Bf4,
-			expect: func(title *domain.GameTitle, finder *MockgameFinder, launcher *MockgameLauncher) {
+			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(true, nil)
 			},
@@ -682,10 +682,10 @@ func TestGameRouter_RunURL(t *testing.T) {
 	}
 }
 
-func getRouterWithDependencies(t *testing.T) (*GameRouter, *MockregistryRepository, *MockgameFinder, *MockgameLauncher) {
+func getRouterWithDependencies(t *testing.T) (*GameRouter, *MockRegistryRepository, *MockGameFinder, *MockGameLauncher) {
 	ctrl := gomock.NewController(t)
-	mockRepository := NewMockregistryRepository(ctrl)
-	mockFinder := NewMockgameFinder(ctrl)
-	mockLauncher := NewMockgameLauncher(ctrl)
+	mockRepository := NewMockRegistryRepository(ctrl)
+	mockFinder := NewMockGameFinder(ctrl)
+	mockLauncher := NewMockGameLauncher(ctrl)
 	return New(mockRepository, mockFinder, mockLauncher), mockRepository, mockFinder, mockLauncher
 }

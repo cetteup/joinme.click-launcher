@@ -10,31 +10,31 @@ import (
 	registry "golang.org/x/sys/windows/registry"
 )
 
-// MockregistryRepository is a mock of registryRepository interface.
-type MockregistryRepository struct {
+// MockRegistryRepository is a mock of RegistryRepository interface.
+type MockRegistryRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockregistryRepositoryMockRecorder
+	recorder *MockRegistryRepositoryMockRecorder
 }
 
-// MockregistryRepositoryMockRecorder is the mock recorder for MockregistryRepository.
-type MockregistryRepositoryMockRecorder struct {
-	mock *MockregistryRepository
+// MockRegistryRepositoryMockRecorder is the mock recorder for MockRegistryRepository.
+type MockRegistryRepositoryMockRecorder struct {
+	mock *MockRegistryRepository
 }
 
-// NewMockregistryRepository creates a new mock instance.
-func NewMockregistryRepository(ctrl *gomock.Controller) *MockregistryRepository {
-	mock := &MockregistryRepository{ctrl: ctrl}
-	mock.recorder = &MockregistryRepositoryMockRecorder{mock}
+// NewMockRegistryRepository creates a new mock instance.
+func NewMockRegistryRepository(ctrl *gomock.Controller) *MockRegistryRepository {
+	mock := &MockRegistryRepository{ctrl: ctrl}
+	mock.recorder = &MockRegistryRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockregistryRepository) EXPECT() *MockregistryRepositoryMockRecorder {
+func (m *MockRegistryRepository) EXPECT() *MockRegistryRepositoryMockRecorder {
 	return m.recorder
 }
 
 // CreateKey mocks base method.
-func (m *MockregistryRepository) CreateKey(k registry.Key, path string) error {
+func (m *MockRegistryRepository) CreateKey(k registry.Key, path string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateKey", k, path)
 	ret0, _ := ret[0].(error)
@@ -42,13 +42,13 @@ func (m *MockregistryRepository) CreateKey(k registry.Key, path string) error {
 }
 
 // CreateKey indicates an expected call of CreateKey.
-func (mr *MockregistryRepositoryMockRecorder) CreateKey(k, path interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) CreateKey(k, path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockregistryRepository)(nil).CreateKey), k, path)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockRegistryRepository)(nil).CreateKey), k, path)
 }
 
 // GetStringValue mocks base method.
-func (m *MockregistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
+func (m *MockRegistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStringValue", k, path, valueName)
 	ret0, _ := ret[0].(string)
@@ -57,13 +57,13 @@ func (m *MockregistryRepository) GetStringValue(k registry.Key, path, valueName 
 }
 
 // GetStringValue indicates an expected call of GetStringValue.
-func (mr *MockregistryRepositoryMockRecorder) GetStringValue(k, path, valueName interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) GetStringValue(k, path, valueName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStringValue", reflect.TypeOf((*MockregistryRepository)(nil).GetStringValue), k, path, valueName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).GetStringValue), k, path, valueName)
 }
 
 // SetStringValue mocks base method.
-func (m *MockregistryRepository) SetStringValue(k registry.Key, path, valueName, value string) error {
+func (m *MockRegistryRepository) SetStringValue(k registry.Key, path, valueName, value string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetStringValue", k, path, valueName, value)
 	ret0, _ := ret[0].(error)
@@ -71,36 +71,36 @@ func (m *MockregistryRepository) SetStringValue(k registry.Key, path, valueName,
 }
 
 // SetStringValue indicates an expected call of SetStringValue.
-func (mr *MockregistryRepositoryMockRecorder) SetStringValue(k, path, valueName, value interface{}) *gomock.Call {
+func (mr *MockRegistryRepositoryMockRecorder) SetStringValue(k, path, valueName, value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStringValue", reflect.TypeOf((*MockregistryRepository)(nil).SetStringValue), k, path, valueName, value)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).SetStringValue), k, path, valueName, value)
 }
 
-// MockfileRepository is a mock of fileRepository interface.
-type MockfileRepository struct {
+// MockFileRepository is a mock of FileRepository interface.
+type MockFileRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockfileRepositoryMockRecorder
+	recorder *MockFileRepositoryMockRecorder
 }
 
-// MockfileRepositoryMockRecorder is the mock recorder for MockfileRepository.
-type MockfileRepositoryMockRecorder struct {
-	mock *MockfileRepository
+// MockFileRepositoryMockRecorder is the mock recorder for MockFileRepository.
+type MockFileRepositoryMockRecorder struct {
+	mock *MockFileRepository
 }
 
-// NewMockfileRepository creates a new mock instance.
-func NewMockfileRepository(ctrl *gomock.Controller) *MockfileRepository {
-	mock := &MockfileRepository{ctrl: ctrl}
-	mock.recorder = &MockfileRepositoryMockRecorder{mock}
+// NewMockFileRepository creates a new mock instance.
+func NewMockFileRepository(ctrl *gomock.Controller) *MockFileRepository {
+	mock := &MockFileRepository{ctrl: ctrl}
+	mock.recorder = &MockFileRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockfileRepository) EXPECT() *MockfileRepositoryMockRecorder {
+func (m *MockFileRepository) EXPECT() *MockFileRepositoryMockRecorder {
 	return m.recorder
 }
 
 // DirExists mocks base method.
-func (m *MockfileRepository) DirExists(path string) (bool, error) {
+func (m *MockFileRepository) DirExists(path string) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DirExists", path)
 	ret0, _ := ret[0].(bool)
@@ -109,13 +109,13 @@ func (m *MockfileRepository) DirExists(path string) (bool, error) {
 }
 
 // DirExists indicates an expected call of DirExists.
-func (mr *MockfileRepositoryMockRecorder) DirExists(path interface{}) *gomock.Call {
+func (mr *MockFileRepositoryMockRecorder) DirExists(path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DirExists", reflect.TypeOf((*MockfileRepository)(nil).DirExists), path)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DirExists", reflect.TypeOf((*MockFileRepository)(nil).DirExists), path)
 }
 
 // FileExists mocks base method.
-func (m *MockfileRepository) FileExists(path string) (bool, error) {
+func (m *MockFileRepository) FileExists(path string) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FileExists", path)
 	ret0, _ := ret[0].(bool)
@@ -124,7 +124,7 @@ func (m *MockfileRepository) FileExists(path string) (bool, error) {
 }
 
 // FileExists indicates an expected call of FileExists.
-func (mr *MockfileRepositoryMockRecorder) FileExists(path interface{}) *gomock.Call {
+func (mr *MockFileRepositoryMockRecorder) FileExists(path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FileExists", reflect.TypeOf((*MockfileRepository)(nil).FileExists), path)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FileExists", reflect.TypeOf((*MockFileRepository)(nil).FileExists), path)
 }
