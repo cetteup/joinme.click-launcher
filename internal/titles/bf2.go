@@ -93,12 +93,12 @@ var Bf2 = domain.GameTitle{
 	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 		configHandler := handler.New(fr)
-		profileCon, err := bf2.GetDefaultUserProfileCon(configHandler)
+		profileCon, err := bf2.GetDefaultProfileProfileCon(configHandler)
 		if err != nil {
 			return nil, err
 		}
 
-		playerName, encryptedPassword, err := bf2.GetEncryptedProfileConLogin(profileCon)
+		playerName, encryptedPassword, err := bf2.GetEncryptedLogin(profileCon)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
 		}

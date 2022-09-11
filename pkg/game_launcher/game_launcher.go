@@ -25,7 +25,10 @@ const (
 )
 
 type FileRepository interface {
+	FileExists(path string) (bool, error)
 	ReadFile(path string) ([]byte, error)
+	WriteFile(path string, data []byte, perm os.FileMode) error
+	ReadDir(path string) ([]os.DirEntry, error)
 }
 
 type GameLauncher struct {

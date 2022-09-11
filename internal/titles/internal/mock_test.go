@@ -4,6 +4,7 @@
 package internal
 
 import (
+	fs "io/fs"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -32,6 +33,36 @@ func (m *MockFileRepository) EXPECT() *MockFileRepositoryMockRecorder {
 	return m.recorder
 }
 
+// FileExists mocks base method.
+func (m *MockFileRepository) FileExists(arg0 string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FileExists", arg0)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FileExists indicates an expected call of FileExists.
+func (mr *MockFileRepositoryMockRecorder) FileExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FileExists", reflect.TypeOf((*MockFileRepository)(nil).FileExists), arg0)
+}
+
+// ReadDir mocks base method.
+func (m *MockFileRepository) ReadDir(arg0 string) ([]fs.DirEntry, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadDir", arg0)
+	ret0, _ := ret[0].([]fs.DirEntry)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadDir indicates an expected call of ReadDir.
+func (mr *MockFileRepositoryMockRecorder) ReadDir(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadDir", reflect.TypeOf((*MockFileRepository)(nil).ReadDir), arg0)
+}
+
 // ReadFile mocks base method.
 func (m *MockFileRepository) ReadFile(arg0 string) ([]byte, error) {
 	m.ctrl.T.Helper()
@@ -45,4 +76,18 @@ func (m *MockFileRepository) ReadFile(arg0 string) ([]byte, error) {
 func (mr *MockFileRepositoryMockRecorder) ReadFile(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFile", reflect.TypeOf((*MockFileRepository)(nil).ReadFile), arg0)
+}
+
+// WriteFile mocks base method.
+func (m *MockFileRepository) WriteFile(arg0 string, arg1 []byte, arg2 fs.FileMode) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WriteFile", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WriteFile indicates an expected call of WriteFile.
+func (mr *MockFileRepositoryMockRecorder) WriteFile(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteFile", reflect.TypeOf((*MockFileRepository)(nil).WriteFile), arg0, arg1, arg2)
 }
