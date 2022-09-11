@@ -6,6 +6,7 @@ require golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2
 
 require (
 	github.com/cetteup/conman v0.0.2
+	github.com/cetteup/filerepo v0.0.3
 	github.com/golang/mock v1.6.0
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.28.0

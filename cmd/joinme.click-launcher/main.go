@@ -9,10 +9,10 @@ import (
 	"sort"
 	"time"
 
+	filerepo "github.com/cetteup/filerepo/pkg"
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/router"
 	"github.com/cetteup/joinme.click-launcher/internal/titles"
-	"github.com/cetteup/joinme.click-launcher/pkg/file_repository"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/registry_repository"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
@@ -29,7 +29,7 @@ func init() {
 	}
 
 	registryRepository := registry_repository.New()
-	fileRepository := file_repository.New()
+	fileRepository := filerepo.New()
 
 	gameFinder := software_finder.New(registryRepository, fileRepository)
 	gameLauncher := game_launcher.New(fileRepository)
