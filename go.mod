@@ -2,7 +2,7 @@ module github.com/cetteup/joinme.click-launcher
 
 go 1.18
 
-require golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2
+require golang.org/x/sys v0.0.0-20220913175220-63ea55921009
 
 require (
 	github.com/cetteup/conman v0.1.1
