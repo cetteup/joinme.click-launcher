@@ -16,7 +16,7 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 |----------------------------------|-------------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | Battlefield 1942                 | bf1942://{ip}:{port}    | v0.1.7-alpha              | `The Road to Rome`², `Secret Weapons of WWII`², `Battlefield 1918`, `Desert Combat (0.7)`, `Desert Combat Final`, `Pirates` |
 | Battlefield Vietnam              | bfvietnam://{ip}:{port} | v0.1.7-alpha              | `Battlegroup 42`                                                                                                            |
-| Battlefield 2                    | bf2://{ip}:{port}       | v0.1.10                   | `Special Forces`², `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`, `Arctic Warfare`                     |
+| Battlefield 2                    | bf2://{ip}:{port}       | v0.1.11                   | `Special Forces`², `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`, `Arctic Warfare`                     |
 | Battlefield 4                    | bf4://{gameid}          | v0.1.5-alpha              |
 | Battlefield 1                    | bf1://{gameid}          | v0.1.5-alpha              |
 | Call of Duty                     | cod://{ip}:{port}       | v0.1.3-alpha              |
