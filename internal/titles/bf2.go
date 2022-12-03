@@ -81,6 +81,17 @@ var Bf2 = domain.GameTitle{
 				},
 			},
 		),
+		domain.MakeMod(
+			"Arctic Warfare",
+			"arctic-warfare",
+			[]software_finder.Config{
+				{
+					ForType:     software_finder.PathFinder,
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, "Arctic_Warfare"),
+					PathType:    software_finder.PathTypeFile,
+				},
+			},
+		),
 	},
 	LauncherConfig: game_launcher.Config{
 		DefaultArgs: []string{
