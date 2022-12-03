@@ -17,6 +17,7 @@ const (
 	bf2ModPathTemplate  = "mods\\%s\\Common_client.zip"
 	bf2ModSpecialForces = "xpack"
 	bf2ModAIX2          = "AIX2"
+	bf2ModArcticWarfare = "Arctic_Warfare"
 	bf2ModPirates       = "bfp2"
 	bf2ModPoE2          = "poe2"
 )
@@ -83,11 +84,11 @@ var Bf2 = domain.GameTitle{
 		),
 		domain.MakeMod(
 			"Arctic Warfare",
-			"arctic-warfare",
+			bf2ModArcticWarfare,
 			[]software_finder.Config{
 				{
 					ForType:     software_finder.PathFinder,
-					InstallPath: fmt.Sprintf(bf2ModPathTemplate, "Arctic_Warfare"),
+					InstallPath: fmt.Sprintf(bf2ModPathTemplate, bf2ModArcticWarfare),
 					PathType:    software_finder.PathTypeFile,
 				},
 			},
