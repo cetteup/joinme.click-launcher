@@ -6,7 +6,7 @@ require golang.org/x/sys v0.3.0
 
 require (
 	github.com/cetteup/conman v0.1.5
-	github.com/cetteup/filerepo v0.0.4
+	github.com/cetteup/filerepo v0.0.5
 	github.com/golang/mock v1.6.0
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.28.0
