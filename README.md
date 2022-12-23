@@ -1,6 +1,6 @@
 # joinme.click-launcher
 
-[![ci](https://img.shields.io/github/workflow/status/cetteup/joinme.click-launcher/ci?label=ci)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3Aci)
+[![ci](https://img.shields.io/github/actions/workflow/status/cetteup/joinme.click-launcher/ci.yaml?label=ci)](https://github.com/cetteup/joinme.click-launcher/actions?query=workflow%3Aci)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cetteup/joinme.click-launcher)](https://goreportcard.com/report/github.com/cetteup/joinme.click-launcher)
 [![License](https://img.shields.io/github/license/cetteup/joinme.click-launcher)](/LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/cetteup/joinme.click-launcher)](https://github.com/cetteup/joinme.click-launcher/commits/main)
