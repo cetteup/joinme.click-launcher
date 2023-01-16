@@ -28,6 +28,9 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 | ParaWorld                        | paraworld://{ip}:{port} | v0.1.7-alpha              |
 | SWAT 4                           | swat4://{ip}:{port}     | v0.1.3-alpha              |
 | SWAT 4: The Stetchkov Syndicate³ | swat4x://{ip}:{port}    | v0.1.3-alpha              |
+| Unreal Tournament                | ut://{ip}:{port}        | v0.1.12                   |
+| Unreal Tournament 2003           | ut2003://{ip}:{port}    | v0.1.12                   |
+| Unreal Tournament 2004           | ut2004://{ip}:{port}    | v0.1.12                   |
 | Vietcong                         | vietcong://{ip}:{port}  | v0.1.3-alpha              |
 
 ¹ refers to the minimum launcher version supporting all features relevant to the game
