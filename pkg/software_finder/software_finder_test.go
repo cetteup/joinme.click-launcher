@@ -27,12 +27,13 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
 			},
 			wantIsInstalledAnywhere: true,
 		},
@@ -41,6 +42,13 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
+					RegistryPath:      "SOFTWARE\\some\\game",
+					RegistryValueName: "InstallDir",
+				},
+				{
+					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyCurrentUser,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -51,7 +59,8 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyCurrentUser), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			wantIsInstalledAnywhere: true,
@@ -61,6 +70,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -71,7 +81,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(false, nil)
 			},
 			wantIsInstalledAnywhere: false,
@@ -81,6 +91,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -91,7 +102,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error-that-is-not-returned"))
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error-that-is-not-returned"))
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			wantIsInstalledAnywhere: true,
@@ -101,6 +112,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -111,7 +123,7 @@ func TestSoftwareFinder_IsInstalledAnywhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(false, fmt.Errorf("some-error-that-is-returned"))
 			},
 			wantErrContains: "some-error-that-is-returned",
@@ -151,14 +163,28 @@ func TestSoftwareFinder_IsInstalled(t *testing.T) {
 
 	tests := []test{
 		{
-			name: "true for installed software via registry finder",
+			name: "true for installed software via registry finder with local machine key",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+			},
+			wantIsInstalled: true,
+		},
+		{
+			name: "true for installed software via registry finder with local machine key",
+			givenConfig: Config{
+				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyCurrentUser,
+				RegistryPath:      "SOFTWARE\\some\\game",
+				RegistryValueName: "InstallDir",
+			},
+			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyCurrentUser), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
 			},
 			wantIsInstalled: true,
 		},
@@ -190,11 +216,12 @@ func TestSoftwareFinder_IsInstalled(t *testing.T) {
 			name: "false for non-installed software via registry finder",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 			},
 			wantIsInstalled: false,
 		},
@@ -226,11 +253,12 @@ func TestSoftwareFinder_IsInstalled(t *testing.T) {
 			name: "errors for registry error",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error"))
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error"))
 			},
 			wantErrContains: "some-error",
 		},
@@ -307,12 +335,13 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			expectedInstallDir: "C:\\Some\\Game",
@@ -322,6 +351,13 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
+					RegistryPath:      "SOFTWARE\\some\\game",
+					RegistryValueName: "InstallDir",
+				},
+				{
+					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyCurrentUser,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -332,7 +368,8 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyCurrentUser), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			expectedInstallDir: "C:\\Some\\Game",
@@ -342,6 +379,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -352,7 +390,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error-that-is-not-returned"))
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", fmt.Errorf("some-error-that-is-not-returned"))
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			expectedInstallDir: "C:\\Some\\Game",
@@ -362,6 +400,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -372,7 +411,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(false, fmt.Errorf("some-error-that-is-returned"))
 			},
 			wantErrContains: "some-error-that-is-returned",
@@ -382,6 +421,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 			givenConfigs: []Config{
 				{
 					ForType:           RegistryFinder,
+					RegistryKey:       RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some\\game",
 					RegistryValueName: "InstallDir",
 				},
@@ -392,7 +432,7 @@ func TestSoftwareFinder_GetInstallDirFromSomewhere(t *testing.T) {
 				},
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(false, nil)
 				fr.EXPECT().DirExists("C:\\Some").Return(false, nil)
 			},
@@ -433,14 +473,29 @@ func TestSoftwareFinder_GetInstallDir(t *testing.T) {
 
 	tests := []test{
 		{
-			name: "successfully determines install dir via registry finder",
+			name: "successfully determines install dir via registry finder with local machine key",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
+			},
+			expectedInstallDir: "C:\\Some\\Game",
+		},
+		{
+			name: "successfully determines install dir via registry finder with current key",
+			givenConfig: Config{
+				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyCurrentUser,
+				RegistryPath:      "SOFTWARE\\some\\game",
+				RegistryValueName: "InstallDir",
+			},
+			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyCurrentUser), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
 			expectedInstallDir: "C:\\Some\\Game",
@@ -449,11 +504,12 @@ func TestSoftwareFinder_GetInstallDir(t *testing.T) {
 			name: "successfully determines install dir via registry finder with file path value",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game\\launch.exe", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game\\launch.exe", nil)
 				fr.EXPECT().DirExists("C:\\Some\\Game\\launch.exe").Return(false, nil)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(true, nil)
 			},
@@ -487,11 +543,12 @@ func TestSoftwareFinder_GetInstallDir(t *testing.T) {
 			name: "errors for registry error",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("", registry.ErrNotExist)
 			},
 			wantErrContains: "The system cannot find the file specified",
 		},
@@ -499,11 +556,12 @@ func TestSoftwareFinder_GetInstallDir(t *testing.T) {
 			name: "errors for path validation error",
 			givenConfig: Config{
 				ForType:           RegistryFinder,
+				RegistryKey:       RegistryKeyLocalMachine,
 				RegistryPath:      "SOFTWARE\\some\\game",
 				RegistryValueName: "InstallDir",
 			},
 			expect: func(rr *MockRegistryRepository, fr *MockFileRepository) {
-				rr.EXPECT().GetStringValue(registry.LOCAL_MACHINE, "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
+				rr.EXPECT().GetStringValue(registry.Key(RegistryKeyLocalMachine), "SOFTWARE\\some\\game", "InstallDir").Return("C:\\Some\\Game", nil)
 				fr.EXPECT().DirExists("C:\\Some\\Game").Return(false, fmt.Errorf("some-error"))
 			},
 			wantErrContains: "some-error",

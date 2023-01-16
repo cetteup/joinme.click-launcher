@@ -28,6 +28,7 @@ var Bf2 = domain.GameTitle{
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2",
 			RegistryValueName: "InstallDir",
 		},
@@ -39,6 +40,7 @@ var Bf2 = domain.GameTitle{
 			[]software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\WOW6432Node\\Electronic Arts\\EA Games\\Battlefield 2 Special Forces",
 					RegistryValueName: "InstallDir",
 				},

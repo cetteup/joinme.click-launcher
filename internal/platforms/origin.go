@@ -10,6 +10,7 @@ var OriginClient = domain.PlatformClient{
 	Platform: domain.PlatformOrigin,
 	FinderConfig: software_finder.Config{
 		ForType:           software_finder.RegistryFinder,
+		RegistryKey:       software_finder.RegistryKeyLocalMachine,
 		RegistryPath:      "SOFTWARE\\WOW6432Node\\Origin",
 		RegistryValueName: "ClientPath",
 	},

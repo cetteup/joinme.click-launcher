@@ -17,6 +17,7 @@ var Bf1 = domain.GameTitle{
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1",
 			RegistryValueName: "Install Dir",
 		},

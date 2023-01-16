@@ -83,6 +83,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -128,6 +129,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -174,6 +176,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 				Platform: "some-platform",
 				FinderConfig: software_finder.Config{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-client",
 					RegistryValueName: "some-value-name",
 				},
@@ -181,6 +184,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -220,6 +224,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -258,6 +263,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -293,6 +299,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 				Platform: "some-platform",
 				FinderConfig: software_finder.Config{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-client",
 					RegistryValueName: "some-value-name",
 				},
@@ -300,6 +307,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -335,6 +343,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -364,6 +373,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 				Platform: "some-platform",
 				FinderConfig: software_finder.Config{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-client",
 					RegistryValueName: "some-value-name",
 				},
@@ -371,6 +381,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -400,6 +411,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},
@@ -429,6 +441,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 			FinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\some-game",
 					RegistryValueName: "some-value-name",
 				},

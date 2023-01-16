@@ -13,6 +13,7 @@ var Cod2 = domain.GameTitle{
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\Activision\\Call of Duty 2",
 			RegistryValueName: "InstallPath",
 		},

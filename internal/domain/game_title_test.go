@@ -112,6 +112,7 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				FinderConfigs: []software_finder.Config{
 					{
 						ForType:           software_finder.RegistryFinder,
+						RegistryKey:       software_finder.RegistryKeyLocalMachine,
 						RegistryPath:      "default",
 						RegistryValueName: "default",
 					},
@@ -322,6 +323,7 @@ func TestGameMod_ComputeFinderConfigs(t *testing.T) {
 				finderConfigs: []software_finder.Config{
 					{
 						ForType:           software_finder.RegistryFinder,
+						RegistryKey:       software_finder.RegistryKeyLocalMachine,
 						RegistryPath:      "some-game\\some-mod",
 						RegistryValueName: "InstallPath",
 					},
@@ -331,6 +333,7 @@ func TestGameMod_ComputeFinderConfigs(t *testing.T) {
 			expectedFinderConfigs: []software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "some-game\\some-mod",
 					RegistryValueName: "InstallPath",
 				},

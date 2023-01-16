@@ -9,11 +9,15 @@ import (
 )
 
 type FinderType string
+type RegistryKey registry.Key
 type PathType int
 
 const (
 	RegistryFinder FinderType = "RegistryFinder"
 	PathFinder     FinderType = "PathFinder"
+
+	RegistryKeyCurrentUser  = RegistryKey(registry.CURRENT_USER)
+	RegistryKeyLocalMachine = RegistryKey(registry.LOCAL_MACHINE)
 
 	PathTypeFile = iota
 	PathTypeDir
@@ -32,6 +36,7 @@ type FileRepository interface {
 
 type Config struct {
 	ForType           FinderType
+	RegistryKey       RegistryKey
 	RegistryPath      string
 	RegistryValueName string
 	InstallPath       string
@@ -159,5 +164,5 @@ func (f *SoftwareFinder) getInstallDirFromPath(config Config) (string, error) {
 }
 
 func (f *SoftwareFinder) getInstallDirFromRegistry(config Config) (string, error) {
-	return f.registryRepository.GetStringValue(registry.LOCAL_MACHINE, config.RegistryPath, config.RegistryValueName)
+	return f.registryRepository.GetStringValue(registry.Key(config.RegistryKey), config.RegistryPath, config.RegistryValueName)
 }

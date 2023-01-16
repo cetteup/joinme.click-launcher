@@ -27,6 +27,7 @@ var Bf1942 = domain.GameTitle{
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942",
 			RegistryValueName: "GAMEDIR",
 		},
@@ -38,6 +39,7 @@ var Bf1942 = domain.GameTitle{
 			[]software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack1",
 					RegistryValueName: "GAMEDIR",
 				},
@@ -54,6 +56,7 @@ var Bf1942 = domain.GameTitle{
 			[]software_finder.Config{
 				{
 					ForType:           software_finder.RegistryFinder,
+					RegistryKey:       software_finder.RegistryKeyLocalMachine,
 					RegistryPath:      "SOFTWARE\\WOW6432Node\\EA Games\\Battlefield 1942 Xpack2",
 					RegistryValueName: "GAMEDIR",
 				},

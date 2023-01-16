@@ -23,6 +23,7 @@ var Paraworld = domain.GameTitle{
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sunflowers\\ParaWorld",
 			RegistryValueName: "InstallDir",
 		},
