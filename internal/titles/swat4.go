@@ -1,9 +1,6 @@
 package titles
 
 import (
-	"fmt"
-	"net/url"
-
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
@@ -34,14 +31,7 @@ var Swat4 = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   swat4CmdBuilder,
-}
-
-var swat4CmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		return append(config.DefaultArgs, fmt.Sprintf("%s:%s", u.Hostname(), u.Port())), nil
-	}
-	return nil, nil
+	CmdBuilder:   internal.PlainCmdBuilder,
 }
 
 var Swat4X = domain.GameTitle{
@@ -68,5 +58,5 @@ var Swat4X = domain.GameTitle{
 		CloseBeforeLaunch: true,
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder:   swat4CmdBuilder,
+	CmdBuilder:   internal.PlainCmdBuilder,
 }
