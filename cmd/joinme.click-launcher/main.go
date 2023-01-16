@@ -48,6 +48,7 @@ func init() {
 	gameRouter.AddTitle(titles.Paraworld)
 	gameRouter.AddTitle(titles.Swat4)
 	gameRouter.AddTitle(titles.Swat4X)
+	gameRouter.AddTitle(titles.UT)
 	gameRouter.AddTitle(titles.UT2003)
 	gameRouter.AddTitle(titles.UT2004)
 	gameRouter.AddTitle(titles.Vietcong)
