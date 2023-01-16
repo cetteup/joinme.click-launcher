@@ -14,14 +14,14 @@ var Swat4 = domain.GameTitle{
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4",
-			RegistryValueName: "InstallPath",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
+			RegistryValueName: "PATH",
 		},
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
-			RegistryValueName: "PATH",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4",
+			RegistryValueName: "InstallPath",
 		},
 	},
 	LauncherConfig: game_launcher.Config{
@@ -41,14 +41,14 @@ var Swat4X = domain.GameTitle{
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4 - THE STETCHKOV SYNDICATE",
-			RegistryValueName: "InstallPath",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
+			RegistryValueName: "PATH",
 		},
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1409964317",
-			RegistryValueName: "PATH",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Sierra\\SWAT 4 - THE STETCHKOV SYNDICATE",
+			RegistryValueName: "InstallPath",
 		},
 	},
 	LauncherConfig: game_launcher.Config{
