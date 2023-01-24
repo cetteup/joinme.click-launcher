@@ -8,11 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/sys/windows/registry"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
-	"golang.org/x/sys/windows/registry"
 )
 
 type action int
@@ -78,12 +79,14 @@ func New(repository RegistryRepository, finder GameFinder, launcher GameLauncher
 	}
 }
 
-func (r *GameRouter) AddTitle(gameTitle domain.GameTitle) {
-	customConfig := internal.Config.GetCustomLauncherConfig(gameTitle.ProtocolScheme)
-	if customConfig.HasValues() {
-		gameTitle.AddCustomConfig(*customConfig)
+func (r *GameRouter) AddTitle(gameTitles ...domain.GameTitle) {
+	for _, gt := range gameTitles {
+		customConfig := internal.Config.GetCustomLauncherConfig(gt.ProtocolScheme)
+		if customConfig.HasValues() {
+			gt.AddCustomConfig(*customConfig)
+		}
+		r.GameTitles[gt.ProtocolScheme] = gt
 	}
-	r.GameTitles[gameTitle.ProtocolScheme] = gameTitle
 }
 
 func (r *GameRouter) RegisterHandlers() []handlerRegistrationResult {

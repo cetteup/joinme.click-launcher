@@ -35,25 +35,27 @@ func init() {
 	gameFinder := software_finder.New(registryRepository, fileRepository)
 	gameLauncher := game_launcher.New(fileRepository)
 	gameRouter = router.New(registryRepository, gameFinder, gameLauncher)
-	gameRouter.AddTitle(titles.Bf1942)
-	gameRouter.AddTitle(titles.BfVietnam)
-	gameRouter.AddTitle(titles.Bf2)
-	gameRouter.AddTitle(titles.Bf4)
-	gameRouter.AddTitle(titles.Bf1)
-	gameRouter.AddTitle(titles.Cod)
-	gameRouter.AddTitle(titles.CodUO)
-	gameRouter.AddTitle(titles.Cod2)
-	gameRouter.AddTitle(titles.Cod4)
-	gameRouter.AddTitle(titles.CodWaw)
-	gameRouter.AddTitle(titles.FearSec2)
-	gameRouter.AddTitle(titles.Paraworld)
-	gameRouter.AddTitle(titles.Swat4)
-	gameRouter.AddTitle(titles.Swat4X)
-	gameRouter.AddTitle(titles.Unreal)
-	gameRouter.AddTitle(titles.UT)
-	gameRouter.AddTitle(titles.UT2003)
-	gameRouter.AddTitle(titles.UT2004)
-	gameRouter.AddTitle(titles.Vietcong)
+	gameRouter.AddTitle(
+		titles.Bf1942,
+		titles.BfVietnam,
+		titles.Bf2,
+		titles.Bf4,
+		titles.Bf1,
+		titles.Cod,
+		titles.CodUO,
+		titles.Cod2,
+		titles.Cod4,
+		titles.CodWaw,
+		titles.FearSec2,
+		titles.Paraworld,
+		titles.Swat4,
+		titles.Swat4X,
+		titles.Unreal,
+		titles.UT,
+		titles.UT2003,
+		titles.UT2004,
+		titles.Vietcong,
+	)
 }
 
 var (
