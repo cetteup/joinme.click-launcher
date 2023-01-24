@@ -10,14 +10,15 @@ import (
 	"time"
 
 	filerepo "github.com/cetteup/filerepo/pkg"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/router"
 	"github.com/cetteup/joinme.click-launcher/internal/titles"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/registry_repository"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 func init() {
@@ -48,6 +49,7 @@ func init() {
 	gameRouter.AddTitle(titles.Paraworld)
 	gameRouter.AddTitle(titles.Swat4)
 	gameRouter.AddTitle(titles.Swat4X)
+	gameRouter.AddTitle(titles.Unreal)
 	gameRouter.AddTitle(titles.UT)
 	gameRouter.AddTitle(titles.UT2003)
 	gameRouter.AddTitle(titles.UT2004)
