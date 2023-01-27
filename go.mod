@@ -9,7 +9,7 @@ require (
 	github.com/cetteup/filerepo v0.0.5
 	github.com/golang/mock v1.6.0
 	github.com/mitchellh/go-ps v1.0.0
-	github.com/rs/zerolog v1.28.0
+	github.com/rs/zerolog v1.29.0
 	github.com/stretchr/testify v1.8.1
 	gopkg.in/yaml.v3 v3.0.1
 )
