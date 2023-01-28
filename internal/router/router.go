@@ -323,21 +323,9 @@ func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchTyp
 	}
 
 	// Build final launcher config
-	launcherConfig := gameTitle.LauncherConfig
-	if gameTitle.RequiresPlatformClient() {
-		launcherConfig.ExecutableName = gameTitle.PlatformClient.LauncherConfig.ExecutableName
-		launcherConfig.ExecutablePath = gameTitle.PlatformClient.LauncherConfig.ExecutablePath
-		installPath, err := r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
-		if err != nil {
-			return err
-		}
-		launcherConfig.InstallPath = installPath
-	} else {
-		installPath, err := r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
-		if err != nil {
-			return err
-		}
-		launcherConfig.InstallPath = installPath
+	launcherConfig, err := r.buildLauncherConfig(gameTitle)
+	if err != nil {
+		return err
 	}
 
 	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
@@ -355,6 +343,27 @@ func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchTyp
 	}
 
 	return nil
+}
+
+func (r *GameRouter) buildLauncherConfig(gameTitle domain.GameTitle) (game_launcher.Config, error) {
+	launcherConfig := gameTitle.LauncherConfig
+	if gameTitle.RequiresPlatformClient() {
+		launcherConfig.ExecutableName = gameTitle.PlatformClient.LauncherConfig.ExecutableName
+		launcherConfig.ExecutablePath = gameTitle.PlatformClient.LauncherConfig.ExecutablePath
+		installPath, err := r.finder.GetInstallDir(gameTitle.PlatformClient.FinderConfig)
+		if err != nil {
+			return game_launcher.Config{}, err
+		}
+		launcherConfig.InstallPath = installPath
+	} else {
+		installPath, err := r.finder.GetInstallDirFromSomewhere(gameTitle.FinderConfigs)
+		if err != nil {
+			return game_launcher.Config{}, err
+		}
+		launcherConfig.InstallPath = installPath
+	}
+
+	return launcherConfig, nil
 }
 
 func (r *GameRouter) getActionFromURL(u *url.URL) (action, error) {
