@@ -73,20 +73,20 @@ type HookHandler func(fr FileRepository, u *url.URL, config Config, launchType L
 
 func (l *GameLauncher) RunHooks(u *url.URL, config Config, launchType LaunchType, handlers map[string]HookHandler, when HookWhen) error {
 	for _, hc := range config.HookConfigs {
-		handler, ok := handlers[hc.Handler]
-		if !ok {
-			log.Warn().Str("handler", hc.Handler).Msg("Skipping unknown launch handler")
+		if hc.When != when && hc.When != HookWhenAlways {
+			log.Debug().Str("handler", hc.Handler).Str("when", string(when)).Msg("Skipping hook handler not configured to run now")
 			continue
 		}
 
-		if hc.When != when && hc.When != HookWhenAlways {
-			log.Debug().Str("handler", hc.Handler).Str("when", string(when)).Msg("Skipping handler not configured to run now")
+		handler, ok := handlers[hc.Handler]
+		if !ok {
+			log.Warn().Str("handler", hc.Handler).Msg("Skipping unknown hook handler")
 			continue
 		}
 
 		err := handler(l.repository, u, config, launchType, hc.Args)
 		if err != nil {
-			log.Error().Err(err).Str("handler", hc.Handler).Msg("Launch handler execution failed")
+			log.Error().Err(err).Str("handler", hc.Handler).Msg("Hook handler execution failed")
 			if hc.ExitOnError {
 				return err
 			}
