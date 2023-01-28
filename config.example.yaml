@@ -7,5 +7,9 @@ games:
         install_path: C:\Games\Battlefield 2
         args: ["+fullscreen", "0", "+szx", "1600", "+szy", "900"]
         hooks:
+            - handler: set-default-profile
+              when: pre-launch
+              args:
+                  profile: 0010
             - handler: purge-server-history
               when: pre-launch

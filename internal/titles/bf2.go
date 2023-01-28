@@ -23,6 +23,8 @@ const (
 	bf2ModPoE2          = "poe2"
 
 	bf2HookPurgeServerHistory = "purge-server-history"
+	bf2HookSetDefaultProfile  = "set-default-profile"
+	hookArgProfile            = "profile"
 )
 
 var Bf2 = domain.GameTitle{
@@ -148,13 +150,31 @@ var Bf2 = domain.GameTitle{
 	},
 	HookHandlers: map[string]game_launcher.HookHandler{
 		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
+		bf2HookSetDefaultProfile:      bf2SetDefaultProfileHookHandler,
 		bf2HookPurgeServerHistory:     bf2PurgeServerHistoryHookHandler,
 	},
 }
 
+var bf2SetDefaultProfileHookHandler = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	profileKey, ok := args[hookArgProfile]
+	if !ok {
+		return fmt.Errorf("required argument %s for hook %s is missing", hookArgProfile, bf2HookSetDefaultProfile)
+	}
+
+	h := handler.New(fr)
+	globalCon, err := h.ReadGlobalConfig(handler.GameBf2)
+	if err != nil {
+		return err
+	}
+
+	bf2.SetDefaultProfile(globalCon, profileKey)
+
+	return h.WriteConfigFile(globalCon)
+}
+
 var bf2PurgeServerHistoryHookHandler = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
 	h := handler.New(fr)
-	profileKey, ok := args["profile"]
+	profileKey, ok := args[hookArgProfile]
 	if !ok {
 		// Use default profile if none has been configured
 		var err error
