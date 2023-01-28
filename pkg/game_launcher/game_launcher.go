@@ -45,9 +45,10 @@ func New(repository FileRepository) *GameLauncher {
 }
 
 type Config struct {
-	DefaultArgs    []string
-	StartIn        LaunchDir
-	ExecutableName string
+	DefaultArgs       []string
+	AppendDefaultArgs bool
+	StartIn           LaunchDir
+	ExecutableName    string
 	// Relative path from install path to folder containing the executable
 	ExecutablePath string
 	InstallPath    string

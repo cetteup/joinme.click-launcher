@@ -8,10 +8,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 )
 
 func TestIPPortURLValidator(t *testing.T) {
@@ -114,11 +115,12 @@ func TestFrostbite3GameIdURLValidator(t *testing.T) {
 
 func TestPlusConnectCmdBuilder(t *testing.T) {
 	type test struct {
-		name             string
-		givenHost        string
-		givenDefaultArgs []string
-		givenLaunchType  game_launcher.LaunchType
-		expectedCmd      []string
+		name                   string
+		givenHost              string
+		givenDefaultArgs       []string
+		givenAppendDefaultArgs bool
+		givenLaunchType        game_launcher.LaunchType
+		expectedCmd            []string
 	}
 
 	tests := []test{
@@ -136,6 +138,14 @@ func TestPlusConnectCmdBuilder(t *testing.T) {
 			expectedCmd:      []string{"+launch", "+connect", net.JoinHostPort("1.1.1.1", "16567")},
 		},
 		{
+			name:                   "prepends to default arguments if any are given and AppendDefaultArgs is true",
+			givenHost:              net.JoinHostPort("1.1.1.1", "16567"),
+			givenDefaultArgs:       []string{"+launch"},
+			givenAppendDefaultArgs: true,
+			givenLaunchType:        game_launcher.LaunchTypeLaunchAndJoin,
+			expectedCmd:            []string{"+connect", net.JoinHostPort("1.1.1.1", "16567"), "+launch"},
+		},
+		{
 			name:            "return nil slice if launch type is any but launch and join",
 			givenHost:       net.JoinHostPort("1.1.1.1", "16567"),
 			givenLaunchType: game_launcher.LaunchTypeLaunchOnly,
@@ -150,7 +160,8 @@ func TestPlusConnectCmdBuilder(t *testing.T) {
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: tt.givenHost}
 			config := game_launcher.Config{
-				DefaultArgs: tt.givenDefaultArgs,
+				DefaultArgs:       tt.givenDefaultArgs,
+				AppendDefaultArgs: tt.givenAppendDefaultArgs,
 			}
 
 			// WHEN
@@ -165,11 +176,12 @@ func TestPlusConnectCmdBuilder(t *testing.T) {
 
 func TestPlainCmdBuilder(t *testing.T) {
 	type test struct {
-		name             string
-		givenHost        string
-		givenDefaultArgs []string
-		givenLaunchType  game_launcher.LaunchType
-		expectedCmd      []string
+		name                   string
+		givenHost              string
+		givenDefaultArgs       []string
+		givenAppendDefaultArgs bool
+		givenLaunchType        game_launcher.LaunchType
+		expectedCmd            []string
 	}
 
 	tests := []test{
@@ -187,6 +199,14 @@ func TestPlainCmdBuilder(t *testing.T) {
 			expectedCmd:      []string{"+launch", net.JoinHostPort("1.1.1.1", "16567")},
 		},
 		{
+			name:                   "prepends to default arguments if any are given and AppendDefaultArgs is true",
+			givenHost:              net.JoinHostPort("1.1.1.1", "16567"),
+			givenDefaultArgs:       []string{"+launch"},
+			givenAppendDefaultArgs: true,
+			givenLaunchType:        game_launcher.LaunchTypeLaunchAndJoin,
+			expectedCmd:            []string{net.JoinHostPort("1.1.1.1", "16567"), "+launch"},
+		},
+		{
 			name:            "return nil slice if launch type is any but launch and join",
 			givenHost:       net.JoinHostPort("1.1.1.1", "16567"),
 			givenLaunchType: game_launcher.LaunchTypeLaunchOnly,
@@ -201,7 +221,8 @@ func TestPlainCmdBuilder(t *testing.T) {
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: tt.givenHost}
 			config := game_launcher.Config{
-				DefaultArgs: tt.givenDefaultArgs,
+				DefaultArgs:       tt.givenDefaultArgs,
+				AppendDefaultArgs: tt.givenAppendDefaultArgs,
 			}
 
 			// WHEN
