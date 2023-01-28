@@ -485,7 +485,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().PrepareLaunch(gomock.Eq(title.LauncherConfig))
 				launcher.EXPECT().RunHooks(
 					gomock.Eq(&url.URL{
 						Scheme: "bf2",
@@ -532,7 +531,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finalLaunchConfig.ExecutableName = title.PlatformClient.LauncherConfig.ExecutableName
 				finalLaunchConfig.ExecutablePath = title.PlatformClient.LauncherConfig.ExecutablePath
 				finalLaunchConfig.InstallPath = platformClientInstallPath
-				launcher.EXPECT().PrepareLaunch(gomock.Eq(title.LauncherConfig))
 				launcher.EXPECT().RunHooks(
 					gomock.Eq(&url.URL{
 						Scheme: "bf4",
@@ -579,7 +577,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().PrepareLaunch(gomock.Eq(title.LauncherConfig))
 				launcher.EXPECT().RunHooks(
 					gomock.Eq(&url.URL{
 						Scheme:   "bf1942",
@@ -626,7 +623,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().PrepareLaunch(gomock.Eq(title.LauncherConfig))
 				launcher.EXPECT().RunHooks(
 					gomock.Eq(&url.URL{
 						Scheme: "bf2",
