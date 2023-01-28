@@ -10,6 +10,6 @@ games:
             - handler: set-default-profile
               when: pre-launch
               args:
-                  profile: 0010
+                  profile: "0010"
             - handler: purge-server-history
               when: pre-launch
