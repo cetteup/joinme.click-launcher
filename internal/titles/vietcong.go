@@ -21,8 +21,14 @@ var Vietcong = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "vietcong.exe",
-		CloseBeforeLaunch: true,
+		ExecutableName: "vietcong.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
@@ -30,5 +36,8 @@ var Vietcong = domain.GameTitle{
 			return append(config.DefaultArgs, "-ip", u.Hostname(), "-port", u.Port()), nil
 		}
 		return nil, nil
+	},
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
 	},
 }

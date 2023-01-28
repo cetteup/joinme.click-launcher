@@ -53,12 +53,14 @@ var Paraworld = domain.GameTitle{
 		),
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "Paraworld.exe",
-		ExecutablePath:    "bin",
-		CloseBeforeLaunch: true,
-		AdditionalProcessNames: map[string]bool{
-			"PWClient.exe": true,
-			"PWServer.exe": true,
+		ExecutableName: "Paraworld.exe",
+		ExecutablePath: "bin",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     localinternal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
 		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
@@ -73,5 +75,8 @@ var Paraworld = domain.GameTitle{
 			args = append(args, "-enable", internal.GetModFromQuery(query))
 		}
 		return args, nil
+	},
+	HookHandlers: map[string]game_launcher.HookHandler{
+		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true, "PWClient.exe", "PWServer.exe"),
 	},
 }

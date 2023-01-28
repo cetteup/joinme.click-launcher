@@ -19,10 +19,19 @@ var UT2003 = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "UT2003.exe",
-		ExecutablePath:    "System",
-		CloseBeforeLaunch: true,
+		ExecutableName: "UT2003.exe",
+		ExecutablePath: "System",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder:   internal.PlainCmdBuilder,
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
+	},
 }

@@ -25,13 +25,22 @@ var Swat4 = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "Swat4.exe",
-		ExecutablePath:    "Content\\System",
-		StartIn:           game_launcher.LaunchDirBinaryDir,
-		CloseBeforeLaunch: true,
+		ExecutableName: "Swat4.exe",
+		ExecutablePath: "Content\\System",
+		StartIn:        game_launcher.LaunchDirBinaryDir,
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder:   internal.PlainCmdBuilder,
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
+	},
 }
 
 var Swat4X = domain.GameTitle{
@@ -52,11 +61,20 @@ var Swat4X = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "Swat4X.exe",
-		ExecutablePath:    "ContentExpansion\\System",
-		StartIn:           game_launcher.LaunchDirBinaryDir,
-		CloseBeforeLaunch: true,
+		ExecutableName: "Swat4X.exe",
+		ExecutablePath: "ContentExpansion\\System",
+		StartIn:        game_launcher.LaunchDirBinaryDir,
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder:   internal.PlainCmdBuilder,
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
+	},
 }

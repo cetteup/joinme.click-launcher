@@ -19,11 +19,20 @@ var Cod = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "CoDMP.exe",
-		CloseBeforeLaunch: true,
+		ExecutableName: "CoDMP.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder:   internal.PlusConnectCmdBuilder,
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
+	},
 }
 
 var CodUO = domain.GameTitle{
@@ -38,9 +47,18 @@ var CodUO = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "CoDUOMP.exe",
-		CloseBeforeLaunch: true,
+		ExecutableName: "CoDUOMP.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder:   internal.PlusConnectCmdBuilder,
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
+	},
 }

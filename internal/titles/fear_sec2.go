@@ -22,8 +22,14 @@ var FearSec2 = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName:    "FEARMP.exe",
-		CloseBeforeLaunch: true,
+		ExecutableName: "FEARMP.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     internal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: internal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
@@ -31,5 +37,8 @@ var FearSec2 = domain.GameTitle{
 			return append(config.DefaultArgs, "+join", fmt.Sprintf("%s:%s", u.Hostname(), u.Port())), nil
 		}
 		return nil, nil
+	},
+	HookHandlers: map[string]game_launcher.HookHandler{
+		internal.HookKillProcess: internal.KillProcessHookHandler(true),
 	},
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/cetteup/conman/pkg/game/bf2"
 	"github.com/cetteup/conman/pkg/handler"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
@@ -101,8 +102,14 @@ var Bf2 = domain.GameTitle{
 			"+menu", "1",
 			"+restart", "1",
 		},
-		ExecutableName:    "BF2.exe",
-		CloseBeforeLaunch: true,
+		ExecutableName: "BF2.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     localinternal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
@@ -136,5 +143,8 @@ var Bf2 = domain.GameTitle{
 		}
 
 		return args, nil
+	},
+	HookHandlers: map[string]game_launcher.HookHandler{
+		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
 	},
 }

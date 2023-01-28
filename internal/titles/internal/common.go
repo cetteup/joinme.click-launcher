@@ -5,11 +5,15 @@ import (
 	"net/url"
 	"regexp"
 
+	"github.com/mitchellh/go-ps"
+	"github.com/rs/zerolog/log"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 )
 
 const (
+	HookKillProcess = "kill-process"
 	// game ids vary by length, so for now we are just validating that it only contains numbers
 	frostbite3GameIdPattern = `^\d+$`
 )
@@ -71,4 +75,39 @@ var PlainCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRep
 		return append(config.DefaultArgs, args...), nil
 	}
 	return nil, nil
+}
+
+// KillProcessHookHandler Returns a hook handler that kills any running game processes plus any additional targets
+func KillProcessHookHandler(targetLaunchExecutable bool, targets ...string) game_launcher.HookHandler {
+	return func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+		if targetLaunchExecutable {
+			targets = append(targets, config.ExecutableName)
+		}
+
+		processes, err := ps.Processes()
+		if err != nil {
+			return fmt.Errorf("failed to retrieve process list: %s", err)
+		}
+
+		killed := map[int]string{}
+		for _, process := range processes {
+			if isTargetProcess(targets, process.Executable()) {
+				log.Info().
+					Int("pid", process.Pid()).
+					Str("executable", process.Executable()).
+					Msg("Killing existing game process")
+				if err = killProcess(process.Pid()); err != nil {
+					return fmt.Errorf("failed to kill existing game process %s (%d): %s", process.Executable(), process.Pid(), err)
+				}
+				killed[process.Pid()] = process.Executable()
+			}
+		}
+
+		// Wait for killed processes to exit
+		if err = waitForProcessesToExit(killed); err != nil {
+			return err
+		}
+
+		return nil
+	}
 }

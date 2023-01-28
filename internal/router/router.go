@@ -50,7 +50,6 @@ type GameFinder interface {
 }
 
 type GameLauncher interface {
-	PrepareLaunch(config game_launcher.Config) error
 	RunHooks(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, handlers map[string]game_launcher.HookHandler, when game_launcher.HookWhen) error
 	StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error
 }
@@ -329,9 +328,6 @@ func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchTyp
 	}
 
 	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
-	if err := r.launcher.PrepareLaunch(gameTitle.LauncherConfig); err != nil {
-		return err
-	}
 	if err := r.launcher.RunHooks(u, launcherConfig, launchType, gameTitle.HookHandlers, game_launcher.HookWhenPreLaunch); err != nil {
 		return err
 	}

@@ -41,9 +41,15 @@ var BfVietnam = domain.GameTitle{
 		),
 	},
 	LauncherConfig: game_launcher.Config{
-		DefaultArgs:       []string{"+restart", "1"},
-		ExecutableName:    "BfVietnam.exe",
-		CloseBeforeLaunch: true,
+		DefaultArgs:    []string{"+restart", "1"},
+		ExecutableName: "BfVietnam.exe",
+		HookConfigs: []game_launcher.HookConfig{
+			{
+				Handler:     localinternal.HookKillProcess,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: true,
+			},
+		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
 	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
@@ -58,5 +64,8 @@ var BfVietnam = domain.GameTitle{
 		}
 
 		return args, nil
+	},
+	HookHandlers: map[string]game_launcher.HookHandler{
+		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
 	},
 }
