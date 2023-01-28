@@ -19,6 +19,7 @@ type GameTitle struct {
 	LauncherConfig game_launcher.Config
 	URLValidator   game_launcher.URLValidator
 	CmdBuilder     game_launcher.CommandBuilder
+	HookHandlers   map[string]game_launcher.HookHandler
 }
 
 func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
@@ -43,6 +44,17 @@ func (t *GameTitle) AddCustomConfig(config internal.CustomLauncherConfig) {
 
 	if config.HasArgs() {
 		t.LauncherConfig.DefaultArgs = append(t.LauncherConfig.DefaultArgs, config.Args...)
+	}
+
+	if config.HasHookConfigs() {
+		for _, hook := range config.Hooks {
+			t.LauncherConfig.HookConfigs = append(t.LauncherConfig.HookConfigs, game_launcher.HookConfig{
+				Handler:     hook.Handler,
+				When:        hook.When,
+				ExitOnError: hook.ExitOnError,
+				Args:        hook.Args,
+			})
+		}
 	}
 }
 

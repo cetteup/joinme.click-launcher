@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 )
 
 const (
@@ -27,14 +29,22 @@ func (c *config) GetCustomLauncherConfig(game string) *CustomLauncherConfig {
 }
 
 type CustomLauncherConfig struct {
-	ExecutableName string   `yaml:"executable_name"`
-	ExecutablePath string   `yaml:"executable_path"`
-	InstallPath    string   `yaml:"install_path"`
-	Args           []string `yaml:"args"`
+	ExecutableName string             `yaml:"executable_name"`
+	ExecutablePath string             `yaml:"executable_path"`
+	InstallPath    string             `yaml:"install_path"`
+	Args           []string           `yaml:"args"`
+	Hooks          []CustomHookConfig `yaml:"hooks"`
+}
+
+type CustomHookConfig struct {
+	Handler     string                 `yaml:"handler"`
+	When        game_launcher.HookWhen `yaml:"when"`
+	ExitOnError bool                   `yaml:"exit_on_error"`
+	Args        map[string]string      `yaml:"args"`
 }
 
 func (c *CustomLauncherConfig) HasValues() bool {
-	return c != nil && (c.HasExecutableName() || c.HasExecutablePath() || c.HasInstallPath() || c.HasArgs())
+	return c != nil && (c.HasExecutableName() || c.HasExecutablePath() || c.HasInstallPath() || c.HasArgs() || c.HasHookConfigs())
 }
 
 func (c *CustomLauncherConfig) HasExecutableName() bool {
@@ -51,6 +61,10 @@ func (c *CustomLauncherConfig) HasInstallPath() bool {
 
 func (c *CustomLauncherConfig) HasArgs() bool {
 	return c != nil && len(c.Args) > 0
+}
+
+func (c *CustomLauncherConfig) HasHookConfigs() bool {
+	return c != nil && len(c.Hooks) > 0
 }
 
 func LoadConfig() error {

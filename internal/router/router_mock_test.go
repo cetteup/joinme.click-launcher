@@ -199,6 +199,20 @@ func (mr *MockGameLauncherMockRecorder) PrepareLaunch(config interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareLaunch", reflect.TypeOf((*MockGameLauncher)(nil).PrepareLaunch), config)
 }
 
+// RunHooks mocks base method.
+func (m *MockGameLauncher) RunHooks(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, handlers map[string]game_launcher.HookHandler, when game_launcher.HookWhen) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RunHooks", u, config, launchType, handlers, when)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RunHooks indicates an expected call of RunHooks.
+func (mr *MockGameLauncherMockRecorder) RunHooks(u, config, launchType, handlers, when interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunHooks", reflect.TypeOf((*MockGameLauncher)(nil).RunHooks), u, config, launchType, handlers, when)
+}
+
 // StartGame mocks base method.
 func (m *MockGameLauncher) StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error {
 	m.ctrl.T.Helper()

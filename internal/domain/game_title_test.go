@@ -5,10 +5,11 @@ package domain
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGameTitle_AddCustomConfig(t *testing.T) {
@@ -26,12 +27,30 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				ExecutablePath: "custom-bin",
 				InstallPath:    "C:\\custom",
 				Args:           []string{"+custom"},
+				Hooks: []internal.CustomHookConfig{
+					{
+						Handler:     "some-handler",
+						When:        game_launcher.HookWhenAlways,
+						ExitOnError: true,
+						Args: map[string]string{
+							"some-key": "some-value",
+						},
+					},
+				},
 			},
 			expect: func(t *testing.T, givenTitle GameTitle, givenConfig internal.CustomLauncherConfig, title GameTitle) {
 				assert.Equal(t, givenConfig.ExecutableName, title.LauncherConfig.ExecutableName)
 				assert.Equal(t, givenConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
 				for _, argument := range givenConfig.Args {
 					assert.Contains(t, title.LauncherConfig.DefaultArgs, argument)
+				}
+				for _, chc := range givenConfig.Hooks {
+					assert.Contains(t, title.LauncherConfig.HookConfigs, game_launcher.HookConfig{
+						Handler:     chc.Handler,
+						When:        chc.When,
+						ExitOnError: chc.ExitOnError,
+						Args:        chc.Args,
+					})
 				}
 				assert.Contains(t, title.FinderConfigs, software_finder.Config{
 					ForType:     software_finder.PathFinder,
@@ -49,6 +68,7 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				assert.Equal(t, givenConfig.ExecutableName, title.LauncherConfig.ExecutableName)
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
 				assert.Equal(t, givenTitle.LauncherConfig.DefaultArgs, title.LauncherConfig.DefaultArgs)
+				assert.Equal(t, givenTitle.LauncherConfig.HookConfigs, title.LauncherConfig.HookConfigs)
 				assert.Equal(t, givenTitle.FinderConfigs, title.FinderConfigs)
 			},
 		},
@@ -61,6 +81,7 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				assert.Equal(t, givenConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutableName, title.LauncherConfig.ExecutableName)
 				assert.Equal(t, givenTitle.LauncherConfig.DefaultArgs, title.LauncherConfig.DefaultArgs)
+				assert.Equal(t, givenTitle.LauncherConfig.HookConfigs, title.LauncherConfig.HookConfigs)
 				assert.Equal(t, givenTitle.FinderConfigs, title.FinderConfigs)
 			},
 		},
@@ -73,6 +94,7 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutableName, title.LauncherConfig.ExecutableName)
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
 				assert.Equal(t, givenTitle.LauncherConfig.DefaultArgs, title.LauncherConfig.DefaultArgs)
+				assert.Equal(t, givenTitle.LauncherConfig.HookConfigs, title.LauncherConfig.HookConfigs)
 				assert.Contains(t, title.FinderConfigs, software_finder.Config{
 					ForType:     software_finder.PathFinder,
 					InstallPath: givenConfig.InstallPath,
@@ -91,6 +113,36 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 				}
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutableName, title.LauncherConfig.ExecutableName)
 				assert.Equal(t, givenTitle.LauncherConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
+				assert.Equal(t, givenTitle.LauncherConfig.HookConfigs, title.LauncherConfig.HookConfigs)
+				assert.Equal(t, givenTitle.FinderConfigs, title.FinderConfigs)
+			},
+		},
+		{
+			name: "successfully adds hooks only",
+			givenConfig: internal.CustomLauncherConfig{
+				Hooks: []internal.CustomHookConfig{
+					{
+						Handler:     "some-handler",
+						When:        game_launcher.HookWhenAlways,
+						ExitOnError: true,
+						Args: map[string]string{
+							"some-key": "some-value",
+						},
+					},
+				},
+			},
+			expect: func(t *testing.T, givenTitle GameTitle, givenConfig internal.CustomLauncherConfig, title GameTitle) {
+				for _, chc := range givenConfig.Hooks {
+					assert.Contains(t, title.LauncherConfig.HookConfigs, game_launcher.HookConfig{
+						Handler:     chc.Handler,
+						When:        chc.When,
+						ExitOnError: chc.ExitOnError,
+						Args:        chc.Args,
+					})
+				}
+				assert.Equal(t, givenTitle.LauncherConfig.ExecutableName, title.LauncherConfig.ExecutableName)
+				assert.Equal(t, givenTitle.LauncherConfig.ExecutablePath, title.LauncherConfig.ExecutablePath)
+				assert.Equal(t, givenTitle.LauncherConfig.DefaultArgs, title.LauncherConfig.DefaultArgs)
 				assert.Equal(t, givenTitle.FinderConfigs, title.FinderConfigs)
 			},
 		},
@@ -121,6 +173,12 @@ func TestGameTitle_AddCustomConfig(t *testing.T) {
 					ExecutableName: "default.exe",
 					ExecutablePath: "default-path",
 					DefaultArgs:    []string{"+default"},
+					HookConfigs: []game_launcher.HookConfig{
+						{
+							Handler: "some-default-handler",
+							When:    game_launcher.HookWhenAlways,
+						},
+					},
 				},
 			}
 			// Copy title so we can compare against original

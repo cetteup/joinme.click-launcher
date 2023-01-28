@@ -3,12 +3,15 @@
 package internal
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"gopkg.in/yaml.v3"
+
+	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 )
 
 func TestLoadConfig(t *testing.T) {
@@ -24,6 +27,16 @@ func TestLoadConfig(t *testing.T) {
 					ExecutablePath: "bin",
 					InstallPath:    "C:\\Games\\SomeGame",
 					Args:           []string{"+fullscreen", "0"},
+					Hooks: []CustomHookConfig{
+						{
+							Handler:     "some-handler",
+							When:        game_launcher.HookWhenAlways,
+							ExitOnError: true,
+							Args: map[string]string{
+								"some-key": "some-value",
+							},
+						},
+					},
 				},
 			},
 		}
@@ -97,6 +110,12 @@ func TestConfig_GetCustomLauncherConfig(t *testing.T) {
 						ExecutablePath: "bin",
 						InstallPath:    "C:\\Games\\some-game",
 						Args:           []string{"+prio", "high"},
+						Hooks: []CustomHookConfig{
+							{
+								Handler: "some-handler",
+								When:    game_launcher.HookWhenAlways,
+							},
+						},
 					},
 				},
 			},
@@ -106,6 +125,12 @@ func TestConfig_GetCustomLauncherConfig(t *testing.T) {
 				ExecutablePath: "bin",
 				InstallPath:    "C:\\Games\\some-game",
 				Args:           []string{"+prio", "high"},
+				Hooks: []CustomHookConfig{
+					{
+						Handler: "some-handler",
+						When:    game_launcher.HookWhenAlways,
+					},
+				},
 			},
 		},
 		{
@@ -151,6 +176,12 @@ func TestCustomLauncherConfig_HasValues(t *testing.T) {
 				ExecutablePath: "bin",
 				InstallPath:    "C:\\Games\\SomeGame",
 				Args:           []string{"+some-arg"},
+				Hooks: []CustomHookConfig{
+					{
+						Handler: "some-handler",
+						When:    game_launcher.HookWhenAlways,
+					},
+				},
 			},
 			wantHasValues: true,
 		},
@@ -179,6 +210,18 @@ func TestCustomLauncherConfig_HasValues(t *testing.T) {
 			name: "true for config with args only",
 			givenConfig: &CustomLauncherConfig{
 				Args: []string{"+some-arg"},
+			},
+			wantHasValues: true,
+		},
+		{
+			name: "true for config with hooks only",
+			givenConfig: &CustomLauncherConfig{
+				Hooks: []CustomHookConfig{
+					{
+						Handler: "some-handler",
+						When:    game_launcher.HookWhenAlways,
+					},
+				},
 			},
 			wantHasValues: true,
 		},

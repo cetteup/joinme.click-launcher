@@ -15,6 +15,7 @@ import (
 
 type LaunchDir int
 type LaunchType int
+type HookWhen string
 
 const (
 	LaunchDirInstallDir LaunchDir = iota
@@ -22,6 +23,10 @@ const (
 
 	LaunchTypeLaunchAndJoin LaunchType = iota
 	LaunchTypeLaunchOnly
+
+	HookWhenAlways     HookWhen = "always"
+	HookWhenPreLaunch  HookWhen = "pre-launch"
+	HookWhenPostLaunch HookWhen = "post-launch"
 )
 
 type FileRepository interface {
@@ -56,6 +61,14 @@ type Config struct {
 	CloseBeforeLaunch bool
 	// Additional process names related to this game (some games start multiple processes, which we need to kill pre-launch)
 	AdditionalProcessNames map[string]bool
+	HookConfigs            []HookConfig
+}
+
+type HookConfig struct {
+	Handler     string
+	When        HookWhen
+	ExitOnError bool
+	Args        map[string]string
 }
 
 type URLValidator func(u *url.URL) error
@@ -63,6 +76,8 @@ type URLValidator func(u *url.URL) error
 // CommandBuilder Function to construct slice of launch arguments for a game. Receives a file repository in order to be
 // able to access any config file it may need to construct the arguments.
 type CommandBuilder func(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
+
+type HookHandler func(fr FileRepository, u *url.URL, config Config, launchType LaunchType, args map[string]string) error
 
 func (l *GameLauncher) PrepareLaunch(config Config) error {
 	if !config.CloseBeforeLaunch {
@@ -93,6 +108,30 @@ func (l *GameLauncher) PrepareLaunch(config Config) error {
 		return err
 	}
 
+	return nil
+}
+
+func (l *GameLauncher) RunHooks(u *url.URL, config Config, launchType LaunchType, handlers map[string]HookHandler, when HookWhen) error {
+	for _, hc := range config.HookConfigs {
+		handler, ok := handlers[hc.Handler]
+		if !ok {
+			log.Warn().Str("handler", hc.Handler).Msg("Skipping unknown launch handler")
+			continue
+		}
+
+		if hc.When != when && hc.When != HookWhenAlways {
+			log.Debug().Str("handler", hc.Handler).Str("when", string(when)).Msg("Skipping handler not configured to run now")
+			continue
+		}
+
+		err := handler(l.repository, u, config, launchType, hc.Args)
+		if err != nil {
+			log.Error().Err(err).Str("handler", hc.Handler).Msg("Launch handler execution failed")
+			if hc.ExitOnError {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
