@@ -21,6 +21,8 @@ const (
 	bf2ModArcticWarfare = "Arctic_Warfare"
 	bf2ModPirates       = "bfp2"
 	bf2ModPoE2          = "poe2"
+
+	bf2HookPurgeServerHistory = "purge-server-history"
 )
 
 var Bf2 = domain.GameTitle{
@@ -146,5 +148,28 @@ var Bf2 = domain.GameTitle{
 	},
 	HookHandlers: map[string]game_launcher.HookHandler{
 		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
+		bf2HookPurgeServerHistory:     bf2PurgeServerHistoryHookHandler,
 	},
+}
+
+var bf2PurgeServerHistoryHookHandler = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	h := handler.New(fr)
+	profileKey, ok := args["profile"]
+	if !ok {
+		// Use default profile if none has been configured
+		var err error
+		profileKey, err = bf2.GetDefaultProfileKey(h)
+		if err != nil {
+			return err
+		}
+	}
+
+	generalCon, err := bf2.ReadProfileConfigFile(h, profileKey, bf2.ProfileConfigFileGeneralCon)
+	if err != nil {
+		return err
+	}
+
+	bf2.PurgeServerHistory(generalCon)
+
+	return h.WriteConfigFile(generalCon)
 }

@@ -6,3 +6,6 @@ games:
         executable_path: bin
         install_path: C:\Games\Battlefield 2
         args: ["+fullscreen", "0", "+szx", "1600", "+szy", "900"]
+        hooks:
+            - handler: purge-server-history
+              when: pre-launch
