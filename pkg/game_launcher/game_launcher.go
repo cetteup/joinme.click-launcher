@@ -23,6 +23,8 @@ const (
 	HookWhenAlways     HookWhen = "always"
 	HookWhenPreLaunch  HookWhen = "pre-launch"
 	HookWhenPostLaunch HookWhen = "post-launch"
+
+	handlerLogKey = "handler"
 )
 
 type FileRepository interface {
@@ -95,19 +97,21 @@ func (l *GameLauncher) StartGame(u *url.URL, config Config, launchType LaunchTyp
 func (l *GameLauncher) runHooks(u *url.URL, config Config, launchType LaunchType, handlers map[string]HookHandler, when HookWhen) error {
 	for _, hc := range config.HookConfigs {
 		if hc.When != when && hc.When != HookWhenAlways {
-			log.Debug().Str("handler", hc.Handler).Str("when", string(when)).Msg("Skipping hook handler not configured to run now")
+			log.Debug().Str(handlerLogKey, hc.Handler).Str("when", string(when)).Msg("Skipping hook handler not configured to run now")
 			continue
 		}
 
 		handler, ok := handlers[hc.Handler]
 		if !ok {
-			log.Warn().Str("handler", hc.Handler).Msg("Skipping unknown hook handler")
+			log.Warn().Str(handlerLogKey, hc.Handler).Msg("Skipping unknown hook handler")
 			continue
 		}
 
+		log.Debug().Str(handlerLogKey, hc.Handler).Interface("args", hc.Args).Msg("Running hook handler")
+
 		err := handler.Run(l.repository, u, config, launchType, hc.Args)
 		if err != nil {
-			log.Error().Err(err).Str("handler", hc.Handler).Msg("Hook handler execution failed")
+			log.Error().Err(err).Str(handlerLogKey, hc.Handler).Msg("Hook handler execution failed")
 			if hc.ExitOnError {
 				return err
 			}
