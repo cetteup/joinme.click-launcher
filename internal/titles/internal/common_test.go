@@ -57,9 +57,10 @@ func TestIPPortURLValidator(t *testing.T) {
 				Host: net.JoinHostPort("1.1.1.1", "16567"),
 			}
 			tt.prepareURL(givenURL)
+			validator := IPPortURLValidator{}
 
 			// WHEN
-			err := IPPortURLValidator(givenURL)
+			err := validator.Validate(givenURL)
 
 			// THEN
 			if tt.wantErrContains != "" {
@@ -71,26 +72,30 @@ func TestIPPortURLValidator(t *testing.T) {
 	}
 }
 
-func TestFrostbite3GameIdURLValidator(t *testing.T) {
+func TestPatternURLValidator(t *testing.T) {
 	type test struct {
 		name            string
-		givenGameID     string
+		givenHost       string
+		givenPattern    string
 		wantErrContains string
 	}
 
 	tests := []test{
 		{
-			name:        "no error for valid game id",
-			givenGameID: "1234567890",
+			name:         "no error for valid game id",
+			givenHost:    "1234567890",
+			givenPattern: Frostbite3GameIdPattern,
 		},
 		{
 			name:            "error for non-numeric game id",
-			givenGameID:     "not-a-game-id",
+			givenHost:       "not-a-game-id",
+			givenPattern:    Frostbite3GameIdPattern,
 			wantErrContains: "url hostname is not a valid game id",
 		},
 		{
 			name:            "error for empty hostname",
-			givenGameID:     "",
+			givenHost:       "",
+			givenPattern:    Frostbite3GameIdPattern,
 			wantErrContains: "url hostname is not a valid game id",
 		},
 	}
@@ -98,10 +103,11 @@ func TestFrostbite3GameIdURLValidator(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// GIVEN
-			givenUrl := &url.URL{Host: tt.givenGameID}
+			givenUrl := &url.URL{Host: tt.givenHost}
+			validator := MakePatternURLValidator(tt.givenPattern)
 
 			// WHEN
-			err := Frostbite3GameIdURLValidator(givenUrl)
+			err := validator.Validate(givenUrl)
 
 			// THEN
 			if tt.wantErrContains != "" {

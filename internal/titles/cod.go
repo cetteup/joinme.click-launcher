@@ -28,7 +28,7 @@ var Cod = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(internal.PlusConnectPrefix),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
@@ -56,7 +56,7 @@ var CodUO = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(internal.PlusConnectPrefix),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),

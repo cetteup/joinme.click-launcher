@@ -49,7 +49,7 @@ var BfVietnam = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: localinternal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator{},
 	CmdBuilder:   localinternal.RefractorV1CmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true),

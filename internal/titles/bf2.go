@@ -115,7 +115,7 @@ var Bf2 = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: localinternal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator{},
 	CmdBuilder:   bf2CmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true),

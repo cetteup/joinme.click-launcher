@@ -28,7 +28,7 @@ var Cod4 = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(internal.PlusConnectPrefix),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),

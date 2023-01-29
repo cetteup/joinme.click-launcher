@@ -36,7 +36,7 @@ var Swat4 = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
@@ -72,7 +72,7 @@ var Swat4X = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),

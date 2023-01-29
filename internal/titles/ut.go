@@ -35,7 +35,7 @@ var UT = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),

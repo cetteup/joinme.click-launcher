@@ -14,13 +14,14 @@ import (
 )
 
 const (
-	HookKillProcess   = "kill-process"
-	PlusConnectPrefix = "+connect"
-	// game ids vary by length, so for now we are just validating that it only contains numbers
-	frostbite3GameIdPattern = `^\d+$`
+	HookKillProcess         = "kill-process"
+	PlusConnectPrefix       = "+connect"
+	Frostbite3GameIdPattern = `^\d+$` // game ids vary by length, so for now we are just validating that it only contains numbers
 )
 
-var IPPortURLValidator game_launcher.URLValidator = func(u *url.URL) error {
+type IPPortURLValidator struct{}
+
+func (v IPPortURLValidator) Validate(u *url.URL) error {
 	hostname, port := u.Hostname(), u.Port()
 	if !internal.IsValidIPv4(hostname) {
 		return fmt.Errorf("url hostname is not a valid IPv4 address: %s", hostname)
@@ -37,9 +38,19 @@ var IPPortURLValidator game_launcher.URLValidator = func(u *url.URL) error {
 	return nil
 }
 
-var Frostbite3GameIdURLValidator game_launcher.URLValidator = func(u *url.URL) error {
+func MakePatternURLValidator(pattern string) PatternURLValidator {
+	return PatternURLValidator{
+		pattern: pattern,
+	}
+}
+
+type PatternURLValidator struct {
+	pattern string
+}
+
+func (v PatternURLValidator) Validate(u *url.URL) error {
 	hostname := u.Hostname()
-	matched, err := regexp.Match(frostbite3GameIdPattern, []byte(hostname))
+	matched, err := regexp.Match(v.pattern, []byte(hostname))
 	if err != nil {
 		return fmt.Errorf("failed to validate game id: %s", err)
 	}

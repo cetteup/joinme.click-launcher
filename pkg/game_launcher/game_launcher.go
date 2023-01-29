@@ -65,7 +65,10 @@ type HookConfig struct {
 	Args        map[string]string
 }
 
-type URLValidator func(u *url.URL) error
+// TODO Interface should either move to router or game launcher should do the URL validation
+type URLValidator interface {
+	Validate(u *url.URL) error
+}
 
 type CommandBuilder interface {
 	// GetArgs Construct slice of launch arguments for a game. Receives a file repository to be able to access any

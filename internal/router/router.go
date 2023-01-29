@@ -314,7 +314,7 @@ func (r *GameRouter) ensureModIsSupportedAndInstalledIfGiven(gameTitle domain.Ga
 func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchType game_launcher.LaunchType) error {
 	// Only join url use/require URL parameters, so only validate those
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		err := gameTitle.URLValidator(u)
+		err := gameTitle.URLValidator.Validate(u)
 		if err != nil {
 			return err
 		}

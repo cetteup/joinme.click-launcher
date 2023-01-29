@@ -34,7 +34,7 @@ var Bf1 = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.Frostbite3GameIdURLValidator,
+	URLValidator: internal.MakePatternURLValidator(internal.Frostbite3GameIdPattern),
 	CmdBuilder:   internal.MakeOriginCmdBuilder("1026023"),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(false, bf1Exe), // Launcher config executable name will be "Origin.exe", which we don't want to kill

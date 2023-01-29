@@ -28,7 +28,7 @@ var FearSec2 = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: internal.IPPortURLValidator,
+	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder("+join"),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),

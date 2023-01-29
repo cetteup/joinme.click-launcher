@@ -63,7 +63,7 @@ var Paraworld = domain.GameTitle{
 			},
 		},
 	},
-	URLValidator: localinternal.IPPortURLValidator,
+	URLValidator: localinternal.IPPortURLValidator{},
 	CmdBuilder:   paraworldCmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true, "PWClient.exe", "PWServer.exe"),
