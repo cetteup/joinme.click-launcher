@@ -48,7 +48,7 @@ var Bf1 = domain.GameTitle{
 		originURL := internal.BuildOriginURL(offerIDs, args)
 		return []string{originURL}, nil
 	},
-	HookHandlers: map[string]game_launcher.HookHandler{
-		internal.HookKillProcess: internal.KillProcessHookHandler(false, bf1Exe), // Launcher config executable name will be "Origin.exe", which we don't want to kill
+	HookHandlers: []game_launcher.HookHandler{
+		internal.MakeKillProcessHookHandler(false, bf1Exe), // Launcher config executable name will be "Origin.exe", which we don't want to kill
 	},
 }

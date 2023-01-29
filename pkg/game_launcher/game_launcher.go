@@ -69,9 +69,30 @@ type URLValidator func(u *url.URL) error
 // able to access any config file it may need to construct the arguments.
 type CommandBuilder func(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
 
-type HookHandler func(fr FileRepository, u *url.URL, config Config, launchType LaunchType, args map[string]string) error
+type HookHandler interface {
+	Run(fr FileRepository, u *url.URL, config Config, launchType LaunchType, args map[string]string) error
+	String() string
+}
 
-func (l *GameLauncher) RunHooks(u *url.URL, config Config, launchType LaunchType, handlers map[string]HookHandler, when HookWhen) error {
+func (l *GameLauncher) StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder, hookHandlers ...HookHandler) error {
+	// Convert handlers to map to make access faster/easier
+	hookHandlerMap := toHookHandlerMap(hookHandlers)
+
+	// Run pre-launch hooks
+	if err := l.runHooks(u, config, launchType, hookHandlerMap, HookWhenPreLaunch); err != nil {
+		return err
+	}
+
+	// Start the game
+	if err := l.startGame(u, config, launchType, cmdBuilder); err != nil {
+		return err
+	}
+
+	// Run post-launch hooks
+	return l.runHooks(u, config, launchType, hookHandlerMap, HookWhenPostLaunch)
+}
+
+func (l *GameLauncher) runHooks(u *url.URL, config Config, launchType LaunchType, handlers map[string]HookHandler, when HookWhen) error {
 	for _, hc := range config.HookConfigs {
 		if hc.When != when && hc.When != HookWhenAlways {
 			log.Debug().Str("handler", hc.Handler).Str("when", string(when)).Msg("Skipping hook handler not configured to run now")
@@ -84,7 +105,7 @@ func (l *GameLauncher) RunHooks(u *url.URL, config Config, launchType LaunchType
 			continue
 		}
 
-		err := handler(l.repository, u, config, launchType, hc.Args)
+		err := handler.Run(l.repository, u, config, launchType, hc.Args)
 		if err != nil {
 			log.Error().Err(err).Str("handler", hc.Handler).Msg("Hook handler execution failed")
 			if hc.ExitOnError {
@@ -95,7 +116,7 @@ func (l *GameLauncher) RunHooks(u *url.URL, config Config, launchType LaunchType
 	return nil
 }
 
-func (l *GameLauncher) StartGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
+func (l *GameLauncher) startGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
 	args, err := cmdBuilder(l.repository, u, config, launchType)
 	if err != nil {
 		return err
@@ -116,4 +137,12 @@ func (l *GameLauncher) StartGame(u *url.URL, config Config, launchType LaunchTyp
 	}
 
 	return cmd.Start()
+}
+
+func toHookHandlerMap(hookHandlers []HookHandler) map[string]HookHandler {
+	hookHandlerMap := map[string]HookHandler{}
+	for _, h := range hookHandlers {
+		hookHandlerMap[h.String()] = h
+	}
+	return hookHandlerMap
 }

@@ -69,12 +69,13 @@ func TestBf2SetDefaultProfileHookHandler(t *testing.T) {
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: net.JoinHostPort("1.1.1.1", "16567")}
 			config := game_launcher.Config{}
+			handler := bf2SetDefaultProfileHookHandler{}
 
 			// EXPECT
 			tt.expect(mockRepository)
 
 			// WHEN
-			err := bf2SetDefaultProfileHookHandler(mockRepository, u, config, game_launcher.LaunchTypeLaunchAndJoin, tt.givenArgs)
+			err := handler.Run(mockRepository, u, config, game_launcher.LaunchTypeLaunchAndJoin, tt.givenArgs)
 
 			// THEN
 			if tt.wantErrContains != "" {
@@ -161,12 +162,13 @@ func TestBf2PurgeServerHistoryHookHandler(t *testing.T) {
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: net.JoinHostPort("1.1.1.1", "16567")}
 			config := game_launcher.Config{}
+			handler := bf2PurgeServerHistoryHookHandler{}
 
 			// EXPECT
 			tt.expect(mockRepository)
 
 			// WHEN
-			err := bf2PurgeServerHistoryHookHandler(mockRepository, u, config, game_launcher.LaunchTypeLaunchAndJoin, tt.givenArgs)
+			err := handler.Run(mockRepository, u, config, game_launcher.LaunchTypeLaunchAndJoin, tt.givenArgs)
 
 			// THEN
 			if tt.wantErrContains != "" {

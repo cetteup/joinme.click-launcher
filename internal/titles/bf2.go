@@ -148,48 +148,60 @@ var Bf2 = domain.GameTitle{
 
 		return args, nil
 	},
-	HookHandlers: map[string]game_launcher.HookHandler{
-		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
-		bf2HookSetDefaultProfile:      bf2SetDefaultProfileHookHandler,
-		bf2HookPurgeServerHistory:     bf2PurgeServerHistoryHookHandler,
+	HookHandlers: []game_launcher.HookHandler{
+		localinternal.MakeKillProcessHookHandler(true),
+		bf2SetDefaultProfileHookHandler{},
+		bf2PurgeServerHistoryHookHandler{},
 	},
 }
 
-var bf2SetDefaultProfileHookHandler = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+type bf2SetDefaultProfileHookHandler struct{}
+
+func (h bf2SetDefaultProfileHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
 	profileKey, ok := args[hookArgProfile]
 	if !ok {
-		return fmt.Errorf("required argument %s for hook %s is missing", hookArgProfile, bf2HookSetDefaultProfile)
+		return fmt.Errorf("required argument %s for hook %s is missing", hookArgProfile, h.String())
 	}
 
-	h := handler.New(fr)
-	globalCon, err := h.ReadGlobalConfig(handler.GameBf2)
+	configHandler := handler.New(fr)
+	globalCon, err := configHandler.ReadGlobalConfig(handler.GameBf2)
 	if err != nil {
 		return err
 	}
 
 	bf2.SetDefaultProfile(globalCon, profileKey)
 
-	return h.WriteConfigFile(globalCon)
+	return configHandler.WriteConfigFile(globalCon)
 }
 
-var bf2PurgeServerHistoryHookHandler = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
-	h := handler.New(fr)
+func (h bf2SetDefaultProfileHookHandler) String() string {
+	return bf2HookSetDefaultProfile
+}
+
+type bf2PurgeServerHistoryHookHandler struct{}
+
+func (h bf2PurgeServerHistoryHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	configHandler := handler.New(fr)
 	profileKey, ok := args[hookArgProfile]
 	if !ok {
 		// Use default profile if none has been configured
 		var err error
-		profileKey, err = bf2.GetDefaultProfileKey(h)
+		profileKey, err = bf2.GetDefaultProfileKey(configHandler)
 		if err != nil {
 			return err
 		}
 	}
 
-	generalCon, err := bf2.ReadProfileConfigFile(h, profileKey, bf2.ProfileConfigFileGeneralCon)
+	generalCon, err := bf2.ReadProfileConfigFile(configHandler, profileKey, bf2.ProfileConfigFileGeneralCon)
 	if err != nil {
 		return err
 	}
 
 	bf2.PurgeServerHistory(generalCon)
 
-	return h.WriteConfigFile(generalCon)
+	return configHandler.WriteConfigFile(generalCon)
+}
+
+func (h bf2PurgeServerHistoryHookHandler) String() string {
+	return bf2HookPurgeServerHistory
 }

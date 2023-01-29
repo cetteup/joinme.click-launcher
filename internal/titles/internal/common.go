@@ -77,37 +77,52 @@ var PlainCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRep
 	return nil, nil
 }
 
-// KillProcessHookHandler Returns a hook handler that kills any running game processes plus any additional targets
-func KillProcessHookHandler(targetLaunchExecutable bool, targets ...string) game_launcher.HookHandler {
-	return func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
-		if targetLaunchExecutable {
-			targets = append(targets, config.ExecutableName)
-		}
-
-		processes, err := ps.Processes()
-		if err != nil {
-			return fmt.Errorf("failed to retrieve process list: %s", err)
-		}
-
-		killed := map[int]string{}
-		for _, process := range processes {
-			if isTargetProcess(targets, process.Executable()) {
-				log.Info().
-					Int("pid", process.Pid()).
-					Str("executable", process.Executable()).
-					Msg("Killing existing game process")
-				if err = killProcess(process.Pid()); err != nil {
-					return fmt.Errorf("failed to kill existing game process %s (%d): %s", process.Executable(), process.Pid(), err)
-				}
-				killed[process.Pid()] = process.Executable()
-			}
-		}
-
-		// Wait for killed processes to exit
-		if err = waitForProcessesToExit(killed); err != nil {
-			return err
-		}
-
-		return nil
+// MakeKillProcessHookHandler Returns a hook handler that kills any running game processes plus any additional targets
+func MakeKillProcessHookHandler(targetLaunchExecutable bool, additionalTargets ...string) KillProcessHookHandler {
+	return KillProcessHookHandler{
+		targetLaunchExecutable: targetLaunchExecutable,
+		additionalTargets:      additionalTargets,
 	}
+}
+
+type KillProcessHookHandler struct {
+	targetLaunchExecutable bool
+	additionalTargets      []string
+}
+
+func (h KillProcessHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	targets := h.additionalTargets
+	if h.targetLaunchExecutable {
+		targets = append(targets, config.ExecutableName)
+	}
+
+	processes, err := ps.Processes()
+	if err != nil {
+		return fmt.Errorf("failed to retrieve process list: %s", err)
+	}
+
+	killed := map[int]string{}
+	for _, process := range processes {
+		if isTargetProcess(targets, process.Executable()) {
+			log.Info().
+				Int("pid", process.Pid()).
+				Str("executable", process.Executable()).
+				Msg("Killing existing game process")
+			if err = killProcess(process.Pid()); err != nil {
+				return fmt.Errorf("failed to kill existing game process %s (%d): %s", process.Executable(), process.Pid(), err)
+			}
+			killed[process.Pid()] = process.Executable()
+		}
+	}
+
+	// Wait for killed processes to exit
+	if err = waitForProcessesToExit(killed); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (h KillProcessHookHandler) String() string {
+	return HookKillProcess
 }

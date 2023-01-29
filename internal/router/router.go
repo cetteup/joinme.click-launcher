@@ -50,8 +50,7 @@ type GameFinder interface {
 }
 
 type GameLauncher interface {
-	RunHooks(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, handlers map[string]game_launcher.HookHandler, when game_launcher.HookWhen) error
-	StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error
+	StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder, hookHandlers ...game_launcher.HookHandler) error
 }
 
 type GameRouter struct {
@@ -327,18 +326,7 @@ func (r *GameRouter) startGame(gameTitle domain.GameTitle, u *url.URL, launchTyp
 		return err
 	}
 
-	// Always use the game launcher.Config for preparation, since we need to (for example) kill the game, not the platform client before launch
-	if err := r.launcher.RunHooks(u, launcherConfig, launchType, gameTitle.HookHandlers, game_launcher.HookWhenPreLaunch); err != nil {
-		return err
-	}
-	if err := r.launcher.StartGame(u, launcherConfig, launchType, gameTitle.CmdBuilder); err != nil {
-		return err
-	}
-	if err := r.launcher.RunHooks(u, launcherConfig, launchType, gameTitle.HookHandlers, game_launcher.HookWhenPostLaunch); err != nil {
-		return err
-	}
-
-	return nil
+	return r.launcher.StartGame(u, launcherConfig, launchType, gameTitle.CmdBuilder, gameTitle.HookHandlers...)
 }
 
 func (r *GameRouter) buildLauncherConfig(gameTitle domain.GameTitle) (game_launcher.Config, error) {

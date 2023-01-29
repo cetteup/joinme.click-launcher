@@ -485,16 +485,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf2",
-						Host:   "127.0.0.1:16567",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
-					gomock.Any(),
-					game_launcher.HookWhenPreLaunch,
-				)
 				launcher.EXPECT().StartGame(
 					gomock.Eq(&url.URL{
 						Scheme: "bf2",
@@ -503,16 +493,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 					gomock.Eq(finalLaunchConfig),
 					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-				)
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf2",
-						Host:   "127.0.0.1:16567",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-					game_launcher.HookWhenPostLaunch,
 				)
 			},
 			wantTitle:       &titles.Bf2,
@@ -531,16 +512,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finalLaunchConfig.ExecutableName = title.PlatformClient.LauncherConfig.ExecutableName
 				finalLaunchConfig.ExecutablePath = title.PlatformClient.LauncherConfig.ExecutablePath
 				finalLaunchConfig.InstallPath = platformClientInstallPath
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf4",
-						Host:   "1234567890",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
-					gomock.Any(),
-					game_launcher.HookWhenPreLaunch,
-				)
 				launcher.EXPECT().StartGame(
 					gomock.Eq(&url.URL{
 						Scheme: "bf4",
@@ -549,16 +520,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 					gomock.Eq(finalLaunchConfig),
 					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-				)
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf4",
-						Host:   "1234567890",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-					game_launcher.HookWhenPostLaunch,
 				)
 			},
 			wantTitle:       &titles.Bf4,
@@ -577,17 +539,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme:   "bf1942",
-						Host:     "127.0.0.1:14567",
-						RawQuery: "mod=xpack1",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
-					gomock.Any(),
-					game_launcher.HookWhenPreLaunch,
-				)
 				launcher.EXPECT().StartGame(
 					gomock.Eq(&url.URL{
 						Scheme:   "bf1942",
@@ -597,17 +548,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 					gomock.Eq(finalLaunchConfig),
 					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-				)
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme:   "bf1942",
-						Host:     "127.0.0.1:14567",
-						RawQuery: "mod=xpack1",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
 					gomock.Any(),
-					game_launcher.HookWhenPostLaunch,
 				)
 			},
 			wantTitle:       &titles.Bf1942,
@@ -623,17 +564,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 				finder.EXPECT().GetInstallDirFromSomewhere(gomock.Eq(title.FinderConfigs)).Return(gameInstallPath, nil)
 				finalLaunchConfig := title.LauncherConfig
 				finalLaunchConfig.InstallPath = gameInstallPath
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf2",
-						Host:   "act",
-						Path:   "/launch",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchOnly),
-					gomock.Any(),
-					game_launcher.HookWhenPreLaunch,
-				)
 				launcher.EXPECT().StartGame(
 					gomock.Eq(&url.URL{
 						Scheme: "bf2",
@@ -643,17 +573,7 @@ func TestGameRouter_RunURL(t *testing.T) {
 					gomock.Eq(finalLaunchConfig),
 					gomock.Eq(game_launcher.LaunchTypeLaunchOnly),
 					gomock.Any(),
-				)
-				launcher.EXPECT().RunHooks(
-					gomock.Eq(&url.URL{
-						Scheme: "bf2",
-						Host:   "act",
-						Path:   "/launch",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchOnly),
 					gomock.Any(),
-					game_launcher.HookWhenPostLaunch,
 				)
 			},
 			wantTitle:       &titles.Bf2,

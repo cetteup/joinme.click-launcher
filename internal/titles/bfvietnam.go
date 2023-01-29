@@ -65,7 +65,7 @@ var BfVietnam = domain.GameTitle{
 
 		return args, nil
 	},
-	HookHandlers: map[string]game_launcher.HookHandler{
-		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true),
+	HookHandlers: []game_launcher.HookHandler{
+		localinternal.MakeKillProcessHookHandler(true),
 	},
 }

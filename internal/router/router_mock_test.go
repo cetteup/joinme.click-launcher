@@ -185,44 +185,21 @@ func (m *MockGameLauncher) EXPECT() *MockGameLauncherMockRecorder {
 	return m.recorder
 }
 
-// PrepareLaunch mocks base method.
-func (m *MockGameLauncher) PrepareLaunch(config game_launcher.Config) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PrepareLaunch", config)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// PrepareLaunch indicates an expected call of PrepareLaunch.
-func (mr *MockGameLauncherMockRecorder) PrepareLaunch(config interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrepareLaunch", reflect.TypeOf((*MockGameLauncher)(nil).PrepareLaunch), config)
-}
-
-// RunHooks mocks base method.
-func (m *MockGameLauncher) RunHooks(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, handlers map[string]game_launcher.HookHandler, when game_launcher.HookWhen) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RunHooks", u, config, launchType, handlers, when)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// RunHooks indicates an expected call of RunHooks.
-func (mr *MockGameLauncherMockRecorder) RunHooks(u, config, launchType, handlers, when interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunHooks", reflect.TypeOf((*MockGameLauncher)(nil).RunHooks), u, config, launchType, handlers, when)
-}
-
 // StartGame mocks base method.
-func (m *MockGameLauncher) StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder) error {
+func (m *MockGameLauncher) StartGame(u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, cmdBuilder game_launcher.CommandBuilder, hookHandlers ...game_launcher.HookHandler) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartGame", u, config, launchType, cmdBuilder)
+	varargs := []interface{}{u, config, launchType, cmdBuilder}
+	for _, a := range hookHandlers {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartGame", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // StartGame indicates an expected call of StartGame.
-func (mr *MockGameLauncherMockRecorder) StartGame(u, config, launchType, cmdBuilder interface{}) *gomock.Call {
+func (mr *MockGameLauncherMockRecorder) StartGame(u, config, launchType, cmdBuilder interface{}, hookHandlers ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartGame", reflect.TypeOf((*MockGameLauncher)(nil).StartGame), u, config, launchType, cmdBuilder)
+	varargs := append([]interface{}{u, config, launchType, cmdBuilder}, hookHandlers...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartGame", reflect.TypeOf((*MockGameLauncher)(nil).StartGame), varargs...)
 }

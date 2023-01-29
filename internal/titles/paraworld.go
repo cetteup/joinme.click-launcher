@@ -76,7 +76,7 @@ var Paraworld = domain.GameTitle{
 		}
 		return args, nil
 	},
-	HookHandlers: map[string]game_launcher.HookHandler{
-		localinternal.HookKillProcess: localinternal.KillProcessHookHandler(true, "PWClient.exe", "PWServer.exe"),
+	HookHandlers: []game_launcher.HookHandler{
+		localinternal.MakeKillProcessHookHandler(true, "PWClient.exe", "PWServer.exe"),
 	},
 }
