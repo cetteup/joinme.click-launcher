@@ -12,7 +12,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func BuildOriginURL(offerIDs []string, args []string) string {
+func buildOriginURL(offerIDs []string, args []string) string {
 	params := url.Values{
 		"offerIds":  {strings.Join(offerIDs, ",")},
 		"authCode":  {},

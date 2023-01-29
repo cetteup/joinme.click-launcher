@@ -67,9 +67,11 @@ type HookConfig struct {
 
 type URLValidator func(u *url.URL) error
 
-// CommandBuilder Function to construct slice of launch arguments for a game. Receives a file repository in order to be
-// able to access any config file it may need to construct the arguments.
-type CommandBuilder func(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
+type CommandBuilder interface {
+	// GetArgs Construct slice of launch arguments for a game. Receives a file repository to be able to access any
+	// config file it may need to construct the arguments.
+	GetArgs(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
+}
 
 type HookHandler interface {
 	Run(fr FileRepository, u *url.URL, config Config, launchType LaunchType, args map[string]string) error
@@ -121,7 +123,7 @@ func (l *GameLauncher) runHooks(u *url.URL, config Config, launchType LaunchType
 }
 
 func (l *GameLauncher) startGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
-	args, err := cmdBuilder(l.repository, u, config, launchType)
+	args, err := cmdBuilder.GetArgs(l.repository, u, config, launchType)
 	if err != nil {
 		return err
 	}

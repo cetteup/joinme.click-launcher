@@ -1,9 +1,6 @@
 package titles
 
 import (
-	"fmt"
-	"net/url"
-
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
@@ -32,12 +29,7 @@ var FearSec2 = domain.GameTitle{
 		},
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			return append(config.DefaultArgs, "+join", fmt.Sprintf("%s:%s", u.Hostname(), u.Port())), nil
-		}
-		return nil, nil
-	},
+	CmdBuilder:   internal.MakeSimpleCmdBuilder("+join"),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
 	},

@@ -2,9 +2,7 @@ package titles
 
 import (
 	"fmt"
-	"net/url"
 
-	"github.com/cetteup/joinme.click-launcher/internal"
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	localinternal "github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
@@ -52,19 +50,7 @@ var BfVietnam = domain.GameTitle{
 		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		args := config.DefaultArgs
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
-		}
-
-		query := u.Query()
-		if internal.QueryHasMod(query) {
-			args = append(args, "+game", internal.GetModFromQuery(query))
-		}
-
-		return args, nil
-	},
+	CmdBuilder:   localinternal.RefractorV1CmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true),
 	},

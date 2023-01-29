@@ -116,43 +116,47 @@ var Bf2 = domain.GameTitle{
 		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		configHandler := handler.New(fr)
-		profileCon, err := bf2.GetDefaultProfileProfileCon(configHandler)
-		if err != nil {
-			return nil, err
-		}
-
-		playerName, encryptedPassword, err := bf2.GetEncryptedLogin(profileCon)
-		if err != nil {
-			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
-		}
-
-		password, err := bf2.DecryptProfileConPassword(encryptedPassword)
-		if err != nil {
-			return nil, err
-		}
-
-		args := append(config.DefaultArgs, "+playerName", playerName, "+playerPassword", password)
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
-		}
-
-		query := u.Query()
-		if internal.QueryHasMod(query) {
-			args = append(args,
-				"+modPath", fmt.Sprintf("mods/%s", internal.GetModFromQuery(query)),
-				"+ignoreAsserts", "1",
-			)
-		}
-
-		return args, nil
-	},
+	CmdBuilder:   bf2CmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true),
 		bf2SetDefaultProfileHookHandler{},
 		bf2PurgeServerHistoryHookHandler{},
 	},
+}
+
+type bf2CmdBuilder struct{}
+
+func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	configHandler := handler.New(fr)
+	profileCon, err := bf2.GetDefaultProfileProfileCon(configHandler)
+	if err != nil {
+		return nil, err
+	}
+
+	playerName, encryptedPassword, err := bf2.GetEncryptedLogin(profileCon)
+	if err != nil {
+		return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
+	}
+
+	password, err := bf2.DecryptProfileConPassword(encryptedPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	args := append(config.DefaultArgs, "+playerName", playerName, "+playerPassword", password)
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
+	}
+
+	query := u.Query()
+	if internal.QueryHasMod(query) {
+		args = append(args,
+			"+modPath", fmt.Sprintf("mods/%s", internal.GetModFromQuery(query)),
+			"+ignoreAsserts", "1",
+		)
+	}
+
+	return args, nil
 }
 
 type bf2SetDefaultProfileHookHandler struct{}

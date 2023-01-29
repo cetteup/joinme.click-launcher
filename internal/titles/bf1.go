@@ -1,8 +1,6 @@
 package titles
 
 import (
-	"net/url"
-
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	"github.com/cetteup/joinme.click-launcher/internal/platforms"
 	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
@@ -37,17 +35,7 @@ var Bf1 = domain.GameTitle{
 		},
 	},
 	URLValidator: internal.Frostbite3GameIdURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		args := config.DefaultArgs
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			args = append(args, internal.Frostbite3DefaultArgs...)
-			args = append(args, "-gameId", u.Hostname())
-		}
-
-		offerIDs := []string{"1026023"}
-		originURL := internal.BuildOriginURL(offerIDs, args)
-		return []string{originURL}, nil
-	},
+	CmdBuilder:   internal.MakeOriginCmdBuilder("1026023"),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(false, bf1Exe), // Launcher config executable name will be "Origin.exe", which we don't want to kill
 	},

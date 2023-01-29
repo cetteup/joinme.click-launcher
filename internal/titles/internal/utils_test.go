@@ -39,7 +39,7 @@ func TestBuildOriginURL(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			originURL := BuildOriginURL(tt.givenOfferIDs, tt.givenArgs)
+			originURL := buildOriginURL(tt.givenOfferIDs, tt.givenArgs)
 			assert.Equal(t, tt.expectedURL, originURL)
 		})
 	}

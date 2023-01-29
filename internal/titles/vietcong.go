@@ -31,13 +31,17 @@ var Vietcong = domain.GameTitle{
 		},
 	},
 	URLValidator: internal.IPPortURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			return append(config.DefaultArgs, "-ip", u.Hostname(), "-port", u.Port()), nil
-		}
-		return nil, nil
-	},
+	CmdBuilder:   vietcongCmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
 	},
+}
+
+type vietcongCmdBuilder struct{}
+
+func (b vietcongCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		return append(config.DefaultArgs, "-ip", u.Hostname(), "-port", u.Port()), nil
+	}
+	return nil, nil
 }

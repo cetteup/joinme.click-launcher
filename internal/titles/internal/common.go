@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 	"regexp"
 
@@ -13,7 +14,8 @@ import (
 )
 
 const (
-	HookKillProcess = "kill-process"
+	HookKillProcess   = "kill-process"
+	PlusConnectPrefix = "+connect"
 	// game ids vary by length, so for now we are just validating that it only contains numbers
 	frostbite3GameIdPattern = `^\d+$`
 )
@@ -48,16 +50,19 @@ var Frostbite3GameIdURLValidator game_launcher.URLValidator = func(u *url.URL) e
 	return nil
 }
 
-var Frostbite3DefaultArgs = []string{
-	"-gameMode", "MP",
-	"-role", "soldier",
-	"-asSpectator", "false",
-	"-joinWithParty", "false",
+func MakeSimpleCmdBuilder(prefixes ...string) SimpleCmdBuilder {
+	return SimpleCmdBuilder{
+		prefixes: prefixes,
+	}
 }
 
-var PlusConnectCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+type SimpleCmdBuilder struct {
+	prefixes []string
+}
+
+func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		args := []string{"+connect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port())}
+		args := append(b.prefixes, net.JoinHostPort(u.Hostname(), u.Port()))
 		if config.AppendDefaultArgs {
 			return append(args, config.DefaultArgs...), nil
 		}
@@ -66,15 +71,46 @@ var PlusConnectCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.F
 	return nil, nil
 }
 
-var PlainCmdBuilder game_launcher.CommandBuilder = func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		args := []string{fmt.Sprintf("%s:%s", u.Hostname(), u.Port())}
-		if config.AppendDefaultArgs {
-			return append(args, config.DefaultArgs...), nil
-		}
-		return append(config.DefaultArgs, args...), nil
+func MakeOriginCmdBuilder(offerIDs ...string) OriginCmdBuilder {
+	return OriginCmdBuilder{
+		offerIDs: offerIDs,
 	}
-	return nil, nil
+}
+
+type OriginCmdBuilder struct {
+	offerIDs []string
+}
+
+func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	args := config.DefaultArgs
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args,
+			"-gameMode", "MP",
+			"-role", "soldier",
+			"-asSpectator", "false",
+			"-joinWithParty", "false",
+			"-gameId", u.Hostname(),
+		)
+	}
+
+	originURL := buildOriginURL(b.offerIDs, args)
+	return []string{originURL}, nil
+}
+
+type RefractorV1CmdBuilder struct{}
+
+func (b RefractorV1CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	args := config.DefaultArgs
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
+	}
+
+	query := u.Query()
+	if internal.QueryHasMod(query) {
+		args = append(args, "+game", internal.GetModFromQuery(query))
+	}
+
+	return args, nil
 }
 
 // MakeKillProcessHookHandler Returns a hook handler that kills any running game processes plus any additional targets

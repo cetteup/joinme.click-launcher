@@ -64,19 +64,23 @@ var Paraworld = domain.GameTitle{
 		},
 	},
 	URLValidator: localinternal.IPPortURLValidator,
-	CmdBuilder: func(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-		args := config.DefaultArgs
-		if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-			args = append(args, "-autoconnect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port()))
-		}
-
-		query := u.Query()
-		if internal.QueryHasMod(query) {
-			args = append(args, "-enable", internal.GetModFromQuery(query))
-		}
-		return args, nil
-	},
+	CmdBuilder:   paraworldCmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
 		localinternal.MakeKillProcessHookHandler(true, "PWClient.exe", "PWServer.exe"),
 	},
+}
+
+type paraworldCmdBuilder struct{}
+
+func (b paraworldCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+	args := config.DefaultArgs
+	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
+		args = append(args, "-autoconnect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port()))
+	}
+
+	query := u.Query()
+	if internal.QueryHasMod(query) {
+		args = append(args, "-enable", internal.GetModFromQuery(query))
+	}
+	return args, nil
 }
