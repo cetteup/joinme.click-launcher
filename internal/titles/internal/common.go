@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/mitchellh/go-ps"
 	"github.com/rs/zerolog/log"
@@ -15,6 +17,7 @@ import (
 
 const (
 	HookKillProcess         = "kill-process"
+	HookDeleteFile          = "delete-running-file" // CoD games write a dummy file when launched. If the file is still present when launched again, the game assumes it crashed and offers to start in safe mode.
 	PlusConnectPrefix       = "+connect"
 	Frostbite3GameIdPattern = `^\d+$` // game ids vary by length, so for now we are just validating that it only contains numbers
 )
@@ -172,4 +175,53 @@ func (h KillProcessHookHandler) Run(fr game_launcher.FileRepository, u *url.URL,
 
 func (h KillProcessHookHandler) String() string {
 	return HookKillProcess
+}
+
+func MakeDeleteFileHookHandler(pathsBuilder func(config game_launcher.Config) ([]string, error)) DeleteFileHookHandler {
+	return DeleteFileHookHandler{
+		pathsBuilder: pathsBuilder,
+	}
+}
+
+type DeleteFileHookHandler struct {
+	pathsBuilder func(config game_launcher.Config) ([]string, error)
+}
+
+func (h DeleteFileHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	paths, err := h.pathsBuilder(config)
+	if err != nil {
+		return err
+	}
+	for _, path := range paths {
+		if err := DeleteFileIfExists(fr, path); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (h DeleteFileHookHandler) String() string {
+	return HookDeleteFile
+}
+
+func CoDRunningFilePathsBuilder(config game_launcher.Config) ([]string, error) {
+	// Running file name will be the executable name minus the .exe prefixed by __, e.g. "__CoDMP"
+	name := fmt.Sprintf("__%s", strings.TrimSuffix(config.ExecutableName, filepath.Ext(config.ExecutableName)))
+
+	// Primary place to look is in the install path, basically right "next to" the executable
+	primary := filepath.Join(config.InstallPath, name)
+
+	// At least when installed in the default location, CoD2 may store the file in the VirtualStore
+	virtualStore, err := buildVirtualStorePath()
+	if err != nil {
+		return nil, err
+	}
+	// With the game installed in C:\Program Files\Call of Duty, the alternate would be ...\AppData\Local\VirtualStore\Program Files\Call of Duty
+	alternate := filepath.Join(
+		virtualStore,
+		strings.TrimPrefix(config.InstallPath, filepath.VolumeName(config.InstallPath)),
+		name,
+	)
+
+	return []string{primary, alternate}, nil
 }

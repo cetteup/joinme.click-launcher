@@ -1,6 +1,10 @@
 package titles
 
 import (
+	"fmt"
+	"path/filepath"
+	"strings"
+
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
 	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
@@ -26,11 +30,26 @@ var CodWaw = domain.GameTitle{
 				When:        game_launcher.HookWhenPreLaunch,
 				ExitOnError: true,
 			},
+			{
+				Handler:     internal.HookDeleteFile,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: false,
+			},
 		},
 	},
 	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(internal.PlusConnectPrefix),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
+		internal.MakeDeleteFileHookHandler(codWawRunningFilePathsBuilder),
 	},
+}
+
+var codWawRunningFilePathsBuilder = func(config game_launcher.Config) ([]string, error) {
+	name := fmt.Sprintf("__%s", strings.TrimSuffix(config.ExecutableName, filepath.Ext(config.ExecutableName)))
+	appData, err := internal.GetLocalAppDataPath()
+	if err != nil {
+		return nil, err
+	}
+	return []string{filepath.Join(appData, "Activision", "CoDWaW", name)}, nil
 }

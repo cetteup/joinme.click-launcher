@@ -3,8 +3,10 @@
 package internal
 
 import (
+	"fmt"
 	"net"
 	"net/url"
+	"path/filepath"
 	"strconv"
 	"testing"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/cetteup/joinme.click-launcher/internal/testhelpers"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 )
 
@@ -290,6 +293,111 @@ func TestRefractorV1CmdBuilder(t *testing.T) {
 			// THEN
 			require.NoError(t, err)
 			assert.Equal(t, tt.expectedCmd, cmd)
+		})
+	}
+}
+
+func TestDeleteFileHookHandler(t *testing.T) {
+	type test struct {
+		name              string
+		givenConfig       game_launcher.Config
+		givenPathsBuilder func(config game_launcher.Config) ([]string, error)
+		expect            func(fr *MockFileRepository)
+		wantErrContains   string
+	}
+
+	tests := []test{
+		{
+			name: "deletes CoD running file if present in install path",
+			givenConfig: game_launcher.Config{
+				InstallPath:    "C:\\Program Files\\Call of Duty",
+				ExecutableName: "CoDMP.exe",
+			},
+			givenPathsBuilder: CoDRunningFilePathsBuilder,
+			expect: func(fr *MockFileRepository) {
+				path := "C:\\Program Files\\Call of Duty\\__CoDMP"
+				alternate := "AppData\\Local\\VirtualStore\\Program Files\\Call of Duty\\__CoDMP"
+				fr.EXPECT().FileExists(gomock.Eq(path)).Return(true, nil)
+				fr.EXPECT().RemoveAll(gomock.Eq(path)).Return(nil)
+				fr.EXPECT().FileExists(testhelpers.StringContainsMatcher(alternate)).Return(false, nil)
+			},
+		},
+		{
+			name: "deletes CoD running file if present in virtual store",
+			givenConfig: game_launcher.Config{
+				InstallPath:    "C:\\Program Files (x86)\\Call of Duty 2",
+				ExecutableName: "CoD2MP_s.exe",
+			},
+			givenPathsBuilder: CoDRunningFilePathsBuilder,
+			expect: func(fr *MockFileRepository) {
+				primary := "C:\\Program Files (x86)\\Call of Duty 2\\__CoD2MP_s"
+				alternate := "AppData\\Local\\VirtualStore\\Program Files (x86)\\Call of Duty 2\\__CoD2MP_s"
+				fr.EXPECT().FileExists(gomock.Eq(primary)).Return(false, nil)
+				fr.EXPECT().FileExists(testhelpers.StringContainsMatcher(alternate)).Return(true, nil)
+				fr.EXPECT().RemoveAll(testhelpers.StringContainsMatcher(alternate)).Return(nil)
+			},
+		},
+		{
+			name: "does nothing if running file does not exist",
+			givenConfig: game_launcher.Config{
+				InstallPath:    "C:\\Program Files\\Publisher\\Game",
+				ExecutableName: "Game.exe",
+			},
+			givenPathsBuilder: func(config game_launcher.Config) ([]string, error) {
+				return []string{filepath.Join(config.InstallPath, "Game.running")}, nil
+			},
+			expect: func(fr *MockFileRepository) {
+				fr.EXPECT().FileExists(gomock.Eq("C:\\Program Files\\Publisher\\Game\\Game.running")).Return(false, nil)
+			},
+		},
+		{
+			name: "errors if paths builder fails",
+			givenConfig: game_launcher.Config{
+				InstallPath:    "C:\\Program Files\\Publisher\\Game",
+				ExecutableName: "Game.exe",
+			},
+			givenPathsBuilder: func(config game_launcher.Config) ([]string, error) {
+				return nil, fmt.Errorf("some-paths-builder-error")
+			},
+			expect:          func(fr *MockFileRepository) {},
+			wantErrContains: "some-paths-builder-error",
+		},
+		{
+			name: "errors if file exists check fails",
+			givenConfig: game_launcher.Config{
+				InstallPath:    "C:\\Program Files\\Publisher\\Game",
+				ExecutableName: "Game.exe",
+			},
+			givenPathsBuilder: func(config game_launcher.Config) ([]string, error) {
+				return []string{filepath.Join(config.InstallPath, "Game.running")}, nil
+			},
+			expect: func(fr *MockFileRepository) {
+				fr.EXPECT().FileExists(gomock.Eq("C:\\Program Files\\Publisher\\Game\\Game.running")).Return(false, fmt.Errorf("some-io-error"))
+			},
+			wantErrContains: "some-io-error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// GIVEN
+			ctrl := gomock.NewController(t)
+			mockRepository := NewMockFileRepository(ctrl)
+			u := &url.URL{Host: net.JoinHostPort("1.1.1.1", "28960")}
+			handler := MakeDeleteFileHookHandler(tt.givenPathsBuilder)
+			args := map[string]string{}
+
+			// EXPECT
+			tt.expect(mockRepository)
+
+			// WHEN
+			err := handler.Run(mockRepository, u, tt.givenConfig, game_launcher.LaunchTypeLaunchAndJoin, args)
+
+			if tt.wantErrContains != "" {
+				assert.ErrorContains(t, err, tt.wantErrContains)
+			} else {
+				require.NoError(t, err)
+			}
 		})
 	}
 }

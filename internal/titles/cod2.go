@@ -26,11 +26,17 @@ var Cod2 = domain.GameTitle{
 				When:        game_launcher.HookWhenPreLaunch,
 				ExitOnError: true,
 			},
+			{
+				Handler:     internal.HookDeleteFile,
+				When:        game_launcher.HookWhenPreLaunch,
+				ExitOnError: false,
+			},
 		},
 	},
 	URLValidator: internal.IPPortURLValidator{},
 	CmdBuilder:   internal.MakeSimpleCmdBuilder(internal.PlusConnectPrefix),
 	HookHandlers: []game_launcher.HookHandler{
 		internal.MakeKillProcessHookHandler(true),
+		internal.MakeDeleteFileHookHandler(internal.CoDRunningFilePathsBuilder),
 	},
 }
