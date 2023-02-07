@@ -46,6 +46,7 @@ func init() {
 		titles.Cod2,
 		titles.Cod4,
 		titles.CodWaw,
+		titles.Fear,
 		titles.FearSec2,
 		titles.Paraworld,
 		titles.Swat4,
