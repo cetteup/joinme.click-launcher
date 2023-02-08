@@ -15,13 +15,19 @@ var UT2004 = domain.GameTitle{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\Unreal Technology\\Installed Apps\\UT2004",
-			RegistryValueName: "folder",
+			RegistryValueName: "Folder",
 		},
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyCurrentUser, // When installed via Steam, key is CurrentUser instead of LocalMachine
 			RegistryPath:      "SOFTWARE\\Unreal Technology\\Installed Apps\\UT2004",
-			RegistryValueName: "folder",
+			RegistryValueName: "Folder",
+		},
+		{
+			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Unreal Technology\\Installed Apps\\UT2004", // Disk version uses WOW6432Node
+			RegistryValueName: "Folder",
 		},
 	},
 	LauncherConfig: game_launcher.Config{
