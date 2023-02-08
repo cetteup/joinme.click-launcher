@@ -15,19 +15,25 @@ var Unreal = domain.GameTitle{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
 			RegistryPath:      "SOFTWARE\\Unreal Technology\\Installed Apps\\Unreal Gold",
-			RegistryValueName: "folder",
+			RegistryValueName: "Folder",
 		},
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyCurrentUser, // When installed via Steam, key is CurrentUser instead of LocalMachine
 			RegistryPath:      "SOFTWARE\\Unreal Technology\\Installed Apps\\Unreal Gold",
-			RegistryValueName: "folder",
+			RegistryValueName: "Folder",
 		},
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\Unreal.exe", // TODO Points to the "System" dir for Unreal Gold
-			RegistryValueName: "Path",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Unreal Technology\\Installed Apps\\Unreal Gold", // Disk versions use WOW6432Node
+			RegistryValueName: "Folder",
+		},
+		{
+			ForType:           software_finder.RegistryFinder,
+			RegistryKey:       software_finder.RegistryKeyLocalMachine,
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Unreal Technology\\Installed Apps\\Unreal",
+			RegistryValueName: "Folder",
 		},
 	},
 	LauncherConfig: game_launcher.Config{
