@@ -23,6 +23,8 @@ const (
 	bf2ModPoE2          = "poe2"
 
 	bf2HookPurgeServerHistory = "purge-server-history"
+	bf2HookPurgeShaderCache   = "purge-shader-cache"
+	bf2HookPurgeLogoCache     = "purge-logo-cache"
 	bf2HookSetDefaultProfile  = "set-default-profile"
 	hookArgProfile            = "profile"
 )
@@ -121,6 +123,8 @@ var Bf2 = domain.GameTitle{
 		localinternal.MakeKillProcessHookHandler(true),
 		bf2SetDefaultProfileHookHandler{},
 		bf2PurgeServerHistoryHookHandler{},
+		bf2PurgeShaderCacheHookHandler{},
+		bf2PurgeLogoCacheHookHandler{},
 	},
 }
 
@@ -208,4 +212,26 @@ func (h bf2PurgeServerHistoryHookHandler) Run(fr game_launcher.FileRepository, u
 
 func (h bf2PurgeServerHistoryHookHandler) String() string {
 	return bf2HookPurgeServerHistory
+}
+
+type bf2PurgeShaderCacheHookHandler struct{}
+
+func (h bf2PurgeShaderCacheHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	configHandler := handler.New(fr)
+	return configHandler.PurgeShaderCache(handler.GameBf2)
+}
+
+func (h bf2PurgeShaderCacheHookHandler) String() string {
+	return bf2HookPurgeShaderCache
+}
+
+type bf2PurgeLogoCacheHookHandler struct{}
+
+func (h bf2PurgeLogoCacheHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+	configHandler := handler.New(fr)
+	return configHandler.PurgeLogoCache(handler.GameBf2)
+}
+
+func (h bf2PurgeLogoCacheHookHandler) String() string {
+	return bf2HookPurgeLogoCache
 }
