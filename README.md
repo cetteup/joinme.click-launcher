@@ -16,21 +16,23 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 |----------------------------------|-------------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | Battlefield 1942                 | bf1942://{ip}:{port}    | v0.1.7-alpha              | `The Road to Rome`², `Secret Weapons of WWII`², `Battlefield 1918`, `Desert Combat (0.7)`, `Desert Combat Final`, `Pirates` |
 | Battlefield Vietnam              | bfvietnam://{ip}:{port} | v0.1.7-alpha              | `Battlegroup 42`                                                                                                            |
-| Battlefield 2                    | bf2://{ip}:{port}       | v0.1.11                   | `Special Forces`², `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`, `Arctic Warfare`                     |
+| Battlefield 2                    | bf2://{ip}:{port}       | v0.2.0                    | `Special Forces`², `Allied Intent Xtended`, `Pirates (Yarr2)`, `Point of Existence 2`, `Arctic Warfare`                     |
 | Battlefield 4                    | bf4://{gameid}          | v0.1.5-alpha              |
 | Battlefield 1                    | bf1://{gameid}          | v0.1.5-alpha              |
-| Call of Duty                     | cod://{ip}:{port}       | v0.1.3-alpha              |
-| Call of Duty: United Offensive   | coduo://{ip}:{port}     | v0.1.3-alpha              |
-| Call of Duty 2                   | cod2://{ip}:{port}      | v0.1.3-alpha              |
-| Call of Duty 4: Modern Warfare   | cod4://{ip}:{port}      | v0.1.3-alpha              |
-| Call of Duty: World at War       | codwaw://{ip}:{port}    | v0.1.3-alpha              |
+| Call of Duty                     | cod://{ip}:{port}       | v0.2.0                    |
+| Call of Duty: United Offensive   | coduo://{ip}:{port}     | v0.2.0                    |
+| Call of Duty 2                   | cod2://{ip}:{port}      | v0.2.0                    |
+| Call of Duty 4: Modern Warfare   | cod4://{ip}:{port}      | v0.2.0                    |
+| Call of Duty: World at War       | codwaw://{ip}:{port}    | v0.2.0                    |
+| F.E.A.R./F.E.A.R. Combat         | fear://{ip}:{port}      | v0.2.0                    |
 | F.E.A.R. Combat (SEC2)           | fearsec2://{ip}:{port}  | v0.1.3-alpha              |
 | ParaWorld                        | paraworld://{ip}:{port} | v0.1.7-alpha              |
 | SWAT 4                           | swat4://{ip}:{port}     | v0.1.3-alpha              |
 | SWAT 4: The Stetchkov Syndicate³ | swat4x://{ip}:{port}    | v0.1.3-alpha              |
-| Unreal Tournament                | ut://{ip}:{port}        | v0.1.12                   |
-| Unreal Tournament 2003           | ut2003://{ip}:{port}    | v0.1.12                   |
-| Unreal Tournament 2004           | ut2004://{ip}:{port}    | v0.1.12                   |
+| Unreal                           | unreal://{ip}:{port}    | v0.2.0                    |
+| Unreal Tournament                | ut://{ip}:{port}        | v0.2.0                    |
+| Unreal Tournament 2003           | ut2003://{ip}:{port}    | v0.2.0                    |
+| Unreal Tournament 2004           | ut2004://{ip}:{port}    | v0.2.0                    |
 | Vietcong                         | vietcong://{ip}:{port}  | v0.1.3-alpha              |
 
 ¹ refers to the minimum launcher version supporting all features relevant to the game
@@ -107,10 +109,32 @@ These options can be configured (differently) on a per-game basis. They need to 
 | `executable_path` | string   | relative path from the game's install path to folder containing the game executable (usually statically defined per game) |
 | `install_path`    | string   | path where the game is installed (usually determined via the Windows registry)                                            |
 | `args`            | string[] | array of additional arguments to pass the game when launching                                                             |
+| `hooks`           | object[] | array of hook configurations for the game                                                                                 |
+
+#### Hook configuration options
+
+Hooks allow you to customize how games are launched. You can, for example, use the `purge-server-history` hook for Battlefield 2 to remove all server history items from your default profile and thus speed up the game launch.
+
+Options can be configured differently for each hook and game. It is also possible to provide two configurations for the same hook, e.g. to run it with different arguments before and after launching a game.
+
+| Option name     | Type    | Description                                                             | Default value |
+|-----------------|---------|-------------------------------------------------------------------------|---------------|
+| `handler`       | string  | Hook handler function to execute                                        |
+| `when`          | string  | When to run the hook (`pre-launch`, `post-launch`, `always` or `never`) |
+| `exit_on_error` | boolean | Whether to exit if the hook returns an error                            | `false`       |
+| `args`          | object  | Arguments to pass to the handler (keys and values must be strings)      |
 
 #### Example configuration
 
-This example configuration would cause the launcher to not leave the launcher window open after performing any actions (meaning you will not see any output it printed). Also, Battlefield 2 would be launched in windowed mode with `C:\Games\Battlefield 2\bin\BF2.playbf2.exe` being started in `C:\Games\Battlefield 2`. Debug logging is disabled by default, meaning that option does not change any default behaviour.  
+This example configuration would cause the launcher to not leave the launcher window open after performing any actions (meaning you will not see any output it printed). Also, Battlefield 2 would be launched in windowed mode with `C:\Games\Battlefield 2\bin\BF2.playbf2.exe` being started in `C:\Games\Battlefield 2`.
+
+With the hooks configured like this, the launcher will:
+1. set profile "0010" as the default profile for Battlefield 2 before launching the game
+2. purge the server history before launching the game
+3. purge the shader cache before launching the game
+4. purge the logo cache before launching the game
+
+Debug logging is disabled by default, meaning that option does not change any default behaviour.
 
 ```yaml
 quiet_launch: true
@@ -121,6 +145,17 @@ games:
         executable_path: bin
         install_path: C:\Games\Battlefield 2
         args: ["+fullscreen", "0", "+szx", "1600", "+szy", "900"]
+        hooks:
+          - handler: set-default-profile
+            when: pre-launch
+            args:
+              profile: "0010"
+          - handler: purge-server-history
+            when: pre-launch
+          - handler: purge-shader-cache
+            when: pre-launch
+          - handler: purge-logo-cache
+            when: pre-launch
 ```
 
 You can also find the example configuration as a file: [config.example.yaml](config.example.yaml).
