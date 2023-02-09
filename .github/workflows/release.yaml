@@ -5,9 +5,21 @@ on:
     types: [created]
 
 jobs:
-  releases-matrix:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.meta.outputs.date }}
+    steps:
+      - name: Prepare release meta
+        id: meta
+        run: |
+          echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+  releases-bin:
     name: Release Go Binary
     runs-on: ubuntu-latest
+    needs:
+      - meta
     strategy:
       matrix:
         goos: [windows]
@@ -22,5 +34,6 @@ jobs:
           goversion: 1.19.5
           project_path: cmd/joinme.click-launcher
           pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && pushd cmd/joinme.click-launcher && go generate && popd
+          ldflags: "-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
           extra_files: config.example.yaml
           sha256sum: true

@@ -60,15 +60,29 @@ func init() {
 }
 
 var (
+	buildVersion = "development"
+	buildCommit  = "uncommitted"
+	buildTime    = "unknown"
+
 	gameRouter *router.GameRouter
 )
 
 func main() {
+	var printVersion bool
 	var quietLaunch bool
 	var debug bool
+	flag.BoolVar(&printVersion, "v", false, "print the version")
+	flag.BoolVar(&printVersion, "version", false, "print the version")
 	flag.BoolVar(&quietLaunch, "quiet", false, "do not leave the window open any longer than required")
 	flag.BoolVar(&debug, "debug", false, "set log level to debug")
 	flag.Parse()
+
+	version := fmt.Sprintf("joinme.click-launcher %s (%s) built at %s", buildVersion, buildCommit, buildTime)
+
+	if printVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	if debug || internal.Config.DebugLogging {
