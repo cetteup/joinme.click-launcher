@@ -23,6 +23,7 @@ const (
 	HookWhenAlways     HookWhen = "always"
 	HookWhenPreLaunch  HookWhen = "pre-launch"
 	HookWhenPostLaunch HookWhen = "post-launch"
+	HookWhenNever      HookWhen = "never"
 
 	handlerLogKey = "handler"
 )

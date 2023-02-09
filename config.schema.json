@@ -11,7 +11,7 @@
         "when": {
           "type": "string",
           "description": "When to run the hook",
-          "enum": ["pre-launch", "post-launch", "always"]
+          "enum": ["pre-launch", "post-launch", "always", "never"]
         },
         "exit_on_error": {
           "type": "boolean",
