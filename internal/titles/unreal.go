@@ -32,7 +32,7 @@ var Unreal = domain.GameTitle{
 		{
 			ForType:           software_finder.RegistryFinder,
 			RegistryKey:       software_finder.RegistryKeyLocalMachine,
-			RegistryPath:      "SOFTWARE\\WOW6432Node\\Unreal Technology\\Installed Apps\\Unreal",
+			RegistryPath:      "SOFTWARE\\WOW6432Node\\Unreal Technology\\Installed Apps\\Unreal", // Path is only set by patch, not the original install itself
 			RegistryValueName: "Folder",
 		},
 	},
