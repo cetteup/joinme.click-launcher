@@ -13,3 +13,7 @@ games:
                   profile: "0010"
             - handler: purge-server-history
               when: pre-launch
+            - handler: purge-shader-cache
+              when: pre-launch
+            - handler: purge-logo-cache
+              when: pre-launch
