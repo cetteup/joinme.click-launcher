@@ -31,9 +31,18 @@ PrivilegesRequired=lowest
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Types]
+Name: "full"; Description: "Full installation"
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
+
+[Components]
+Name: "launcher"; Description: "Launcher"; Types: full custom; Flags: fixed
+Name: "config"; Description: "Recommended configuration"; Types: full
+
 [Files]
-Source: "joinme.click-launcher.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "resource\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "joinme.click-launcher.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
+Source: "resource\icon.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
+Source: "..\..\config.recommended.yaml"; DestDir: "{app}"; DestName: "config.yaml"; Flags: ignoreversion; Components: "config"
 
 [Run]
 Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-quiet"
