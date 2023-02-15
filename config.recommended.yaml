@@ -1,0 +1,7 @@
+quiet_launch: false
+debug_logging: false
+games:
+  bf2:
+    hooks:
+      - handler: purge-server-history
+        when: pre-launch
