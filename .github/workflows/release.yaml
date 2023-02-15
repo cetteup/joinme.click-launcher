@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: binary-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher/joinme.click-launcher.exe
       - name: Build installer
         run: |
@@ -83,7 +83,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: binary-${{ matrix.goarch }}
           path: joinme.click-launcher.exe
       - uses: actions/upload-artifact@v3
         with:
