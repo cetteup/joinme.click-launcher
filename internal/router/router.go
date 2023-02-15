@@ -40,6 +40,7 @@ type RegistryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
 	SetStringValue(k registry.Key, path string, valueName string, value string) error
 	CreateKey(k registry.Key, path string) error
+	DeleteKey(k registry.Key, path string) error
 }
 
 type GameFinder interface {
@@ -145,8 +146,18 @@ func (r *GameRouter) RegisterHandlers() []handlerRegistrationResult {
 	return results
 }
 
+func (r *GameRouter) DeregisterHandlers() error {
+	for _, gameTitle := range r.GameTitles {
+		err := r.deregisterHandler(gameTitle)
+		if err != nil {
+			return fmt.Errorf("failed to deregister handler for %s (%s): %w", gameTitle.Name, gameTitle.ProtocolScheme, err)
+		}
+	}
+	return nil
+}
+
 func (r *GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, error) {
-	path := r.getUrlHandlerRegistryPath(gameTitle, []string{regPathShell, regPathOpen, regPathCommand})
+	path := r.getUrlHandlerRegistryPath(gameTitle, regPathShell, regPathOpen, regPathCommand)
 	value, err := r.repository.GetStringValue(registry.CURRENT_USER, path, regValueNameDefault)
 	if err != nil {
 		if errors.Is(err, registry.ErrNotExist) {
@@ -164,7 +175,7 @@ func (r *GameRouter) isHandlerRegistered(gameTitle domain.GameTitle) (bool, erro
 }
 
 func (r *GameRouter) registerHandler(gameTitle domain.GameTitle) error {
-	basePath := r.getUrlHandlerRegistryPath(gameTitle, nil)
+	basePath := r.getUrlHandlerRegistryPath(gameTitle)
 	err := r.repository.CreateKey(registry.CURRENT_USER, basePath)
 	if err != nil {
 		return err
@@ -181,14 +192,14 @@ func (r *GameRouter) registerHandler(gameTitle domain.GameTitle) error {
 
 	subKeys := []string{regPathShell, regPathOpen, regPathCommand}
 	for i := range subKeys {
-		subPath := r.getUrlHandlerRegistryPath(gameTitle, subKeys[:i+1])
+		subPath := r.getUrlHandlerRegistryPath(gameTitle, subKeys[:i+1]...)
 		err = r.repository.CreateKey(registry.CURRENT_USER, subPath)
 		if err != nil {
 			return err
 		}
 	}
 
-	cmdPath := r.getUrlHandlerRegistryPath(gameTitle, subKeys)
+	cmdPath := r.getUrlHandlerRegistryPath(gameTitle, subKeys...)
 	cmd, err := r.getHandlerCommand()
 	if err != nil {
 		return err
@@ -197,7 +208,24 @@ func (r *GameRouter) registerHandler(gameTitle domain.GameTitle) error {
 	return r.repository.SetStringValue(registry.CURRENT_USER, cmdPath, regValueNameDefault, cmd)
 }
 
-func (r *GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, children []string) string {
+func (r *GameRouter) deregisterHandler(gameTitle domain.GameTitle) error {
+	keys := []string{r.getUrlHandlerRegistryPath(gameTitle)}
+	subKeys := []string{regPathShell, regPathOpen, regPathCommand}
+	for i := range subKeys {
+		// We need to delete keys in reverse/"descending" order, so prepend to list
+		keys = append([]string{r.getUrlHandlerRegistryPath(gameTitle, subKeys[:i+1]...)}, keys...)
+	}
+
+	for _, key := range keys {
+		err := r.repository.DeleteKey(registry.CURRENT_USER, key)
+		if err != nil && !errors.Is(err, registry.ErrNotExist) {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *GameRouter) getUrlHandlerRegistryPath(gameTitle domain.GameTitle, children ...string) string {
 	path := filepath.Join(regPathSoftware, regPathClasses, gameTitle.ProtocolScheme)
 	for _, child := range children {
 		path = filepath.Join(path, child)

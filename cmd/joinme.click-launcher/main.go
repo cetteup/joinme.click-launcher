@@ -69,10 +69,12 @@ var (
 
 func main() {
 	var printVersion bool
+	var deregister bool
 	var quietLaunch bool
 	var debug bool
 	flag.BoolVar(&printVersion, "v", false, "print the version")
 	flag.BoolVar(&printVersion, "version", false, "print the version")
+	flag.BoolVar(&deregister, "deregister", false, "deregister/remove game URL protocol handlers")
 	flag.BoolVar(&quietLaunch, "quiet", false, "do not leave the window open any longer than required")
 	flag.BoolVar(&debug, "debug", false, "set log level to debug")
 	flag.Parse()
@@ -90,7 +92,15 @@ func main() {
 	}
 
 	args := flag.Args()
-	if len(args) == 0 {
+	if deregister {
+		if err := gameRouter.DeregisterHandlers(); err != nil {
+			log.Error().
+				Err(err).
+				Msg("Failed to deregister handlers")
+		} else {
+			log.Info().Msg("Successfully deregistered handlers")
+		}
+	} else if len(args) == 0 {
 		results := gameRouter.RegisterHandlers()
 		sort.Slice(results, func(i, j int) bool {
 			return results[i].Title.ProtocolScheme < results[j].Title.ProtocolScheme

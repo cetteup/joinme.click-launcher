@@ -97,13 +97,13 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 
 		mockFinder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 		mockRepository.EXPECT().GetStringValue(gomock.Any(), gomock.Any(), gomock.Any()).Return("", registry.ErrNotExist)
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)), gomock.Eq(regValueNameDefault), gomock.Eq(fmt.Sprintf("URL:%s protocol", title.Name)))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)), gomock.Eq(regValueNameURLProtocol), gomock.Eq(""))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell})))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen})))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen, regPathCommand})))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen, regPathCommand})), gomock.Eq(regValueNameDefault), gomock.Eq(handlerCommand))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)), gomock.Eq(regValueNameDefault), gomock.Eq(fmt.Sprintf("URL:%s protocol", title.Name)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)), gomock.Eq(regValueNameURLProtocol), gomock.Eq(""))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell)))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen)))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)), gomock.Eq(regValueNameDefault), gomock.Eq(handlerCommand))
 
 		// WHEN
 		result := router.RegisterHandlers()
@@ -143,13 +143,13 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 
 		mockFinder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 		mockRepository.EXPECT().GetStringValue(gomock.Any(), gomock.Any(), gomock.Any()).Return("not-a-handler-command", nil)
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)), gomock.Eq(regValueNameDefault), gomock.Eq(fmt.Sprintf("URL:%s protocol", title.Name)))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil)), gomock.Eq(regValueNameURLProtocol), gomock.Eq(""))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell})))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen})))
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen, regPathCommand})))
-		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, []string{regPathShell, regPathOpen, regPathCommand})), gomock.Eq(regValueNameDefault), gomock.Eq(handlerCommand))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)), gomock.Eq(regValueNameDefault), gomock.Eq(fmt.Sprintf("URL:%s protocol", title.Name)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title)), gomock.Eq(regValueNameURLProtocol), gomock.Eq(""))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell)))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen)))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)))
+		mockRepository.EXPECT().SetStringValue(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)), gomock.Eq(regValueNameDefault), gomock.Eq(handlerCommand))
 
 		// WHEN
 		result := router.RegisterHandlers()
@@ -452,7 +452,7 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 
 		mockFinder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
 		mockRepository.EXPECT().GetStringValue(gomock.Any(), gomock.Any(), gomock.Any()).Return("", registry.ErrNotExist)
-		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title, nil))).Return(fmt.Errorf("some-error"))
+		mockRepository.EXPECT().CreateKey(gomock.Eq(registry.CURRENT_USER), gomock.Eq(router.getUrlHandlerRegistryPath(title))).Return(fmt.Errorf("some-error"))
 
 		// WHEN
 		result := router.RegisterHandlers()
@@ -461,6 +461,71 @@ func TestGameRouter_RegisterHandlers(t *testing.T) {
 		assert.Len(t, result, 1)
 		assert.Equal(t, title, result[0].Title)
 		require.ErrorContains(t, result[0].Error, "failed to register as URL protocol handler")
+	})
+}
+
+func TestGameRouter_DeregisterHandlers(t *testing.T) {
+	t.Run("successfully deregisters handlers", func(t *testing.T) {
+		// GIVEN
+		router, mockRepository, _, _ := getRouterWithDependencies(t)
+
+		title := domain.GameTitle{
+			Name:           "some-name",
+			ProtocolScheme: "some-protocol",
+		}
+		router.AddTitle(title)
+
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand))
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen))
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell))
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title))
+
+		// WHEN
+		err := router.DeregisterHandlers()
+
+		// THEN
+		assert.NoError(t, err)
+	})
+
+	t.Run("does not fail if keys do not exist", func(t *testing.T) {
+		// GIVEN
+		router, mockRepository, _, _ := getRouterWithDependencies(t)
+
+		title := domain.GameTitle{
+			Name:           "some-name",
+			ProtocolScheme: "some-protocol",
+		}
+		router.AddTitle(title)
+
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)).Return(registry.ErrNotExist)
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen)).Return(registry.ErrNotExist)
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell)).Return(registry.ErrNotExist)
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title)).Return(registry.ErrNotExist)
+
+		// WHEN
+		err := router.DeregisterHandlers()
+
+		// THEN
+		assert.NoError(t, err)
+	})
+
+	t.Run("error if key deletion fails", func(t *testing.T) {
+		// GIVEN
+		router, mockRepository, _, _ := getRouterWithDependencies(t)
+
+		title := domain.GameTitle{
+			Name:           "some-name",
+			ProtocolScheme: "some-protocol",
+		}
+		router.AddTitle(title)
+
+		mockRepository.EXPECT().DeleteKey(gomock.Eq(registry.CURRENT_USER), router.getUrlHandlerRegistryPath(title, regPathShell, regPathOpen, regPathCommand)).Return(fmt.Errorf("some-error"))
+
+		// WHEN
+		err := router.DeregisterHandlers()
+
+		// THEN
+		assert.ErrorContains(t, err, "failed to deregister handler for some-name (some-protocol): some-error")
 	})
 }
 

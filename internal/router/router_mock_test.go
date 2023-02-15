@@ -50,6 +50,20 @@ func (mr *MockRegistryRepositoryMockRecorder) CreateKey(k, path interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockRegistryRepository)(nil).CreateKey), k, path)
 }
 
+// DeleteKey mocks base method.
+func (m *MockRegistryRepository) DeleteKey(k registry.Key, path string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteKey", k, path)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteKey indicates an expected call of DeleteKey.
+func (mr *MockRegistryRepositoryMockRecorder) DeleteKey(k, path interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteKey", reflect.TypeOf((*MockRegistryRepository)(nil).DeleteKey), k, path)
+}
+
 // GetStringValue mocks base method.
 func (m *MockRegistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
 	m.ctrl.T.Helper()
