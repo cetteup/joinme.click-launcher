@@ -1,8 +1,9 @@
 # .github/workflows/release.yaml
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   meta:
@@ -15,25 +16,93 @@ jobs:
         run: |
           echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
-  releases-bin:
-    name: Release Go Binary
+  build-binary:
+    name: Build Go binary
     runs-on: ubuntu-latest
     needs:
       - meta
     strategy:
       matrix:
-        goos: [windows]
-        goarch: ["386", amd64]
+        goarch: [ "386", amd64 ]
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.5
+      - uses: actions/checkout@v3
+      - name: Generate versionfile
+        run: |
+          go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0
+          cd cmd/joinme.click-launcher
+          go generate
+      - name: Build binary
+        run: |
+          cd cmd/joinme.click-launcher
+          GOOS=windows GOARCH=${{ matrix.goarch }} go build -ldflags="-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: binary-${{ matrix.goarch }}
+          path: cmd/joinme.click-launcher/joinme.click-launcher.exe
+          retention-days: 5
+
+  build-installer:
+    name: Build InnoSetup installer
+    runs-on: windows-latest
+    needs:
+      - meta
+      - build-binary
+    strategy:
+      matrix:
+        goarch: [ "386", amd64 ]
     steps:
       - uses: actions/checkout@v3
-      - uses: wangyoucao577/go-release-action@v1.35
+      - uses: actions/download-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          goversion: 1.19.5
-          project_path: cmd/joinme.click-launcher
-          pre_command: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0 && pushd cmd/joinme.click-launcher && go generate && popd
-          ldflags: "-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
-          extra_files: config.example.yaml
-          sha256sum: true
+          name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: cmd/joinme.click-launcher/joinme.click-launcher.exe
+      - name: Build installer
+        run: |
+          cd cmd\joinme.click-launcher
+          "%programfiles(x86)%\Inno Setup 6\iscc.exe" "setup.iss"
+        shell: cmd
+      - uses: actions/upload-artifact@v3
+        with:
+          name: installer-${{ matrix.goarch }}
+          path: cmd/joinme.click-launcher/joinme.click-launcher-setup.exe
+          retention-days: 5
+
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    needs:
+      - meta
+      - build-binary
+      - build-installer
+    strategy:
+      matrix:
+        goarch: [ "386", amd64 ]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: joinme.click-launcher.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          name: installer-${{ matrix.goarch }}
+          path: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
+      - name: Create binary release archive
+        run: |
+          zip joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip joinme.click-launcher.exe config.example.yaml
+      - name: Create hash files
+        run: |
+          for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}*")
+          do
+            md5sum $file | cut -f 1 -d " " > $file.md5
+            sha256sum $file | cut -f 1 -d " " > $file.sha256
+          done
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}*
+          draft: true
+          generate_release_notes: true
+          name: joinme.click-launcher ${{ github.ref_name }}
+          body: This is the ${{ github.ref_name }} release of the joinme.click-launcher.
