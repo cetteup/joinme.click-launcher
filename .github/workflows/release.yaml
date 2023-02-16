@@ -42,10 +42,13 @@ jobs:
         run: |
           GOOS=windows GOARCH=${{ matrix.goarch }} go build -ldflags="-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
         working-directory: cmd/joinme.click-launcher
+      - name: Create binary release archive
+        run: |
+          zip joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml
       - uses: actions/upload-artifact@v3
         with:
-          name: binary-${{ matrix.goarch }}
-          path: cmd/joinme.click-launcher/joinme.click-launcher.exe
+          name: release-${{ github.ref_name }}-windows-${{ matrix.goarch }}
+          path: cmd/joinme.click-launcher/joinme.click-launcher*
           retention-days: 5
           if-no-files-found: error
 
@@ -62,7 +65,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          name: binary-${{ matrix.goarch }}
+          name: release-${{ github.ref_name }}-windows-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher
       - name: Build installer
         run: |
@@ -70,7 +73,7 @@ jobs:
         working-directory: cmd/joinme.click-launcher
       - uses: actions/upload-artifact@v3
         with:
-          name: installer-${{ matrix.goarch }}
+          name: release-${{ github.ref_name }}-windows-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher/joinme.click-launcher-setup.exe
           retention-days: 5
           if-no-files-found: error
@@ -82,29 +85,28 @@ jobs:
       - meta
       - build-binary
       - build-installer
-    strategy:
-      matrix:
-        goarch: [ "386", amd64 ]
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download windows 386 artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: binary-${{ matrix.goarch }}
-      - uses: actions/download-artifact@v3
+          name: release-${{ github.ref_name }}-windows-386
+          path: windows-386-artifacts
+      - name: Download windows amd64 artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: installer-${{ matrix.goarch }}
-      - name: Create binary release archive
-        run: |
-          zip joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip joinme.click-launcher.exe config.example.yaml
+          name: release-${{ github.ref_name }}-windows-amd64
+          path: windows-amd64-artifacts
       - name: Create hash files
         run: |
-          for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}*")
+          for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-*")
           do
             md5sum $file | cut -f 1 -d " " > $file.md5
             sha256sum $file | cut -f 1 -d " " > $file.sha256
           done
       - uses: softprops/action-gh-release@v1
         with:
-          files: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}*
+          files: |
+            *-artifacts/joinme.click-launcher-${{ github.ref_name }}-*
           draft: true
           generate_release_notes: true
           name: joinme.click-launcher ${{ github.ref_name }}
