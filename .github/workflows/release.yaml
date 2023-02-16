@@ -62,8 +62,7 @@ jobs:
       - name: Build installer
         run: |
           cd cmd\joinme.click-launcher
-          "%programfiles(x86)%\Inno Setup 6\iscc.exe" "setup.iss"
-        shell: cmd
+          &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss"
       - uses: actions/upload-artifact@v3
         with:
           name: installer-${{ matrix.goarch }}
