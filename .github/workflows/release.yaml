@@ -69,7 +69,7 @@ jobs:
           path: cmd/joinme.click-launcher
       - name: Build installer
         run: |
-          &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss" /Fjoinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
+          &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss" /Fjoinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup
         working-directory: cmd/joinme.click-launcher
       - uses: actions/upload-artifact@v3
         with:
