@@ -43,6 +43,7 @@ jobs:
           name: binary-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher/joinme.click-launcher.exe
           retention-days: 5
+          if-no-files-found: error
 
   build-installer:
     name: Build InnoSetup installer
@@ -68,6 +69,7 @@ jobs:
           name: installer-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher/joinme.click-launcher-setup.exe
           retention-days: 5
+          if-no-files-found: error
 
   create-release:
     name: Create release
