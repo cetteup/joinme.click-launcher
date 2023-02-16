@@ -64,12 +64,9 @@ jobs:
         with:
           name: binary-${{ matrix.goarch }}
           path: cmd/joinme.click-launcher
-      - name: Rename downloaded files
-        run: |
-          mv binary-${{ matrix.goarch }} joinme.click-launcher.exe
-        working-directory: cmd/joinme.click-launcher
       - name: Build installer
         run: |
+          dir -r
           &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss"
         working-directory: cmd/joinme.click-launcher
       - uses: actions/upload-artifact@v3
@@ -96,10 +93,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: installer-${{ matrix.goarch }}
-      - name: Rename downloaded files
-        run: |
-          mv binary-${{ matrix.goarch }} joinme.click-launcher.exe
-          mv installer-${{ matrix.goarch }} joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
       - name: Create binary release archive
         run: |
           zip joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip joinme.click-launcher.exe config.example.yaml
