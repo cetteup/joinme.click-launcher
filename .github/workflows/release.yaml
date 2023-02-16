@@ -90,12 +90,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: release-${{ github.ref_name }}-windows-386
-          path: windows-386-artifacts
       - name: Download windows amd64 artifacts
         uses: actions/download-artifact@v3
         with:
           name: release-${{ github.ref_name }}-windows-amd64
-          path: windows-amd64-artifacts
       - name: Create hash files
         run: |
           for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-*")
@@ -103,10 +101,13 @@ jobs:
             md5sum $file | cut -f 1 -d " " > $file.md5
             sha256sum $file | cut -f 1 -d " " > $file.sha256
           done
+      - name: List release files
+        run: |
+          tree
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            *-artifacts/joinme.click-launcher-${{ github.ref_name }}-*
+            joinme.click-launcher-${{ github.ref_name }}-*
           draft: true
           generate_release_notes: true
           name: joinme.click-launcher ${{ github.ref_name }}
