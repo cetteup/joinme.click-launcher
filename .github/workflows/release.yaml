@@ -63,6 +63,7 @@ jobs:
       - name: Build installer
         run: |
           cd cmd\joinme.click-launcher
+          dir
           &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss"
       - uses: actions/upload-artifact@v3
         with:
