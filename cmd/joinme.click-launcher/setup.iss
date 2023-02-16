@@ -42,6 +42,7 @@ Name: "config"; Description: "Recommended configuration"; Types: full
 [Files]
 Source: "joinme.click-launcher.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
 Source: "resource\icon.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
+Source: "..\..\config.example.yaml"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
 Source: "..\..\config.recommended.yaml"; DestDir: "{app}"; DestName: "config.yaml"; Flags: ignoreversion; Components: "config"
 
 [Run]
