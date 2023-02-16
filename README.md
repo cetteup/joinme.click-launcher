@@ -45,10 +45,10 @@ Launcher utility to handle custom game URL protocols supported on [joinme.click]
 
 ### Registering URL handlers
 
-Before you can launch games based on URLs, the launcher need to register as a URL handler for the supported URL protocols.
-In order to do this, simply run the launcher once after download. It will check which of the supported games are
-installed and register itself as a URL handler for each one it finds. After registering, the launcher shows the result
-for each supported game.
+Before you can launch games based on URLs, the launcher needs to register as a URL handler for the supported URL protocols.
+The installer will automatically do this during the setup. If you are using the portable launcher, simply run the launcher once after download.
+It will check which of the supported games are installed and register itself as a URL handler for each one it finds.
+After registering, the launcher shows the result for each supported game.
 
 ```text
 10: 37AM INF Checked status for game="Battlefield 1" result="launcher registered successfully"
