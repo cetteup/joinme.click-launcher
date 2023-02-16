@@ -46,7 +46,7 @@ Source: "..\..\config.example.yaml"; DestDir: "{app}"; Flags: ignoreversion; Com
 Source: "..\..\config.recommended.yaml"; DestDir: "{app}"; DestName: "config.yaml"; Flags: ignoreversion; Components: "config"
 
 [Run]
-Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-quiet"
+Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-quiet"; StatusMsg: "Registering URL handlers..."; Flags: runhidden
 
 [UninstallRun]
-Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-deregister -quiet"; RunOnceId: "DeregisterHandlers"
+Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-deregister -quiet"; RunOnceId: "DeregisterHandlers"; Flags: runhidden
