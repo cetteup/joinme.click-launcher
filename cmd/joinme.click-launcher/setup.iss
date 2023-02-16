@@ -1,7 +1,7 @@
 ; Inno Setup Script
 
 #define MyAppName "joinme.click-launcher"
-#define MyAppVersion "0.0.2.0"
+#define MyAppVersion "0.2.1.0"
 #define MyAppPublisher "cetteup"
 #define MyAppPublisherURL "https://github.com/cetteup"
 #define MyAppURL "https://github.com/cetteup/joinme.click-launcher"
