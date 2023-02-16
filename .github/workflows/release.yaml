@@ -44,7 +44,7 @@ jobs:
         working-directory: cmd/joinme.click-launcher
       - name: Create binary release archive
         run: |
-          zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml
+          zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml config.recommended.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: release-${{ github.ref_name }}
