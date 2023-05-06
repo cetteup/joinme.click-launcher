@@ -15,7 +15,7 @@ const (
 var Bf1 = domain.GameTitle{
 	Name:           "Battlefield 1",
 	ProtocolScheme: "bf1",
-	PlatformClient: &platforms.OriginClient,
+	PlatformClient: &platforms.EaClient,
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,

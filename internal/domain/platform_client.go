@@ -9,6 +9,7 @@ type Platform string
 
 const (
 	PlatformOrigin Platform = "Origin"
+	PlatformEaApp  Platform = "EA App"
 )
 
 type PlatformClient struct {
