@@ -85,14 +85,7 @@ func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, c
 	return nil, nil
 }
 
-func MakeOriginCmdBuilder(offerIDs ...string) OriginCmdBuilder {
-	return OriginCmdBuilder{
-		offerIDs: offerIDs,
-	}
-}
-
 type OriginCmdBuilder struct {
-	offerIDs []string
 }
 
 func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
@@ -107,8 +100,7 @@ func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, c
 		)
 	}
 
-	originURL := buildOriginURL(b.offerIDs, args)
-	return []string{originURL}, nil
+	return args, nil
 }
 
 type RefractorV1CmdBuilder struct{}
