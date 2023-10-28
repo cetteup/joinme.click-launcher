@@ -7,10 +7,6 @@ import (
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
 )
 
-const (
-	bf1Exe = "bf1.exe"
-)
-
 var Bf1 = domain.GameTitle{
 	Name:           "Battlefield 1",
 	ProtocolScheme: "bf1",
@@ -23,7 +19,7 @@ var Bf1 = domain.GameTitle{
 		},
 	},
 	LauncherConfig: game_launcher.Config{
-		ExecutableName: bf1Exe,
+		ExecutableName: "bf1.exe",
 		HookConfigs: []game_launcher.HookConfig{
 			{
 				Handler:     internal.HookKillProcess,
