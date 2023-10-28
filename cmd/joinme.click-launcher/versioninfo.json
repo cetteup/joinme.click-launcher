@@ -3,13 +3,13 @@
     "FileVersion": {
       "Major": 0,
       "Minor": 2,
-      "Patch": 1,
+      "Patch": 2,
       "Build": 0
     },
     "ProductVersion": {
       "Major": 0,
       "Minor": 2,
-      "Patch": 1,
+      "Patch": 2,
       "Build": 0
     },
     "FileFlagsMask": "3f",
@@ -22,14 +22,14 @@
     "Comments": "",
     "CompanyName": "joinme.click",
     "FileDescription": "joinme.click launcher",
-    "FileVersion": "v0.2.1.0",
+    "FileVersion": "v0.2.2.0",
     "InternalName": "",
     "LegalCopyright": "",
     "LegalTrademarks": "",
     "OriginalFilename": "",
     "PrivateBuild": "",
     "ProductName": "joinme.click launcher",
-    "ProductVersion": "v0.2.1.0",
+    "ProductVersion": "v0.2.2.0",
     "SpecialBuild": ""
   },
   "VarFileInfo": {
