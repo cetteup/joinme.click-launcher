@@ -192,56 +192,6 @@ func TestSimpleCmdBuilder(t *testing.T) {
 	}
 }
 
-func TestOriginCmdBuilder(t *testing.T) {
-	type test struct {
-		name                   string
-		givenHost              string
-		givenDefaultArgs       []string
-		givenAppendDefaultArgs bool
-		givenOfferIDs          []string
-		givenLaunchType        game_launcher.LaunchType
-		expectedCmd            []string
-	}
-
-	tests := []test{
-		{
-			name:            "returns complete command if launch type is launch and join",
-			givenHost:       "987654321",
-			givenLaunchType: game_launcher.LaunchTypeLaunchAndJoin,
-			givenOfferIDs:   []string{"123456"},
-			expectedCmd:     []string{"origin2://game/launch?cmdParams=-gameMode%2520MP%2520-role%2520soldier%2520-asSpectator%2520false%2520-joinWithParty%2520false%2520-gameId%2520987654321&offerIds=123456"},
-		},
-		{
-			name:            "returns command without game details if launch type is any but launch and join",
-			givenHost:       "987654321",
-			givenOfferIDs:   []string{"123456"},
-			givenLaunchType: game_launcher.LaunchTypeLaunchOnly,
-			expectedCmd:     []string{"origin2://game/launch?cmdParams=&offerIds=123456"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// GIVEN
-			ctrl := gomock.NewController(t)
-			mockRepository := NewMockFileRepository(ctrl)
-			u := &url.URL{Host: tt.givenHost}
-			config := game_launcher.Config{
-				DefaultArgs:       tt.givenDefaultArgs,
-				AppendDefaultArgs: tt.givenAppendDefaultArgs,
-			}
-			builder := MakeOriginCmdBuilder(tt.givenOfferIDs...)
-
-			// WHEN
-			cmd, err := builder.GetArgs(mockRepository, u, config, tt.givenLaunchType)
-
-			// THEN
-			require.NoError(t, err)
-			assert.Equal(t, tt.expectedCmd, cmd)
-		})
-	}
-}
-
 func TestRefractorV1CmdBuilder(t *testing.T) {
 	type test struct {
 		name                   string

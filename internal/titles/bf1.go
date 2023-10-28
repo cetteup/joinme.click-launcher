@@ -2,7 +2,6 @@ package titles
 
 import (
 	"github.com/cetteup/joinme.click-launcher/internal/domain"
-	"github.com/cetteup/joinme.click-launcher/internal/platforms"
 	"github.com/cetteup/joinme.click-launcher/internal/titles/internal"
 	"github.com/cetteup/joinme.click-launcher/pkg/game_launcher"
 	"github.com/cetteup/joinme.click-launcher/pkg/software_finder"
@@ -15,7 +14,6 @@ const (
 var Bf1 = domain.GameTitle{
 	Name:           "Battlefield 1",
 	ProtocolScheme: "bf1",
-	PlatformClient: &platforms.OriginClient,
 	FinderConfigs: []software_finder.Config{
 		{
 			ForType:           software_finder.RegistryFinder,
@@ -35,8 +33,8 @@ var Bf1 = domain.GameTitle{
 		},
 	},
 	URLValidator: internal.MakePatternURLValidator(internal.Frostbite3GameIdPattern),
-	CmdBuilder:   internal.MakeOriginCmdBuilder("1026023"),
+	CmdBuilder:   internal.OriginCmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
-		internal.MakeKillProcessHookHandler(false, bf1Exe), // Launcher config executable name will be "Origin.exe", which we don't want to kill
+		internal.MakeKillProcessHookHandler(true),
 	},
 }
