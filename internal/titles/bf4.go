@@ -35,6 +35,6 @@ var Bf4 = domain.GameTitle{
 	URLValidator: internal.MakePatternURLValidator(internal.Frostbite3GameIdPattern),
 	CmdBuilder:   internal.OriginCmdBuilder{},
 	HookHandlers: []game_launcher.HookHandler{
-		internal.MakeKillProcessHookHandler(false, bf4Exe),
+		internal.MakeKillProcessHookHandler(true),
 	},
 }
