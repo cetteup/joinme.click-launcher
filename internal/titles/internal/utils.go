@@ -2,10 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
 	"syscall"
 	"time"
 
@@ -19,20 +17,6 @@ import (
 const (
 	virtualStoreDirName = "VirtualStore"
 )
-
-func buildOriginURL(offerIDs []string, args []string) string {
-	params := url.Values{
-		"offerIds":  {strings.Join(offerIDs, ",")},
-		"authCode":  {},
-		"cmdParams": {url.PathEscape(strings.Join(args, " "))},
-	}
-	u := url.URL{
-		Scheme:   "origin2",
-		Path:     "game/launch",
-		RawQuery: params.Encode(),
-	}
-	return u.String()
-}
 
 func isTargetProcess(targets []string, executable string) bool {
 	for _, target := range targets {
