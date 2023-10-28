@@ -43,7 +43,7 @@ Name: "config"; Description: "Recommended configuration"; Types: full
 Source: "joinme.click-launcher.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
 Source: "resource\icon.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
 Source: "..\..\config.example.yaml"; DestDir: "{app}"; Flags: ignoreversion; Components: "launcher"
-Source: "..\..\config.recommended.yaml"; DestDir: "{app}"; DestName: "config.yaml"; Flags: ignoreversion; Components: "config"
+Source: "..\..\config.recommended.yaml"; DestDir: "{app}"; DestName: "config.yaml"; Flags: onlyifdoesntexist; Components: "config"
 
 [Run]
 Filename: "{app}\joinme.click-launcher.exe"; Parameters: "-quiet"; StatusMsg: "Registering URL handlers..."; Flags: runhidden
