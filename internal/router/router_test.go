@@ -565,33 +565,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 			wantErrContains: "",
 		},
 		{
-			name:                "successfully launches game with platform client and joins server",
-			givenCommandLineURL: "bf4://1234567890",
-			givenTitle:          &titles.Bf4,
-			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
-				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
-				platformClientInstallPath := "C:\\Games\\Origin"
-				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(true, nil)
-				finder.EXPECT().GetInstallDir(gomock.Eq(title.PlatformClient.FinderConfig)).Return(platformClientInstallPath, nil)
-				finalLaunchConfig := title.LauncherConfig
-				finalLaunchConfig.ExecutableName = title.PlatformClient.LauncherConfig.ExecutableName
-				finalLaunchConfig.ExecutablePath = title.PlatformClient.LauncherConfig.ExecutablePath
-				finalLaunchConfig.InstallPath = platformClientInstallPath
-				launcher.EXPECT().StartGame(
-					gomock.Eq(&url.URL{
-						Scheme: "bf4",
-						Host:   "1234567890",
-					}),
-					gomock.Eq(finalLaunchConfig),
-					gomock.Eq(game_launcher.LaunchTypeLaunchAndJoin),
-					gomock.Any(),
-					gomock.Any(),
-				)
-			},
-			wantTitle:       &titles.Bf4,
-			wantErrContains: "",
-		},
-		{
 			name:                "successfully launches game with mod and joins server",
 			givenCommandLineURL: "bf1942://127.0.0.1:14567?mod=xpack1",
 			givenTitle:          &titles.Bf1942,
@@ -681,17 +654,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 			wantErrContains: "game not installed",
 		},
 		{
-			name:                "error for non-installed platform client",
-			givenCommandLineURL: "bf4://1234567890",
-			givenTitle:          &titles.Bf4,
-			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
-				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
-				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(false, nil)
-			},
-			wantTitle:       &titles.Bf4,
-			wantErrContains: "required platform client not installed",
-		},
-		{
 			name:                "error for non-installed mod",
 			givenCommandLineURL: "bf2://127.0.0.1:16567?mod=xpack",
 			givenTitle:          &titles.Bf2,
@@ -727,7 +689,6 @@ func TestGameRouter_RunURL(t *testing.T) {
 			givenTitle:          &titles.Bf4,
 			expect: func(title *domain.GameTitle, finder *MockGameFinder, launcher *MockGameLauncher) {
 				finder.EXPECT().IsInstalledAnywhere(gomock.Eq(title.FinderConfigs)).Return(true, nil)
-				finder.EXPECT().IsInstalled(gomock.Eq(title.PlatformClient.FinderConfig)).Return(true, nil)
 			},
 			wantTitle:       &titles.Bf4,
 			wantErrContains: "url hostname is not a valid game id",
