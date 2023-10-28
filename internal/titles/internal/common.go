@@ -95,7 +95,6 @@ func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, c
 			"-gameMode", "MP",
 			"-role", "soldier",
 			"-asSpectator", "false",
-			"-joinWithParty", "false",
 			"-gameId", u.Hostname(),
 		)
 	}
