@@ -63,7 +63,7 @@ jobs:
         goarch: [ "386", amd64 ]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: release-${{ github.ref_name }}
           path: cmd/joinme.click-launcher
@@ -90,7 +90,7 @@ jobs:
       - build-binary
       - build-installer
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: release-${{ github.ref_name }}
       - name: Create hash files
