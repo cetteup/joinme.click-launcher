@@ -45,7 +45,7 @@ jobs:
       - name: Create binary release archive
         run: |
           zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml config.recommended.yaml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: release-${{ github.ref_name }}
           path: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
@@ -75,7 +75,7 @@ jobs:
         run: |
           &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss" /Fjoinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup
         working-directory: cmd/joinme.click-launcher
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: release-${{ github.ref_name }}
           path: cmd/joinme.click-launcher/joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
