@@ -9,16 +9,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type LaunchDir int
-type LaunchType int
+type LaunchDir string
+type LaunchType string
 type HookWhen string
 
 const (
-	LaunchDirInstallDir LaunchDir = iota
-	LaunchDirBinaryDir
+	LaunchDirInstallDir LaunchDir = "install-dir"
+	LaunchDirBinaryDir  LaunchDir = "binary-dir"
 
-	LaunchTypeLaunchAndJoin LaunchType = iota
-	LaunchTypeLaunchOnly
+	LaunchTypeLaunchAndJoin LaunchType = "launch-and-join"
+	LaunchTypeLaunchOnly    LaunchType = "launch-only"
 
 	HookWhenAlways     HookWhen = "always"
 	HookWhenPreLaunch  HookWhen = "pre-launch"
