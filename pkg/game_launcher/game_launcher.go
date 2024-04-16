@@ -74,7 +74,7 @@ type URLValidator interface {
 type CommandBuilder interface {
 	// GetArgs Construct slice of launch arguments for a game. Receives a file repository to be able to access any
 	// config file it may need to construct the arguments.
-	GetArgs(fr FileRepository, u *url.URL, config Config, launchType LaunchType) ([]string, error)
+	GetArgs(fr FileRepository, u *url.URL, launchType LaunchType) ([]string, error)
 }
 
 type HookHandler interface {
@@ -127,7 +127,7 @@ func (l *GameLauncher) runHooks(u *url.URL, config Config, launchType LaunchType
 }
 
 func (l *GameLauncher) startGame(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) error {
-	args, err := cmdBuilder.GetArgs(l.repository, u, config, launchType)
+	args, err := l.getArgs(u, config, launchType, cmdBuilder)
 	if err != nil {
 		return err
 	}
@@ -147,6 +147,21 @@ func (l *GameLauncher) startGame(u *url.URL, config Config, launchType LaunchTyp
 	}
 
 	return cmd.Start()
+}
+
+func (l *GameLauncher) getArgs(u *url.URL, config Config, launchType LaunchType, cmdBuilder CommandBuilder) ([]string, error) {
+	args, err := cmdBuilder.GetArgs(l.repository, u, launchType)
+	if err != nil {
+		return nil, err
+	}
+
+	if config.AppendDefaultArgs {
+		args = append(args, config.DefaultArgs...)
+	} else {
+		args = append(config.DefaultArgs, args...)
+	}
+
+	return args, nil
 }
 
 func toHookHandlerMap(hookHandlers []HookHandler) map[string]HookHandler {

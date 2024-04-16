@@ -39,9 +39,11 @@ var Vietcong = domain.GameTitle{
 
 type vietcongCmdBuilder struct{}
 
-func (b vietcongCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+func (b vietcongCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+	args := make([]string, 0, 4)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		return append(config.DefaultArgs, "-ip", u.Hostname(), "-port", u.Port()), nil
+		args = append(args, "-ip", u.Hostname(), "-port", u.Port())
 	}
-	return nil, nil
+
+	return args, nil
 }

@@ -74,22 +74,21 @@ type SimpleCmdBuilder struct {
 	prefixes []string
 }
 
-func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+	args := make([]string, 0, len(b.prefixes))
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
-		args := append(b.prefixes, net.JoinHostPort(u.Hostname(), u.Port()))
-		if config.AppendDefaultArgs {
-			return append(args, config.DefaultArgs...), nil
-		}
-		return append(config.DefaultArgs, args...), nil
+		args = append(args, b.prefixes...)
+		args = append(args, net.JoinHostPort(u.Hostname(), u.Port()))
 	}
-	return nil, nil
+
+	return args, nil
 }
 
 type OriginCmdBuilder struct {
 }
 
-func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	args := config.DefaultArgs
+func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+	args := make([]string, 0, 8)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args,
 			"-gameMode", "MP",
@@ -104,8 +103,8 @@ func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, c
 
 type RefractorV1CmdBuilder struct{}
 
-func (b RefractorV1CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
-	args := config.DefaultArgs
+func (b RefractorV1CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+	args := make([]string, 0, 6)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 	}

@@ -130,7 +130,7 @@ var Bf2 = domain.GameTitle{
 
 type bf2CmdBuilder struct{}
 
-func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType) ([]string, error) {
+func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
 	configHandler := handler.New(fr)
 	profileCon, err := bf2.GetDefaultProfileProfileCon(configHandler)
 	if err != nil {
@@ -147,7 +147,8 @@ func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, conf
 		return nil, err
 	}
 
-	args := append(config.DefaultArgs, "+playerName", playerName, "+playerPassword", password)
+	args := make([]string, 0, 12)
+	args = append(args, "+playerName", playerName, "+playerPassword", password)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 	}

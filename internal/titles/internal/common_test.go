@@ -124,13 +124,11 @@ func TestPatternURLValidator(t *testing.T) {
 
 func TestSimpleCmdBuilder(t *testing.T) {
 	type test struct {
-		name                   string
-		givenHost              string
-		givenDefaultArgs       []string
-		givenAppendDefaultArgs bool
-		givenPrefixes          []string
-		givenLaunchType        game_launcher.LaunchType
-		expectedCmd            []string
+		name            string
+		givenHost       string
+		givenPrefixes   []string
+		givenLaunchType game_launcher.LaunchType
+		expectedCmd     []string
 	}
 
 	tests := []test{
@@ -148,25 +146,10 @@ func TestSimpleCmdBuilder(t *testing.T) {
 			expectedCmd:     []string{"+connect", net.JoinHostPort("1.1.1.1", "16567")},
 		},
 		{
-			name:             "appends to default arguments if any are given",
-			givenHost:        net.JoinHostPort("1.1.1.1", "16567"),
-			givenDefaultArgs: []string{"+launch"},
-			givenLaunchType:  game_launcher.LaunchTypeLaunchAndJoin,
-			expectedCmd:      []string{"+launch", net.JoinHostPort("1.1.1.1", "16567")},
-		},
-		{
-			name:                   "prepends to default arguments if any are given and AppendDefaultArgs is true",
-			givenHost:              net.JoinHostPort("1.1.1.1", "16567"),
-			givenDefaultArgs:       []string{"+launch"},
-			givenAppendDefaultArgs: true,
-			givenLaunchType:        game_launcher.LaunchTypeLaunchAndJoin,
-			expectedCmd:            []string{net.JoinHostPort("1.1.1.1", "16567"), "+launch"},
-		},
-		{
-			name:            "returns nil slice if launch type is any but launch and join",
+			name:            "returns no arguments if launch type is any but launch and join",
 			givenHost:       net.JoinHostPort("1.1.1.1", "16567"),
 			givenLaunchType: game_launcher.LaunchTypeLaunchOnly,
-			expectedCmd:     nil,
+			expectedCmd:     []string{},
 		},
 	}
 
@@ -176,14 +159,10 @@ func TestSimpleCmdBuilder(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: tt.givenHost}
-			config := game_launcher.Config{
-				DefaultArgs:       tt.givenDefaultArgs,
-				AppendDefaultArgs: tt.givenAppendDefaultArgs,
-			}
 			builder := MakeSimpleCmdBuilder(tt.givenPrefixes...)
 
 			// WHEN
-			cmd, err := builder.GetArgs(mockRepository, u, config, tt.givenLaunchType)
+			cmd, err := builder.GetArgs(mockRepository, u, tt.givenLaunchType)
 
 			// THEN
 			require.NoError(t, err)
@@ -218,10 +197,10 @@ func TestRefractorV1CmdBuilder(t *testing.T) {
 			expectedCmd:     []string{"+joinServer", "1.1.1.1", "+port", "16567", "+game", "xpack"},
 		},
 		{
-			name:            "returns nil slice if launch type is any but launch and join",
+			name:            "returns no arguments if launch type is any but launch and join",
 			givenHost:       net.JoinHostPort("1.1.1.1", "16567"),
 			givenLaunchType: game_launcher.LaunchTypeLaunchOnly,
-			expectedCmd:     nil,
+			expectedCmd:     []string{},
 		},
 	}
 
@@ -231,14 +210,10 @@ func TestRefractorV1CmdBuilder(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			mockRepository := NewMockFileRepository(ctrl)
 			u := &url.URL{Host: tt.givenHost, RawQuery: tt.givenQuery}
-			config := game_launcher.Config{
-				DefaultArgs:       tt.givenDefaultArgs,
-				AppendDefaultArgs: tt.givenAppendDefaultArgs,
-			}
 			builder := RefractorV1CmdBuilder{}
 
 			// WHEN
-			cmd, err := builder.GetArgs(mockRepository, u, config, tt.givenLaunchType)
+			cmd, err := builder.GetArgs(mockRepository, u, tt.givenLaunchType)
 
 			// THEN
 			require.NoError(t, err)
