@@ -166,7 +166,7 @@ func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, laun
 
 type bf2SetDefaultProfileHookHandler struct{}
 
-func (h bf2SetDefaultProfileHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h bf2SetDefaultProfileHookHandler) Run(fr game_launcher.FileRepository, _ *url.URL, _ game_launcher.Config, _ game_launcher.LaunchType, args map[string]string) error {
 	profileKey, ok := args[hookArgProfile]
 	if !ok {
 		return fmt.Errorf("required argument %s for hook %s is missing", hookArgProfile, h.String())
@@ -189,7 +189,7 @@ func (h bf2SetDefaultProfileHookHandler) String() string {
 
 type bf2PurgeServerHistoryHookHandler struct{}
 
-func (h bf2PurgeServerHistoryHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h bf2PurgeServerHistoryHookHandler) Run(fr game_launcher.FileRepository, _ *url.URL, _ game_launcher.Config, _ game_launcher.LaunchType, args map[string]string) error {
 	configHandler := handler.New(fr)
 	profileKey, ok := args[hookArgProfile]
 	if !ok {
@@ -217,7 +217,7 @@ func (h bf2PurgeServerHistoryHookHandler) String() string {
 
 type bf2PurgeShaderCacheHookHandler struct{}
 
-func (h bf2PurgeShaderCacheHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h bf2PurgeShaderCacheHookHandler) Run(fr game_launcher.FileRepository, _ *url.URL, _ game_launcher.Config, _ game_launcher.LaunchType, _ map[string]string) error {
 	configHandler := handler.New(fr)
 	return configHandler.PurgeShaderCache(handler.GameBf2)
 }
@@ -228,7 +228,7 @@ func (h bf2PurgeShaderCacheHookHandler) String() string {
 
 type bf2PurgeLogoCacheHookHandler struct{}
 
-func (h bf2PurgeLogoCacheHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h bf2PurgeLogoCacheHookHandler) Run(fr game_launcher.FileRepository, _ *url.URL, _ game_launcher.Config, _ game_launcher.LaunchType, _ map[string]string) error {
 	configHandler := handler.New(fr)
 	return configHandler.PurgeLogoCache(handler.GameBf2)
 }

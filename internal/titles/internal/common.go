@@ -74,7 +74,7 @@ type SimpleCmdBuilder struct {
 	prefixes []string
 }
 
-func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+func (b SimpleCmdBuilder) GetArgs(_ game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
 	args := make([]string, 0, len(b.prefixes))
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, b.prefixes...)
@@ -87,7 +87,7 @@ func (b SimpleCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, l
 type OriginCmdBuilder struct {
 }
 
-func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+func (b OriginCmdBuilder) GetArgs(_ game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
 	args := make([]string, 0, 8)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args,
@@ -103,7 +103,7 @@ func (b OriginCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, l
 
 type RefractorV1CmdBuilder struct{}
 
-func (b RefractorV1CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+func (b RefractorV1CmdBuilder) GetArgs(_ game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
 	args := make([]string, 0, 6)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
@@ -130,7 +130,7 @@ type KillProcessHookHandler struct {
 	additionalTargets      []string
 }
 
-func (h KillProcessHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h KillProcessHookHandler) Run(_ game_launcher.FileRepository, _ *url.URL, config game_launcher.Config, _ game_launcher.LaunchType, _ map[string]string) error {
 	targets := h.additionalTargets
 	if h.targetLaunchExecutable {
 		targets = append(targets, config.ExecutableName)
@@ -177,7 +177,7 @@ type DeleteFileHookHandler struct {
 	pathsBuilder func(config game_launcher.Config) ([]string, error)
 }
 
-func (h DeleteFileHookHandler) Run(fr game_launcher.FileRepository, u *url.URL, config game_launcher.Config, launchType game_launcher.LaunchType, args map[string]string) error {
+func (h DeleteFileHookHandler) Run(fr game_launcher.FileRepository, _ *url.URL, config game_launcher.Config, _ game_launcher.LaunchType, _ map[string]string) error {
 	paths, err := h.pathsBuilder(config)
 	if err != nil {
 		return err

@@ -72,7 +72,7 @@ var Paraworld = domain.GameTitle{
 
 type paraworldCmdBuilder struct{}
 
-func (b paraworldCmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
+func (b paraworldCmdBuilder) GetArgs(_ game_launcher.FileRepository, u *url.URL, launchType game_launcher.LaunchType) ([]string, error) {
 	args := make([]string, 0, 4)
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, "-autoconnect", fmt.Sprintf("%s:%s", u.Hostname(), u.Port()))
