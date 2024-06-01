@@ -103,7 +103,7 @@ jobs:
       - name: List release files
         run: |
           ls -l
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
             joinme.click-launcher-${{ github.ref_name }}-*
