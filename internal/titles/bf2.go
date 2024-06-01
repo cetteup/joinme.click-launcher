@@ -137,18 +137,30 @@ func (b bf2CmdBuilder) GetArgs(fr game_launcher.FileRepository, u *url.URL, laun
 		return nil, err
 	}
 
-	playerName, encryptedPassword, err := bf2.GetEncryptedLogin(profileCon)
-	if err != nil {
-		return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
-	}
-
-	password, err := bf2.DecryptProfileConPassword(encryptedPassword)
-	if err != nil {
-		return nil, err
-	}
-
 	args := make([]string, 0, 12)
-	args = append(args, "+playerName", playerName, "+playerPassword", password)
+	// Only multiplayer profiles contain an email address
+	if profileCon.HasKey(bf2.ProfileConKeyEmail) {
+		playerName, encryptedPassword, err2 := bf2.GetEncryptedLogin(profileCon)
+		if err2 != nil {
+			return nil, fmt.Errorf("failed to extract login details from profile.con: %s", err)
+		}
+
+		password, err2 := bf2.DecryptProfileConPassword(encryptedPassword)
+		if err2 != nil {
+			return nil, fmt.Errorf("failed to decrypt player password: %s", err)
+		}
+
+		args = append(args, "+playerName", playerName, "+playerPassword", password)
+	} else {
+		// Singleplayer profiles always have an empty GamespyNick, so use the "normal" nick instead
+		playerName, err2 := profileCon.GetValue(bf2.ProfileConKeyNick)
+		if err2 != nil {
+			return nil, fmt.Errorf("failed to extract player name from profile.con: %s", err2)
+		}
+
+		args = append(args, "+playerName", playerName.String())
+	}
+
 	if launchType == game_launcher.LaunchTypeLaunchAndJoin {
 		args = append(args, "+joinServer", u.Hostname(), "+port", u.Port())
 	}
