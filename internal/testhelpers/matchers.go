@@ -3,7 +3,7 @@ package testhelpers
 import (
 	"strings"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 )
 
 type stringContainsMatcher struct {
