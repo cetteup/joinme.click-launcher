@@ -1,6 +1,6 @@
 module github.com/cetteup/joinme.click-launcher
 
-go 1.19
+go 1.18
 
 require golang.org/x/sys v0.21.0
 
