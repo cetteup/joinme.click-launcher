@@ -25,8 +25,6 @@ const (
 
 type RegistryRepository interface {
 	GetStringValue(k registry.Key, path string, valueName string) (string, error)
-	SetStringValue(k registry.Key, path string, valueName string, value string) error
-	CreateKey(k registry.Key, path string) error
 }
 
 type FileRepository interface {

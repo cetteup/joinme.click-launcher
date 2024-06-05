@@ -36,20 +36,6 @@ func (m *MockRegistryRepository) EXPECT() *MockRegistryRepositoryMockRecorder {
 	return m.recorder
 }
 
-// CreateKey mocks base method.
-func (m *MockRegistryRepository) CreateKey(k registry.Key, path string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateKey", k, path)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CreateKey indicates an expected call of CreateKey.
-func (mr *MockRegistryRepositoryMockRecorder) CreateKey(k, path any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateKey", reflect.TypeOf((*MockRegistryRepository)(nil).CreateKey), k, path)
-}
-
 // GetStringValue mocks base method.
 func (m *MockRegistryRepository) GetStringValue(k registry.Key, path, valueName string) (string, error) {
 	m.ctrl.T.Helper()
@@ -63,20 +49,6 @@ func (m *MockRegistryRepository) GetStringValue(k registry.Key, path, valueName 
 func (mr *MockRegistryRepositoryMockRecorder) GetStringValue(k, path, valueName any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).GetStringValue), k, path, valueName)
-}
-
-// SetStringValue mocks base method.
-func (m *MockRegistryRepository) SetStringValue(k registry.Key, path, valueName, value string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetStringValue", k, path, valueName, value)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SetStringValue indicates an expected call of SetStringValue.
-func (mr *MockRegistryRepositoryMockRecorder) SetStringValue(k, path, valueName, value any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStringValue", reflect.TypeOf((*MockRegistryRepository)(nil).SetStringValue), k, path, valueName, value)
 }
 
 // MockFileRepository is a mock of FileRepository interface.
