@@ -105,6 +105,7 @@ jobs:
         with:
           files: |
             joinme.click-launcher-${{ github.ref_name }}-*
+          fail_on_unmatched_files: true
           draft: true
           generate_release_notes: true
           name: joinme.click-launcher ${{ github.ref_name }}
