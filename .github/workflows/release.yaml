@@ -91,6 +91,8 @@ jobs:
       - build-installer
     steps:
       - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
       - name: Create hash files
         run: |
           for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-*")
