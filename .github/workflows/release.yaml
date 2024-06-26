@@ -47,7 +47,7 @@ jobs:
           zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml config.recommended.yaml
       - uses: actions/upload-artifact@v4
         with:
-          name: launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}
+          name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           path: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           retention-days: 5
           if-no-files-found: error
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}
+          name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           path: cmd/joinme.click-launcher
       - name: Unpack binary release archive
         run: |
@@ -77,7 +77,7 @@ jobs:
         working-directory: cmd/joinme.click-launcher
       - uses: actions/upload-artifact@v4
         with:
-          name: setup-${{ github.ref_name }}-windows-${{ matrix.goarch }}
+          name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
           path: cmd/joinme.click-launcher/joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
           retention-days: 5
           if-no-files-found: error
