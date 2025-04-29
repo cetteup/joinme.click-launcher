@@ -1,6 +1,8 @@
 module github.com/cetteup/joinme.click-launcher
 
-go 1.18
+go 1.23
+
+toolchain go1.24.2
 
 require golang.org/x/sys v0.21.0
 
@@ -10,7 +12,7 @@ require (
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
-	go.uber.org/mock v0.4.0
+	go.uber.org/mock v0.5.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
