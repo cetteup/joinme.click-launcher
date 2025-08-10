@@ -1,5 +1,7 @@
 github.com/cetteup/conman v0.2.2 h1:noDm6IFyDudIjw6jQhgmpXuQeTYdZJWaM9zbajj2Sd8=
 github.com/cetteup/conman v0.2.2/go.mod h1:DW0gVmyZxPBSjmmYYaa13SMJh2vxlEXV54b4slK0KPc=
+github.com/cetteup/conman v0.2.3 h1:2oJXuxnl62mYC5PW9tkPvRWt0b+XX0ciXN6sa63azu0=
+github.com/cetteup/conman v0.2.3/go.mod h1:DW0gVmyZxPBSjmmYYaa13SMJh2vxlEXV54b4slK0KPc=
 github.com/cetteup/filerepo v0.0.5 h1:U0Jm+e8L5vKblwFHh4CjcgDgyVPEoa0pdi0izgUDfQ4=
 github.com/cetteup/filerepo v0.0.5/go.mod h1:4l7JXE5l9gZEtX+Nm87BVpn/lEhUshzHq2tbkE6d0Gc=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
