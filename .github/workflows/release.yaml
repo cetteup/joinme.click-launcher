@@ -98,14 +98,6 @@ jobs:
         with:
           merge-multiple: true
 
-      - name: Create hash files
-        run: |
-          for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-*")
-          do
-            md5sum $file | cut -f 1 -d " " > $file.md5
-            sha256sum $file | cut -f 1 -d " " > $file.sha256
-          done
-
       - name: List release files
         run: |
           ls -l
