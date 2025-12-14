@@ -5,7 +5,7 @@ go 1.24.0
 require golang.org/x/sys v0.21.0
 
 require (
-	github.com/cetteup/conman v0.2.2
+	github.com/cetteup/conman v0.2.3
 	github.com/cetteup/filerepo v0.0.5
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.33.0
