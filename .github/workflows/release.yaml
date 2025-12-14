@@ -45,7 +45,7 @@ jobs:
         run: |
           zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml config.recommended.yaml
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           path: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           path: cmd/joinme.click-launcher
@@ -79,7 +79,7 @@ jobs:
           &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss" /Fjoinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup
         working-directory: cmd/joinme.click-launcher
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
           path: cmd/joinme.click-launcher/joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
@@ -94,7 +94,7 @@ jobs:
       - build-binary
       - build-installer
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           merge-multiple: true
 
