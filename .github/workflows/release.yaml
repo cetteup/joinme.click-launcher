@@ -27,7 +27,7 @@ jobs:
       matrix:
         goarch: [ "386", amd64 ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-go@v6
         with:
@@ -68,7 +68,7 @@ jobs:
       matrix:
         goarch: [ "386", amd64 ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/download-artifact@v4
         with:
