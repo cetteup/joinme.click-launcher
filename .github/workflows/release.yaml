@@ -27,24 +27,30 @@ jobs:
       matrix:
         goarch: [ "386", amd64 ]
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-go@v6
         with:
-          go-version: 1.25.5
-      - uses: actions/checkout@v4
+          go-version-file: .tool-versions
+
       - name: Install goversioninfo
         run: |
           go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.4.0
+
       - name: Generate versionfile
         run: |
           go generate
         working-directory: cmd/joinme.click-launcher
+
       - name: Build binary
         run: |
           GOOS=windows GOARCH=${{ matrix.goarch }} go build -ldflags="-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
         working-directory: cmd/joinme.click-launcher
+
       - name: Create binary release archive
         run: |
           zip -j joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip cmd/joinme.click-launcher/joinme.click-launcher.exe config.example.yaml config.recommended.yaml
+
       - uses: actions/upload-artifact@v4
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
@@ -63,18 +69,22 @@ jobs:
         goarch: [ "386", amd64 ]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip
           path: cmd/joinme.click-launcher
+
       - name: Unpack binary release archive
         run: |
           Expand-Archive -LiteralPath joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}.zip -DestinationPath .
         working-directory: cmd/joinme.click-launcher
+
       - name: Build installer
         run: |
           &"${Env:ProgramFiles(x86)}\Inno Setup 6\iscc.exe" "setup.iss" /Fjoinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup
         working-directory: cmd/joinme.click-launcher
+
       - uses: actions/upload-artifact@v4
         with:
           name: joinme.click-launcher-${{ github.ref_name }}-windows-${{ matrix.goarch }}-setup.exe
@@ -93,6 +103,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+
       - name: Create hash files
         run: |
           for file in $(find . -type f -name "joinme.click-launcher-${{ github.ref_name }}-*")
@@ -100,9 +111,11 @@ jobs:
             md5sum $file | cut -f 1 -d " " > $file.md5
             sha256sum $file | cut -f 1 -d " " > $file.sha256
           done
+
       - name: List release files
         run: |
           ls -l
+
       - uses: softprops/action-gh-release@v2
         with:
           files: |
