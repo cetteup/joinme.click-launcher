@@ -38,7 +38,7 @@ jobs:
 
       - name: Build binary
         run: |
-          GOOS=windows GOARCH=${{ matrix.goarch }} go build -ldflags="-X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
+          GOOS=windows GOARCH=${{ matrix.goarch }} go build -ldflags="-s -w -X 'main.buildTime=${{ needs.meta.outputs.date }}' -X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.ref_name }}'"
         working-directory: cmd/joinme.click-launcher
 
       - name: Create binary release archive
