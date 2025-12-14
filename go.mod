@@ -15,8 +15,14 @@ require (
 )
 
 require (
+	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/josephspurrier/goversioninfo v1.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+)
+
+tool (
+	github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 )
