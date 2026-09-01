@@ -9,7 +9,7 @@ require (
 	github.com/cetteup/filerepo v0.0.5
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/rs/zerolog v1.34.0
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.1
 	go.uber.org/mock v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -21,6 +21,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )
 
 tool github.com/josephspurrier/goversioninfo/cmd/goversioninfo
